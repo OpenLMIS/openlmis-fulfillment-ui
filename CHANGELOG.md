@@ -1,3 +1,9 @@
+6.0.8 / WIP
+==================
+
+Bug fixes:
+* [COV-67](https://openlmis.atlassian.net/browse/COV-67): Made Order Quantity values visible on Shipment Screens for orderables with no identifiers.
+
 6.0.7 / 2020-05-12
 ==================
 

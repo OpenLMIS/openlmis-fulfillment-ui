@@ -69,4 +69,40 @@ describe('ShipmentViewLineItem', function() {
 
     });
 
+    describe('getOrderQuantity', function() {
+
+        it('should return 0 if order quantity is equal to zero', function() {
+            var lineItem = new ShipmentViewLineItem({
+                orderQuantity: 0,
+                lineItems: []
+            });
+
+            var result = lineItem.getOrderQuantity(false);
+
+            expect(result).toBe(0);
+        });
+
+        it('should return undefined if order quantity is undefined', function() {
+            var lineItem = new ShipmentViewLineItem({
+                lineItems: []
+            });
+
+            var result = lineItem.getOrderQuantity(false);
+
+            expect(result).toBeUndefined();
+        });
+
+        it('should return undefined if order quantity is null', function() {
+            var lineItem = new ShipmentViewLineItem({
+                orderQuantity: null,
+                lineItems: []
+            });
+
+            var result = lineItem.getOrderQuantity(false);
+
+            expect(result).toBeUndefined();
+        });
+
+    });
+
 });

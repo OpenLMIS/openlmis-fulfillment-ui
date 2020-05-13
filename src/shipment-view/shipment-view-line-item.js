@@ -35,6 +35,7 @@
         ShipmentViewLineItem.prototype.getFillQuantity = getFillQuantity;
         ShipmentViewLineItem.prototype.getRemainingSoh = getRemainingSoh;
         ShipmentViewLineItem.prototype.recalculateQuantity = recalculateQuantity;
+        ShipmentViewLineItem.prototype.getOrderQuantity = getOrderQuantity;
 
         return ShipmentViewLineItem;
 
@@ -57,6 +58,7 @@
             this.shipmentLineItem = config.shipmentLineItem;
             this.netContent = config.netContent;
             this.isLot = true;
+            this.orderQuantity = config.orderQuantity;
         }
 
         /**
@@ -108,6 +110,26 @@
             var remainingQuantityInPacks = this.getAvailableSoh() - this.getFillQuantity();
 
             return this.recalculateQuantity(remainingQuantityInPacks, inDoses);
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf shipment-view.ShipmentViewLineItem
+         * @name getOrderQuantity
+         *
+         * @description
+         * Returns an ordered quantity for the commodity type related with the line item.
+         *
+         * @param  {boolean} inDoses flag defining whether the returned value should be returned in
+         *                           doses or in packs
+         * @return {number}          the ordered quantity for the commodity type related with the
+         *                           line item
+         */
+        function getOrderQuantity(inDoses) {
+            if (this.orderQuantity === undefined || this.orderQuantity === null) {
+                return;
+            }
+            return this.recalculateQuantity(this.orderQuantity, inDoses);
         }
 
         /**
