@@ -4,6 +4,14 @@
 Bug fixes:
 * [COV-67](https://openlmis.atlassian.net/browse/COV-67): Made Order Quantity values visible on Shipment Screens for orderables with no identifiers.
 
+Improvements:
+* Updated ui-components version to 7.2.4.
+* Updated auth-ui version to 6.2.5.
+* Updated ui-layout version to 5.1.8.
+* Updated referencedata-ui version to 5.6.4.
+* Updated stockmanagement-ui version to 2.0.8.
+* Updated cce-ui version to 1.0.8.
+
 6.0.7 / 2020-05-12
 ==================
 
