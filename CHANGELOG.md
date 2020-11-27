@@ -1,4 +1,10 @@
-6.0.8 / WIP
+6.0.9 / WIP
+==================
+
+Bug fixes:
+* [OLMIS-6629](https://openlmis.atlassian.net/browse/OLMIS-6629): Made Fill Quantity marked in red when it is higher than Available SOH value.
+
+6.0.8 / 2020-11-17
 ==================
 
 Bug fixes:
