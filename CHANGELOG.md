@@ -1,9 +1,18 @@
-6.0.9 / WIP
+6.0.9 / 2021-05-27
 ==================
 
 Bug fixes:
 * [OLMIS-6629](https://openlmis.atlassian.net/browse/OLMIS-6629): Made Fill Quantity marked in red when it is higher than Available SOH value.
 * [OLMIS-5511](https://openlmis.atlassian.net/browse/OLMIS-5511): sorting requesting and supplying facilities in asc order
+
+Improvements:
+* Updated dev-ui version to 9.0.2.
+* Updated ui-components version to 7.2.5.
+* Updated auth-ui version to 6.2.6.
+* Updated ui-layout version to 5.1.9.
+* Updated stockmanagement-ui version to 2.0.9.
+* Updated referencedata-ui version to 5.6.5.
+* Updated cce-ui version to 1.0.9.
 
 6.0.8 / 2020-11-17
 ==================
