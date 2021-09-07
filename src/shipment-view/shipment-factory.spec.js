@@ -72,7 +72,7 @@ describe('ShipmentFactory', function() {
     describe('buildFromOrder', function() {
 
         it('should reject if stock card summary repository reject', function() {
-            stockCardRepositoryImplMock.query.andReturn($q.reject());
+            stockCardRepositoryImplMock.query.and.returnValue($q.reject());
 
             var rejected;
             shipmentFactory.buildFromOrder(order)
@@ -85,7 +85,7 @@ describe('ShipmentFactory', function() {
         });
 
         it('should fetch stock card summaries for all line items', function() {
-            stockCardRepositoryImplMock.query.andReturn($q.resolve());
+            stockCardRepositoryImplMock.query.and.returnValue($q.resolve());
 
             shipmentFactory.buildFromOrder(order);
 
@@ -100,7 +100,7 @@ describe('ShipmentFactory', function() {
         });
 
         it('should create shipment with line items for each canFulfillForMe', function() {
-            stockCardRepositoryImplMock.query.andReturn($q.resolve({
+            stockCardRepositoryImplMock.query.and.returnValue($q.resolve({
                 content: stockCardSummaries
             }));
 

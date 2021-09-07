@@ -117,7 +117,7 @@ describe('ShipmentViewController', function() {
         var popup, document;
 
         beforeEach(function() {
-            spyOn(shipment, 'save').andReturn($q.resolve(shipment));
+            spyOn(shipment, 'save').and.returnValue($q.resolve(shipment));
 
             document = jasmine.createSpyObj('document', ['write']);
 
@@ -126,8 +126,8 @@ describe('ShipmentViewController', function() {
                 location: {}
             };
 
-            spyOn(messageService, 'get').andReturn('Saving and printing');
-            spyOn($window, 'open').andReturn(popup);
+            spyOn(messageService, 'get').and.returnValue('Saving and printing');
+            spyOn($window, 'open').and.returnValue(popup);
         });
 
         it('should show information when saving shipment', function() {

@@ -65,7 +65,7 @@ describe('AbstractFactory', function() {
             dates[dateResponses[1]] = new Date();
             dates[dateResponses[2]] = new Date();
 
-            spyOn(dateFactory, 'buildFromResponse').andCallFake(function(dateResponse) {
+            spyOn(dateFactory, 'buildFromResponse').and.callFake(function(dateResponse) {
                 return dates[dateResponse];
             });
         });

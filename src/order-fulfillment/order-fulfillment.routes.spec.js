@@ -70,14 +70,14 @@ describe('openlmis.orders.fulfillment state', function() {
             new ProgramDataBuilder().build()
         ];
 
-        spyOn(paginationService, 'registerUrl').andCallFake(function(stateParams, method) {
+        spyOn(paginationService, 'registerUrl').and.callFake(function(stateParams, method) {
             return method(stateParams);
         });
 
-        spyOn(facilityFactory, 'getSupervisedFacilitiesBasedOnRights').andReturn($q.when(facilities));
-        spyOn(requestingFacilityFactory, 'loadRequestingFacilities').andReturn($q.when(minimalFacilities));
-        spyOn(orderRepository, 'search').andReturn($q.when([]));
-        spyOn(programService, 'getAll').andReturn($q.when(programs));
+        spyOn(facilityFactory, 'getSupervisedFacilitiesBasedOnRights').and.returnValue($q.when(facilities));
+        spyOn(requestingFacilityFactory, 'loadRequestingFacilities').and.returnValue($q.when(minimalFacilities));
+        spyOn(orderRepository, 'search').and.returnValue($q.when([]));
+        spyOn(programService, 'getAll').and.returnValue($q.when(programs));
     });
 
     it('should fetch a list of ordering facilities', function() {

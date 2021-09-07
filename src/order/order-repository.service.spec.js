@@ -49,8 +49,8 @@ describe('orderRepository', function() {
         });
 
         it('should return order', function() {
-            orderFactory.buildFromResponse.andReturn(order);
-            orderService.get.andReturn($q.resolve(orderResponse));
+            orderFactory.buildFromResponse.and.returnValue(order);
+            orderService.get.and.returnValue($q.resolve(orderResponse));
 
             var result;
             orderRepository.get(order.id)
@@ -65,8 +65,8 @@ describe('orderRepository', function() {
         });
 
         it('should reject promise if orderFactory throws an error', function() {
-            orderService.get.andReturn($q.resolve());
-            orderFactory.buildFromResponse.andThrow();
+            orderService.get.and.returnValue($q.resolve());
+            orderFactory.buildFromResponse.and.throwError();
 
             var rejected;
             orderRepository.get(order.id)
@@ -79,7 +79,7 @@ describe('orderRepository', function() {
         });
 
         it('should reject promise if orderService promise was rejected', function() {
-            orderService.get.andReturn($q.reject());
+            orderService.get.and.returnValue($q.reject());
 
             var rejected;
             orderRepository.get(order.id)
@@ -125,8 +125,8 @@ describe('orderRepository', function() {
         it('should return basic orders', function() {
             var page = PageDataBuilder.buildWithContent(basicOrderResponses);
 
-            basicOrderFactory.buildFromResponseArray.andReturn(basicOrders);
-            orderService.search.andReturn($q.resolve(page));
+            basicOrderFactory.buildFromResponseArray.and.returnValue(basicOrders);
+            orderService.search.and.returnValue($q.resolve(page));
 
             var result;
             orderRepository.search(searchParams)
@@ -144,8 +144,8 @@ describe('orderRepository', function() {
         it('should resolve if undefined was passed', function() {
             var page = PageDataBuilder.buildWithContent(basicOrderResponses);
 
-            basicOrderFactory.buildFromResponseArray.andReturn(basicOrders);
-            orderService.search.andReturn($q.resolve(page));
+            basicOrderFactory.buildFromResponseArray.and.returnValue(basicOrders);
+            orderService.search.and.returnValue($q.resolve(page));
 
             var result;
             orderRepository.search(undefined)
@@ -158,8 +158,8 @@ describe('orderRepository', function() {
         });
 
         it('should reject promise if basicOrderFactory throws an error', function() {
-            orderService.search.andReturn($q.resolve());
-            basicOrderFactory.buildFromResponseArray.andThrow();
+            orderService.search.and.returnValue($q.resolve());
+            basicOrderFactory.buildFromResponseArray.and.throwError();
 
             var rejected;
             orderRepository.search(searchParams)
@@ -172,7 +172,7 @@ describe('orderRepository', function() {
         });
 
         it('should reject promise if orderService promise was rejected', function() {
-            orderService.search.andReturn($q.reject());
+            orderService.search.and.returnValue($q.reject());
 
             var rejected;
             orderRepository.search(searchParams)

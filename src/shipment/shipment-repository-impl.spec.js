@@ -108,7 +108,7 @@ describe('ShipmentRepositoryImpl', function() {
     describe('create', function() {
 
         it('should reject if save was unsuccessful', function() {
-            shipmentResourceMock.create.andReturn($q.reject());
+            shipmentResourceMock.create.and.returnValue($q.reject());
 
             var rejected;
             shipmentRepositoryImpl.create(shipment)
@@ -124,8 +124,8 @@ describe('ShipmentRepositoryImpl', function() {
         });
 
         it('should reject if could not fetch order', function() {
-            shipmentResourceMock.create.andReturn($q.resolve(shipment));
-            orderResourceMock.get.andReturn($q.reject());
+            shipmentResourceMock.create.and.returnValue($q.resolve(shipment));
+            orderResourceMock.get.and.returnValue($q.reject());
 
             var rejected;
             shipmentRepositoryImpl.create(shipment)
@@ -141,9 +141,9 @@ describe('ShipmentRepositoryImpl', function() {
         });
 
         it('should reject if could not fetch stock card summaries', function() {
-            shipmentResourceMock.create.andReturn($q.resolve(shipment));
-            orderResourceMock.get.andReturn($q.resolve(order));
-            stockCardSummaryRepositoryImplMock.query.andReturn($q.reject());
+            shipmentResourceMock.create.and.returnValue($q.resolve(shipment));
+            orderResourceMock.get.and.returnValue($q.resolve(order));
+            stockCardSummaryRepositoryImplMock.query.and.returnValue($q.reject());
 
             var rejected;
             shipmentRepositoryImpl.create(shipment)
@@ -166,9 +166,9 @@ describe('ShipmentRepositoryImpl', function() {
         });
 
         it('should return combined responses', function() {
-            shipmentResourceMock.create.andReturn($q.resolve(angular.copy(shipment)));
-            orderResourceMock.get.andReturn($q.resolve(order));
-            stockCardSummaryRepositoryImplMock.query.andReturn($q.resolve({
+            shipmentResourceMock.create.and.returnValue($q.resolve(angular.copy(shipment)));
+            orderResourceMock.get.and.returnValue($q.resolve(order));
+            stockCardSummaryRepositoryImplMock.query.and.returnValue($q.resolve({
                 content: stockCardSummaries
             }));
 
@@ -204,7 +204,7 @@ describe('ShipmentRepositoryImpl', function() {
     describe('createDraft', function() {
 
         it('should reject if save was unsuccessful', function() {
-            shipmentDraftResourceMock.create.andReturn($q.reject());
+            shipmentDraftResourceMock.create.and.returnValue($q.reject());
 
             var rejected;
             shipmentRepositoryImpl.createDraft(shipment)
@@ -220,8 +220,8 @@ describe('ShipmentRepositoryImpl', function() {
         });
 
         it('should reject if could not fetch order', function() {
-            shipmentDraftResourceMock.create.andReturn($q.resolve(shipment));
-            orderResourceMock.get.andReturn($q.reject());
+            shipmentDraftResourceMock.create.and.returnValue($q.resolve(shipment));
+            orderResourceMock.get.and.returnValue($q.reject());
 
             var rejected;
             shipmentRepositoryImpl.createDraft(shipment)
@@ -237,9 +237,9 @@ describe('ShipmentRepositoryImpl', function() {
         });
 
         it('should reject if could not fetch stock card summaries', function() {
-            shipmentDraftResourceMock.create.andReturn($q.resolve(shipment));
-            orderResourceMock.get.andReturn($q.resolve(order));
-            stockCardSummaryRepositoryImplMock.query.andReturn($q.reject());
+            shipmentDraftResourceMock.create.and.returnValue($q.resolve(shipment));
+            orderResourceMock.get.and.returnValue($q.resolve(order));
+            stockCardSummaryRepositoryImplMock.query.and.returnValue($q.reject());
 
             var rejected;
             shipmentRepositoryImpl.createDraft(shipment)
@@ -262,9 +262,9 @@ describe('ShipmentRepositoryImpl', function() {
         });
 
         it('should return combined responses', function() {
-            shipmentDraftResourceMock.create.andReturn($q.resolve(angular.copy(shipment)));
-            orderResourceMock.get.andReturn($q.resolve(order));
-            stockCardSummaryRepositoryImplMock.query.andReturn($q.resolve({
+            shipmentDraftResourceMock.create.and.returnValue($q.resolve(angular.copy(shipment)));
+            orderResourceMock.get.and.returnValue($q.resolve(order));
+            stockCardSummaryRepositoryImplMock.query.and.returnValue($q.resolve({
                 content: stockCardSummaries
             }));
 
@@ -300,7 +300,7 @@ describe('ShipmentRepositoryImpl', function() {
     describe('updateDraft', function() {
 
         it('should reject if save was unsuccessful', function() {
-            shipmentDraftResourceMock.update.andReturn($q.reject());
+            shipmentDraftResourceMock.update.and.returnValue($q.reject());
 
             var rejected;
             shipmentRepositoryImpl.updateDraft(shipment)
@@ -314,7 +314,7 @@ describe('ShipmentRepositoryImpl', function() {
         });
 
         it('should resolve if update was successful', function() {
-            shipmentDraftResourceMock.update.andReturn($q.resolve(shipment));
+            shipmentDraftResourceMock.update.and.returnValue($q.resolve(shipment));
 
             var result;
             shipmentRepositoryImpl.updateDraft(shipment)
@@ -332,7 +332,7 @@ describe('ShipmentRepositoryImpl', function() {
     describe('getByOrderId', function() {
 
         it('should reject if save was unsuccessful', function() {
-            shipmentResourceMock.query.andReturn($q.reject());
+            shipmentResourceMock.query.and.returnValue($q.reject());
 
             var rejected;
             shipmentRepositoryImpl.getByOrderId(shipment.order.id)
@@ -351,10 +351,10 @@ describe('ShipmentRepositoryImpl', function() {
         });
 
         it('should reject if could not fetch order', function() {
-            shipmentResourceMock.query.andReturn($q.resolve({
+            shipmentResourceMock.query.and.returnValue($q.resolve({
                 content: [shipment]
             }));
-            orderResourceMock.get.andReturn($q.reject());
+            orderResourceMock.get.and.returnValue($q.reject());
 
             var rejected;
             shipmentRepositoryImpl.getByOrderId(shipment.order.id)
@@ -373,11 +373,11 @@ describe('ShipmentRepositoryImpl', function() {
         });
 
         it('should reject if could not fetch stock card summaries', function() {
-            shipmentResourceMock.query.andReturn($q.resolve({
+            shipmentResourceMock.query.and.returnValue($q.resolve({
                 content: [shipment]
             }));
-            orderResourceMock.get.andReturn($q.resolve(order));
-            stockCardSummaryRepositoryImplMock.query.andReturn($q.reject());
+            orderResourceMock.get.and.returnValue($q.resolve(order));
+            stockCardSummaryRepositoryImplMock.query.and.returnValue($q.reject());
 
             var rejected;
             shipmentRepositoryImpl.getByOrderId(shipment.order.id)
@@ -403,11 +403,11 @@ describe('ShipmentRepositoryImpl', function() {
         });
 
         it('should return combined responses', function() {
-            shipmentResourceMock.query.andReturn($q.resolve(angular.copy({
+            shipmentResourceMock.query.and.returnValue($q.resolve(angular.copy({
                 content: [shipment]
             })));
-            orderResourceMock.get.andReturn($q.resolve(order));
-            stockCardSummaryRepositoryImplMock.query.andReturn($q.resolve({
+            orderResourceMock.get.and.returnValue($q.resolve(order));
+            stockCardSummaryRepositoryImplMock.query.and.returnValue($q.resolve({
                 content: stockCardSummaries
             }));
 
@@ -446,7 +446,7 @@ describe('ShipmentRepositoryImpl', function() {
     describe('getDraftByOrderId', function() {
 
         it('should reject if save was unsuccessful', function() {
-            shipmentDraftResourceMock.query.andReturn($q.reject());
+            shipmentDraftResourceMock.query.and.returnValue($q.reject());
 
             var rejected;
             shipmentRepositoryImpl.getDraftByOrderId(shipment.order.id)
@@ -465,10 +465,10 @@ describe('ShipmentRepositoryImpl', function() {
         });
 
         it('should reject if could not fetch order', function() {
-            shipmentDraftResourceMock.query.andReturn($q.resolve({
+            shipmentDraftResourceMock.query.and.returnValue($q.resolve({
                 content: [shipment]
             }));
-            orderResourceMock.get.andReturn($q.reject());
+            orderResourceMock.get.and.returnValue($q.reject());
 
             var rejected;
             shipmentRepositoryImpl.getDraftByOrderId(shipment.order.id)
@@ -487,11 +487,11 @@ describe('ShipmentRepositoryImpl', function() {
         });
 
         it('should reject if could not fetch stock card summaries', function() {
-            shipmentDraftResourceMock.query.andReturn($q.resolve({
+            shipmentDraftResourceMock.query.and.returnValue($q.resolve({
                 content: [shipment]
             }));
-            orderResourceMock.get.andReturn($q.resolve(order));
-            stockCardSummaryRepositoryImplMock.query.andReturn($q.reject());
+            orderResourceMock.get.and.returnValue($q.resolve(order));
+            stockCardSummaryRepositoryImplMock.query.and.returnValue($q.reject());
 
             var rejected;
             shipmentRepositoryImpl.getDraftByOrderId(shipment.order.id)
@@ -517,11 +517,11 @@ describe('ShipmentRepositoryImpl', function() {
         });
 
         it('should return combined responses', function() {
-            shipmentDraftResourceMock.query.andReturn($q.resolve(angular.copy({
+            shipmentDraftResourceMock.query.and.returnValue($q.resolve(angular.copy({
                 content: [shipment]
             })));
-            orderResourceMock.get.andReturn($q.resolve(order));
-            stockCardSummaryRepositoryImplMock.query.andReturn($q.resolve({
+            orderResourceMock.get.and.returnValue($q.resolve(order));
+            stockCardSummaryRepositoryImplMock.query.and.returnValue($q.resolve({
                 content: stockCardSummaries
             }));
 

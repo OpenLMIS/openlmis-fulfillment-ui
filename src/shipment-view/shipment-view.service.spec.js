@@ -71,8 +71,8 @@ describe('shipmentViewService', function() {
         it('should create new shipment for order in the ordered status', function() {
             var json = new ShipmentDataBuilder().buildJson();
 
-            shipmentFactoryMock.buildFromOrder.andReturn($q.resolve(json));
-            shipmentRepositoryMock.createDraft.andReturn($q.resolve(shipment));
+            shipmentFactoryMock.buildFromOrder.and.returnValue($q.resolve(json));
+            shipmentRepositoryMock.createDraft.and.returnValue($q.resolve(shipment));
 
             order = new Order(new OrderDataBuilder().buildOrdered());
 
@@ -89,7 +89,7 @@ describe('shipmentViewService', function() {
         });
 
         it('should fetch draft for order in the fulfilling status', function() {
-            shipmentRepositoryMock.getDraftByOrderId.andReturn($q.resolve(shipment));
+            shipmentRepositoryMock.getDraftByOrderId.and.returnValue($q.resolve(shipment));
 
             order = new Order(new OrderDataBuilder().buildFulfilling());
 
@@ -105,7 +105,7 @@ describe('shipmentViewService', function() {
         });
 
         it('should fetch shipment for order in the shipped status', function() {
-            shipmentRepositoryMock.getByOrderId.andReturn($q.resolve(shipment));
+            shipmentRepositoryMock.getByOrderId.and.returnValue($q.resolve(shipment));
 
             order = new Order(new OrderDataBuilder().buildShipped());
 
@@ -132,7 +132,7 @@ describe('shipmentViewService', function() {
         });
 
         it('should reject if factory rejects', function() {
-            shipmentFactoryMock.buildFromOrder.andReturn($q.reject());
+            shipmentFactoryMock.buildFromOrder.and.returnValue($q.reject());
 
             order = new Order(new OrderDataBuilder().buildOrdered());
 
@@ -150,8 +150,8 @@ describe('shipmentViewService', function() {
         it('should reject if createDraft rejects', function() {
             var json = new ShipmentDataBuilder().buildJson();
 
-            shipmentFactoryMock.buildFromOrder.andReturn($q.resolve(json));
-            shipmentRepositoryMock.createDraft.andReturn($q.reject());
+            shipmentFactoryMock.buildFromOrder.and.returnValue($q.resolve(json));
+            shipmentRepositoryMock.createDraft.and.returnValue($q.reject());
 
             order = new Order(new OrderDataBuilder().buildOrdered());
 
@@ -169,7 +169,7 @@ describe('shipmentViewService', function() {
         });
 
         it('should reject if getDraftByOrderId rejects', function() {
-            shipmentRepositoryMock.getDraftByOrderId.andReturn($q.reject());
+            shipmentRepositoryMock.getDraftByOrderId.and.returnValue($q.reject());
 
             order = new Order(new OrderDataBuilder().buildFulfilling());
 
@@ -185,7 +185,7 @@ describe('shipmentViewService', function() {
         });
 
         it('should reject if getByOrderId rejects', function() {
-            shipmentRepositoryMock.getByOrderId.andReturn($q.reject());
+            shipmentRepositoryMock.getByOrderId.and.returnValue($q.reject());
 
             order = new Order(new OrderDataBuilder().buildShipped());
 
@@ -210,7 +210,7 @@ describe('shipmentViewService', function() {
             shipment.save = jasmine.createSpy('save');
             originalSave = shipment.save;
 
-            shipmentRepositoryMock.getByOrderId.andReturn($q.resolve(shipment));
+            shipmentRepositoryMock.getByOrderId.and.returnValue($q.resolve(shipment));
 
             order = new Order(new OrderDataBuilder().buildShipped());
 
@@ -219,7 +219,7 @@ describe('shipmentViewService', function() {
         });
 
         it('should open loading modal before calling originalSave', function() {
-            originalSave.andReturn($q.resolve());
+            originalSave.and.returnValue($q.resolve());
 
             shipment.save();
 
@@ -233,7 +233,7 @@ describe('shipmentViewService', function() {
         });
 
         it('should reject if original save rejects', function() {
-            originalSave.andReturn($q.reject());
+            originalSave.and.returnValue($q.reject());
 
             var rejected;
             shipment.save()
@@ -246,7 +246,7 @@ describe('shipmentViewService', function() {
         });
 
         it('should show error on failure', function() {
-            originalSave.andReturn($q.reject());
+            originalSave.and.returnValue($q.reject());
 
             shipment.save();
             $rootScope.$apply();
@@ -264,7 +264,7 @@ describe('shipmentViewService', function() {
         it('should show message, reload on success and return response', function() {
             var result;
 
-            originalSave.andReturn($q.resolve(shipment));
+            originalSave.and.returnValue($q.resolve(shipment));
 
             shipment.save().then(function(response) {
                 result = response;
@@ -293,7 +293,7 @@ describe('shipmentViewService', function() {
             shipment.confirm = jasmine.createSpy('confirm');
             originalConfirm = shipment.confirm;
 
-            shipmentRepositoryMock.getByOrderId.andReturn($q.resolve(shipment));
+            shipmentRepositoryMock.getByOrderId.and.returnValue($q.resolve(shipment));
 
             order = new Order(new OrderDataBuilder().buildShipped());
 
@@ -302,7 +302,7 @@ describe('shipmentViewService', function() {
         });
 
         it('should reject if confirmation was dismissed', function() {
-            confirmService.confirm.andReturn($q.reject());
+            confirmService.confirm.and.returnValue($q.reject());
 
             var rejected;
             shipment.confirm()
@@ -326,7 +326,7 @@ describe('shipmentViewService', function() {
         });
 
         it('should open loading modal after confirmation', function() {
-            confirmService.confirm.andReturn($q.resolve());
+            confirmService.confirm.and.returnValue($q.resolve());
 
             shipment.confirm();
             $rootScope.$apply();
@@ -346,8 +346,8 @@ describe('shipmentViewService', function() {
         });
 
         it('should show error on failure', function() {
-            confirmService.confirm.andReturn($q.resolve());
-            originalConfirm.andReturn($q.reject());
+            confirmService.confirm.and.returnValue($q.resolve());
+            originalConfirm.and.returnValue($q.reject());
 
             shipment.confirm();
             $rootScope.$apply();
@@ -369,8 +369,8 @@ describe('shipmentViewService', function() {
         });
 
         it('should go to previous state on success', function() {
-            confirmService.confirm.andReturn($q.resolve());
-            originalConfirm.andReturn($q.resolve());
+            confirmService.confirm.and.returnValue($q.resolve());
+            originalConfirm.and.returnValue($q.resolve());
 
             shipment.confirm();
             $rootScope.$apply();
@@ -402,7 +402,7 @@ describe('shipmentViewService', function() {
             shipment.delete = jasmine.createSpy('delete');
             originalDelete = shipment.delete;
 
-            shipmentRepositoryMock.getByOrderId.andReturn($q.resolve(shipment));
+            shipmentRepositoryMock.getByOrderId.and.returnValue($q.resolve(shipment));
 
             order = new Order(new OrderDataBuilder().buildShipped());
 
@@ -411,7 +411,7 @@ describe('shipmentViewService', function() {
         });
 
         it('should reject if confirmation was dismissed', function() {
-            confirmService.confirmDestroy.andReturn($q.reject());
+            confirmService.confirmDestroy.and.returnValue($q.reject());
 
             var rejected;
             shipment.delete()
@@ -435,7 +435,7 @@ describe('shipmentViewService', function() {
         });
 
         it('should open loading modal after confirmation', function() {
-            confirmService.confirmDestroy.andReturn($q.resolve());
+            confirmService.confirmDestroy.and.returnValue($q.resolve());
 
             shipment.delete();
             $rootScope.$apply();
@@ -455,8 +455,8 @@ describe('shipmentViewService', function() {
         });
 
         it('should show error on failure', function() {
-            confirmService.confirmDestroy.andReturn($q.resolve());
-            originalDelete.andReturn($q.reject());
+            confirmService.confirmDestroy.and.returnValue($q.resolve());
+            originalDelete.and.returnValue($q.reject());
 
             shipment.delete();
             $rootScope.$apply();
@@ -478,8 +478,8 @@ describe('shipmentViewService', function() {
         });
 
         it('should go to previous state on success', function() {
-            confirmService.confirmDestroy.andReturn($q.resolve());
-            originalDelete.andReturn($q.resolve());
+            confirmService.confirmDestroy.and.returnValue($q.resolve());
+            originalDelete.and.returnValue($q.resolve());
 
             shipment.delete();
             $rootScope.$apply();

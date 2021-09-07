@@ -31,7 +31,7 @@ describe('orderRepository decorator', function() {
 
     describe('searchOrdersForManagePod', function() {
         it('should call orderService with id param', function() {
-            orderServiceMock.search.andReturn($q.when());
+            orderServiceMock.search.and.returnValue($q.when());
             var searchParams = {
                 requestingFacility: 'id-one',
                 program: 'id-two'

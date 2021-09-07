@@ -91,12 +91,12 @@ describe('OrderViewController', function() {
                 $scope: this.scope
             });
 
-            spyOn(this.scope, '$watch').andCallThrough();
+            spyOn(this.scope, '$watch').and.callThrough();
             var vm = this.vm,
                 requestingFacilities = this.requestingFacilities,
                 $q = this.$q;
             spyOn(this.requestingFacilityFactory, 'loadRequestingFacilities')
-                .andCallFake(function(supplyingFacilityId) {
+                .and.callFake(function(supplyingFacilityId) {
                     if (supplyingFacilityId === 'facility-one') {
                         vm.requestingFacilities = [requestingFacilities[0], requestingFacilities[1]];
                         return $q.when([requestingFacilities[0], requestingFacilities[1]]);
@@ -192,7 +192,7 @@ describe('OrderViewController', function() {
         beforeEach(function() {
             this.initController();
             this.vm.$onInit();
-            spyOn(this.$state, 'go').andReturn();
+            spyOn(this.$state, 'go').and.returnValue();
         });
 
         it('should set program', function() {
@@ -321,7 +321,7 @@ describe('OrderViewController', function() {
 
         beforeEach(function() {
             this.fulfillmentUrlFactoryMock = jasmine.createSpy();
-            this.fulfillmentUrlFactoryMock.andCallFake(function(url) {
+            this.fulfillmentUrlFactoryMock.and.callFake(function(url) {
                 return 'http://some.url' + url;
             });
 
@@ -347,7 +347,7 @@ describe('OrderViewController', function() {
 
         beforeEach(function() {
             this.fulfillmentUrlFactoryMock = jasmine.createSpy();
-            this.fulfillmentUrlFactoryMock.andCallFake(function(url) {
+            this.fulfillmentUrlFactoryMock.and.callFake(function(url) {
                 return 'http://some.url' + url;
             });
 
@@ -372,11 +372,11 @@ describe('OrderViewController', function() {
     describe('retryTransfer', function() {
         beforeEach(function() {
             this.retryTransferDeferred = this.$q.defer();
-            spyOn(this.loadingModalService, 'open').andReturn();
-            spyOn(this.loadingModalService, 'close').andReturn();
-            spyOn(this.notificationService, 'error').andReturn();
-            spyOn(this.notificationService, 'success').andReturn();
-            spyOn(this.orderService, 'retryTransfer').andReturn(this.retryTransferDeferred.promise);
+            spyOn(this.loadingModalService, 'open').and.returnValue();
+            spyOn(this.loadingModalService, 'close').and.returnValue();
+            spyOn(this.notificationService, 'error').and.returnValue();
+            spyOn(this.notificationService, 'success').and.returnValue();
+            spyOn(this.orderService, 'retryTransfer').and.returnValue(this.retryTransferDeferred.promise);
 
             this.vm = this.$controller('OrderViewController', {
                 supplyingFacilities: this.supplyingFacilities,

@@ -80,7 +80,7 @@ describe('Shipment', function() {
         it('should return updated shipment', function() {
             var updatedShipment = new ShipmentDataBuilder().build();
 
-            shipment.repository.updateDraft.andReturn($q.resolve(updatedShipment));
+            shipment.repository.updateDraft.and.returnValue($q.resolve(updatedShipment));
 
             var result;
             shipment.save()
@@ -93,7 +93,7 @@ describe('Shipment', function() {
         });
 
         it('should reject if repository rejects', function() {
-            shipment.repository.updateDraft.andReturn($q.reject());
+            shipment.repository.updateDraft.and.returnValue($q.reject());
 
             var rejected;
             shipment.save()
@@ -106,7 +106,7 @@ describe('Shipment', function() {
         });
 
         it('should reject if shipment is not editable', function() {
-            spyOn(shipment, 'isEditable').andReturn(false);
+            spyOn(shipment, 'isEditable').and.returnValue(false);
 
             var rejected;
             shipment.save()
@@ -125,7 +125,7 @@ describe('Shipment', function() {
         it('should reject if shipment is invalid', function() {
             spyOn(shipment, 'isInvalid');
 
-            shipment.isInvalid.andReturn({
+            shipment.isInvalid.and.returnValue({
                 lineItems: 'invalid'
             });
 
@@ -140,7 +140,7 @@ describe('Shipment', function() {
         });
 
         it('should reject if repository rejects', function() {
-            shipment.repository.create.andReturn($q.reject());
+            shipment.repository.create.and.returnValue($q.reject());
 
             var rejected;
             shipment.confirm()
@@ -155,8 +155,8 @@ describe('Shipment', function() {
         it('should resolve if shipment has been confirmed', function() {
             spyOn(shipment, 'isInvalid');
 
-            shipment.repository.create.andReturn($q.resolve());
-            shipment.isInvalid.andReturn(undefined);
+            shipment.repository.create.and.returnValue($q.resolve());
+            shipment.isInvalid.and.returnValue(undefined);
 
             var confirmed;
             shipment.confirm()
@@ -169,7 +169,7 @@ describe('Shipment', function() {
         });
 
         it('should reject if shipment is not editable', function() {
-            spyOn(shipment, 'isEditable').andReturn(false);
+            spyOn(shipment, 'isEditable').and.returnValue(false);
 
             var rejected;
             shipment.confirm()
@@ -182,7 +182,7 @@ describe('Shipment', function() {
         });
 
         it('should reject if shipment has no line items', function() {
-            spyOn(shipment, 'canBeConfirmed').andReturn(false);
+            spyOn(shipment, 'canBeConfirmed').and.returnValue(false);
 
             var rejected;
             shipment.confirm()
@@ -199,7 +199,7 @@ describe('Shipment', function() {
     describe('delete', function() {
 
         it('should resolve if shipment was deleted', function() {
-            shipment.repository.deleteDraft.andReturn($q.resolve());
+            shipment.repository.deleteDraft.and.returnValue($q.resolve());
 
             var deleted;
             shipment.delete()
@@ -212,7 +212,7 @@ describe('Shipment', function() {
         });
 
         it('should reject if repository rejects', function() {
-            shipment.repository.deleteDraft.andReturn($q.reject());
+            shipment.repository.deleteDraft.and.returnValue($q.reject());
 
             var rejected;
             shipment.delete()
@@ -225,7 +225,7 @@ describe('Shipment', function() {
         });
 
         it('should reject if shipment is not editable', function() {
-            spyOn(shipment, 'isEditable').andReturn(false);
+            spyOn(shipment, 'isEditable').and.returnValue(false);
 
             var rejected;
             shipment.delete()
@@ -248,7 +248,7 @@ describe('Shipment', function() {
         });
 
         it('should return error if any of the line items is invalid', function() {
-            spyOn(shipment.lineItems[0], 'isInvalid').andReturn({
+            spyOn(shipment.lineItems[0], 'isInvalid').and.returnValue({
                 quantityShipped: 'shipment.required'
             });
 

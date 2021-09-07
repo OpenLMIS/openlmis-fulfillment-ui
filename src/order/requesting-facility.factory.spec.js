@@ -45,12 +45,12 @@ describe('requestingFacilityFactory', function() {
             }
         ];
 
-        spyOn(facilityService, 'getAllMinimal').andReturn($q.when(minimalFacilities));
+        spyOn(facilityService, 'getAllMinimal').and.returnValue($q.when(minimalFacilities));
     });
 
     describe('getRequestingFacilities', function() {
         it('should return promise', function() {
-            spyOn(facilityService, 'getRequestingFacilities').andReturn($q.when(requestingFacilities));
+            spyOn(facilityService, 'getRequestingFacilities').and.returnValue($q.when(requestingFacilities));
 
             var result = requestingFacilityFactory.loadRequestingFacilities();
 
@@ -58,7 +58,7 @@ describe('requestingFacilityFactory', function() {
         });
 
         it('should call facilityService', function() {
-            spyOn(facilityService, 'getRequestingFacilities').andReturn($q.when(requestingFacilities));
+            spyOn(facilityService, 'getRequestingFacilities').and.returnValue($q.when(requestingFacilities));
 
             requestingFacilityFactory.loadRequestingFacilities();
 
@@ -67,7 +67,7 @@ describe('requestingFacilityFactory', function() {
         });
 
         it('should return available minimal facilities', function() {
-            spyOn(facilityService, 'getRequestingFacilities').andReturn($q.when(requestingFacilities));
+            spyOn(facilityService, 'getRequestingFacilities').and.returnValue($q.when(requestingFacilities));
 
             var result;
             requestingFacilityFactory.loadRequestingFacilities().then(function(facilities) {
@@ -82,7 +82,7 @@ describe('requestingFacilityFactory', function() {
         it('should preserve the order of minimal facilities', function() {
             // requesting facilities in reverse order
             requestingFacilities = ['3', '2', '1'];
-            spyOn(facilityService, 'getRequestingFacilities').andReturn($q.when(requestingFacilities));
+            spyOn(facilityService, 'getRequestingFacilities').and.returnValue($q.when(requestingFacilities));
 
             var result;
             requestingFacilityFactory.loadRequestingFacilities().then(function(facilities) {

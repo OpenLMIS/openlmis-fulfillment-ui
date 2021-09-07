@@ -45,7 +45,7 @@ describe('QuantityUnitToggleController', function() {
         });
 
         it('should expose default quantityUnit when not cached in storage', function() {
-            spyOn(localStorageService, 'get').andReturn(null);
+            spyOn(localStorageService, 'get').and.returnValue(null);
 
             vm.$onInit();
 
@@ -54,7 +54,7 @@ describe('QuantityUnitToggleController', function() {
         });
 
         it('should expose quantityUnit doses from storage', function() {
-            spyOn(localStorageService, 'get').andReturn('DOSES');
+            spyOn(localStorageService, 'get').and.returnValue('DOSES');
 
             vm.$onInit();
 
@@ -62,7 +62,7 @@ describe('QuantityUnitToggleController', function() {
         });
 
         it('should expose quantityUnit packs from storage', function() {
-            spyOn(localStorageService, 'get').andReturn('PACKS');
+            spyOn(localStorageService, 'get').and.returnValue('PACKS');
 
             vm.$onInit();
 
@@ -73,7 +73,7 @@ describe('QuantityUnitToggleController', function() {
     describe('getMessage', function() {
 
         beforeEach(function() {
-            spyOn(messageService, 'get').andReturn('message');
+            spyOn(messageService, 'get').and.returnValue('message');
         });
 
         it('should get localized message for packs', function() {
