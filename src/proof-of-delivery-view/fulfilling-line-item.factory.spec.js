@@ -63,14 +63,14 @@ describe('fulfillingLineItemFactory', function() {
             canBeFulfilledByMe: []
         };
 
-        OrderableFulfillsResource.query.and.returnValue($q.resolve(orderableFulfills));
+        OrderableFulfillsResource.query.andReturn($q.resolve(orderableFulfills));
     });
 
     describe('groupByOrderable', function() {
 
         it('should reject if request for orderable fulfills fails', function() {
             var spy = jasmine.createSpy();
-            OrderableFulfillsResource.query.and.returnValue($q.reject());
+            OrderableFulfillsResource.query.andReturn($q.reject());
 
             fulfillingLineItemFactory.groupByOrderable(proofOfDeliveryLineItems, orderLineItems)
                 .catch(spy);

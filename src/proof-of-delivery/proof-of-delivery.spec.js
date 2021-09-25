@@ -67,7 +67,7 @@ describe('ProofOfDelivery', function() {
         });
 
         it('should resolve when saved', function() {
-            proofOfDeliveryRepositoryMock.update.and.returnValue($q.resolve());
+            proofOfDeliveryRepositoryMock.update.andReturn($q.resolve());
 
             var saved;
             proofOfDelivery.save()
@@ -80,7 +80,7 @@ describe('ProofOfDelivery', function() {
         });
 
         it('should reject if save failed', function() {
-            proofOfDeliveryRepositoryMock.update.and.returnValue($q.reject());
+            proofOfDeliveryRepositoryMock.update.andReturn($q.reject());
 
             var saved;
             proofOfDelivery.save()
@@ -137,7 +137,7 @@ describe('ProofOfDelivery', function() {
         });
 
         it('should reject if repository rejects', function() {
-            proofOfDeliveryRepositoryMock.update.and.returnValue($q.reject());
+            proofOfDeliveryRepositoryMock.update.andReturn($q.reject());
 
             var rejected;
             proofOfDelivery.confirm()
@@ -150,7 +150,7 @@ describe('ProofOfDelivery', function() {
         });
 
         it('should not set status to confirmed if repository rejects', function() {
-            proofOfDeliveryRepositoryMock.update.and.returnValue($q.reject());
+            proofOfDeliveryRepositoryMock.update.andReturn($q.reject());
 
             proofOfDelivery.confirm();
             $rootScope.$apply();
@@ -159,7 +159,7 @@ describe('ProofOfDelivery', function() {
         });
 
         it('should set status to confirmed when saving in repository', function() {
-            proofOfDeliveryRepositoryMock.update.and.returnValue($q.reject());
+            proofOfDeliveryRepositoryMock.update.andReturn($q.reject());
 
             var expected = angular.copy(proofOfDelivery);
             expected.status = PROOF_OF_DELIVERY_STATUS.CONFIRMED;
@@ -172,7 +172,7 @@ describe('ProofOfDelivery', function() {
         });
 
         it('should resolve after Proof of Delivery has been confirmed', function() {
-            proofOfDeliveryRepositoryMock.update.and.returnValue($q.resolve());
+            proofOfDeliveryRepositoryMock.update.andReturn($q.resolve());
 
             var confirmed;
             proofOfDelivery.confirm()
@@ -185,7 +185,7 @@ describe('ProofOfDelivery', function() {
         });
 
         it('should set status as confirmed if confirm was successful', function() {
-            proofOfDeliveryRepositoryMock.update.and.returnValue($q.resolve());
+            proofOfDeliveryRepositoryMock.update.andReturn($q.resolve());
 
             expect(proofOfDelivery.status).toBe(PROOF_OF_DELIVERY_STATUS.INITIATED);
 

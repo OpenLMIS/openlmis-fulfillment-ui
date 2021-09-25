@@ -44,7 +44,7 @@ describe('openlmis.orders.view state', function() {
     });
 
     it('should not try to check permission if supplyingFacilityId is undefined', function() {
-        spyOn(permissionService, 'hasPermissionWithAnyProgram').and.returnValue();
+        spyOn(permissionService, 'hasPermissionWithAnyProgram').andReturn();
 
         $stateParams.supplyingFacilityId = undefined;
 
@@ -69,11 +69,11 @@ describe('openlmis.orders.view state', function() {
     it('should return false if user cannot retry to transfer order', function() {
 
         $stateParams.supplyingFacilityId = undefined;
-        spyOn(authorizationService, 'getUser').and.returnValue({
+        spyOn(authorizationService, 'getUser').andReturn({
             //eslint-disable-next-line camelcase
             user_id: '123'
         });
-        spyOn(permissionService, 'hasPermissionWithAnyProgram').and.returnValue($q.when(false));
+        spyOn(permissionService, 'hasPermissionWithAnyProgram').andReturn($q.when(false));
 
         var result = state.resolve.canRetryTransfer(authorizationService, permissionService, $stateParams);
 
@@ -83,11 +83,11 @@ describe('openlmis.orders.view state', function() {
     it('should return true if user can retry transfer order', function() {
 
         $stateParams.supplyingFacilityId = undefined;
-        spyOn(authorizationService, 'getUser').and.returnValue({
+        spyOn(authorizationService, 'getUser').andReturn({
             //eslint-disable-next-line camelcase
             user_id: '123'
         });
-        spyOn(permissionService, 'hasPermissionWithAnyProgram').and.returnValue($q.when(true));
+        spyOn(permissionService, 'hasPermissionWithAnyProgram').andReturn($q.when(true));
 
         var result = state.resolve.canRetryTransfer(authorizationService, permissionService, $stateParams);
 
@@ -132,6 +132,6 @@ describe('openlmis.orders.view state', function() {
     }
 
     function prepareSpies() {
-        spyOn(requestingFacilityFactory, 'loadRequestingFacilities').and.returnValue($q.when(minimalFacilities));
+        spyOn(requestingFacilityFactory, 'loadRequestingFacilities').andReturn($q.when(minimalFacilities));
     }
 });

@@ -114,7 +114,7 @@ describe('OrderFulfillmentController', function() {
         });
 
         it('should reload state params', function() {
-            spyOn($state, 'go').and.returnValue();
+            spyOn($state, 'go').andReturn();
 
             $stateParams.status = [ORDER_STATUS.FULFILLING, ORDER_STATUS.ORDERED];
 
@@ -141,7 +141,7 @@ describe('OrderFulfillmentController', function() {
         beforeEach(function() {
             initController();
             vm.$onInit();
-            spyOn($state, 'go').and.returnValue();
+            spyOn($state, 'go').andReturn();
         });
 
         it('should set program id', function() {

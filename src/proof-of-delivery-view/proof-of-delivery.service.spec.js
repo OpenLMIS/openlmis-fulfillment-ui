@@ -47,7 +47,7 @@ describe('proofOfDeliveryService', function() {
 
         it('should return domain object', function() {
             var proofOfDelivery = new ProofOfDeliveryDataBuilder().build();
-            repositoryMock.get.and.returnValue($q.resolve(proofOfDelivery));
+            repositoryMock.get.andReturn($q.resolve(proofOfDelivery));
 
             var result;
             proofOfDeliveryService.get(PROOF_OF_DELIVERY_ID)
@@ -62,7 +62,7 @@ describe('proofOfDeliveryService', function() {
 
         it('should decorate save', function() {
             proofOfDeliveryMock = jasmine.createSpyObj('proofOfDeliveryMock', ['save']);
-            repositoryMock.get.and.returnValue($q.resolve(proofOfDeliveryMock));
+            repositoryMock.get.andReturn($q.resolve(proofOfDeliveryMock));
 
             saveSpy = proofOfDeliveryMock.save;
 
@@ -78,7 +78,7 @@ describe('proofOfDeliveryService', function() {
 
         it('should decorate confirm', function() {
             proofOfDeliveryMock = jasmine.createSpyObj('proofOfDeliveryMock', ['save']);
-            repositoryMock.get.and.returnValue($q.resolve(proofOfDeliveryMock));
+            repositoryMock.get.andReturn($q.resolve(proofOfDeliveryMock));
 
             confirmSpy = proofOfDeliveryMock.confirm;
 
@@ -93,7 +93,7 @@ describe('proofOfDeliveryService', function() {
         });
 
         it('should reject if repository rejected', function() {
-            repositoryMock.get.and.returnValue($q.reject());
+            repositoryMock.get.andReturn($q.reject());
 
             var rejected;
             proofOfDeliveryService.get(PROOF_OF_DELIVERY_ID)
@@ -124,7 +124,7 @@ describe('proofOfDeliveryService', function() {
 
         beforeEach(function() {
             proofOfDeliveryMock = jasmine.createSpyObj('proofOfDeliveryMock', ['save']);
-            repositoryMock.get.and.returnValue($q.resolve(proofOfDeliveryMock));
+            repositoryMock.get.andReturn($q.resolve(proofOfDeliveryMock));
 
             saveSpy = proofOfDeliveryMock.save;
 
@@ -141,7 +141,7 @@ describe('proofOfDeliveryService', function() {
         });
 
         it('should call original save method', function() {
-            saveSpy.and.returnValue($q.resolve());
+            saveSpy.andReturn($q.resolve());
 
             proofOfDelivery.save();
 
@@ -149,7 +149,7 @@ describe('proofOfDeliveryService', function() {
         });
 
         it('should show loading modal', function() {
-            saveSpy.and.returnValue($q.resolve());
+            saveSpy.andReturn($q.resolve());
 
             proofOfDelivery.save();
 
@@ -157,7 +157,7 @@ describe('proofOfDeliveryService', function() {
         });
 
         it('should show success only after save was successful', function() {
-            saveSpy.and.returnValue($q.resolve());
+            saveSpy.andReturn($q.resolve());
 
             var saved;
             proofOfDelivery.save()
@@ -177,7 +177,7 @@ describe('proofOfDeliveryService', function() {
         });
 
         it('should close loading modal on success', function() {
-            saveSpy.and.returnValue($q.resolve());
+            saveSpy.andReturn($q.resolve());
 
             proofOfDelivery.save();
 
@@ -189,7 +189,7 @@ describe('proofOfDeliveryService', function() {
         });
 
         it('should show error only after save has failed', function() {
-            saveSpy.and.returnValue($q.reject());
+            saveSpy.andReturn($q.reject());
 
             var saved;
             proofOfDelivery.save()
@@ -209,7 +209,7 @@ describe('proofOfDeliveryService', function() {
         });
 
         it('should close loading modal on failure', function() {
-            saveSpy.and.returnValue($q.reject());
+            saveSpy.andReturn($q.reject());
 
             proofOfDelivery.save();
 
@@ -221,7 +221,7 @@ describe('proofOfDeliveryService', function() {
         });
 
         it('should resolve to a proof of delivery', function() {
-            saveSpy.and.returnValue($q.resolve(proofOfDelivery));
+            saveSpy.andReturn($q.resolve(proofOfDelivery));
 
             var result;
             proofOfDelivery.save()
@@ -241,7 +241,7 @@ describe('proofOfDeliveryService', function() {
 
         beforeEach(function() {
             proofOfDeliveryMock = jasmine.createSpyObj('proofOfDeliveryMock', ['confirm']);
-            repositoryMock.get.and.returnValue($q.resolve(proofOfDeliveryMock));
+            repositoryMock.get.andReturn($q.resolve(proofOfDeliveryMock));
 
             confirmSpy = proofOfDeliveryMock.confirm;
 
@@ -260,7 +260,7 @@ describe('proofOfDeliveryService', function() {
         });
 
         it('should show confirmation modal before doing anything', function() {
-            confirmService.confirm.and.returnValue($q.resolve());
+            confirmService.confirm.andReturn($q.resolve());
 
             proofOfDelivery.confirm();
 
@@ -277,7 +277,7 @@ describe('proofOfDeliveryService', function() {
         });
 
         it('should do nothing if without confirmation', function() {
-            confirmService.confirm.and.returnValue($q.reject());
+            confirmService.confirm.andReturn($q.reject());
 
             proofOfDelivery.confirm();
             $rootScope.$apply();
@@ -295,8 +295,8 @@ describe('proofOfDeliveryService', function() {
         });
 
         it('should call original confirm method', function() {
-            confirmService.confirm.and.returnValue($q.resolve());
-            confirmSpy.and.returnValue($q.resolve());
+            confirmService.confirm.andReturn($q.resolve());
+            confirmSpy.andReturn($q.resolve());
 
             proofOfDelivery.confirm();
             $rootScope.$apply();
@@ -305,8 +305,8 @@ describe('proofOfDeliveryService', function() {
         });
 
         it('should show loading modal', function() {
-            confirmService.confirm.and.returnValue($q.resolve());
-            confirmSpy.and.returnValue($q.resolve());
+            confirmService.confirm.andReturn($q.resolve());
+            confirmSpy.andReturn($q.resolve());
 
             proofOfDelivery.confirm();
             $rootScope.$apply();
@@ -315,8 +315,8 @@ describe('proofOfDeliveryService', function() {
         });
 
         it('should show success only after confirm was successful', function() {
-            confirmService.confirm.and.returnValue($q.resolve());
-            confirmSpy.and.returnValue($q.resolve());
+            confirmService.confirm.andReturn($q.resolve());
+            confirmSpy.andReturn($q.resolve());
 
             var confirmed;
             proofOfDelivery.confirm()
@@ -336,8 +336,8 @@ describe('proofOfDeliveryService', function() {
         });
 
         it('should close loading modal on success', function() {
-            confirmService.confirm.and.returnValue($q.resolve());
-            confirmSpy.and.returnValue($q.resolve());
+            confirmService.confirm.andReturn($q.resolve());
+            confirmSpy.andReturn($q.resolve());
 
             proofOfDelivery.confirm();
 
@@ -349,8 +349,8 @@ describe('proofOfDeliveryService', function() {
         });
 
         it('should go to previous state on success', function() {
-            confirmService.confirm.and.returnValue($q.resolve());
-            confirmSpy.and.returnValue($q.resolve());
+            confirmService.confirm.andReturn($q.resolve());
+            confirmSpy.andReturn($q.resolve());
 
             proofOfDelivery.confirm();
 
@@ -362,8 +362,8 @@ describe('proofOfDeliveryService', function() {
         });
 
         it('should show error only after confirm has failed', function() {
-            confirmService.confirm.and.returnValue($q.resolve());
-            confirmSpy.and.returnValue($q.reject());
+            confirmService.confirm.andReturn($q.resolve());
+            confirmSpy.andReturn($q.reject());
 
             var confirmed;
             proofOfDelivery.confirm()
@@ -385,8 +385,8 @@ describe('proofOfDeliveryService', function() {
         });
 
         it('should close loading modal on failure', function() {
-            confirmService.confirm.and.returnValue($q.resolve());
-            confirmSpy.and.returnValue($q.reject());
+            confirmService.confirm.andReturn($q.resolve());
+            confirmSpy.andReturn($q.reject());
 
             proofOfDelivery.confirm();
 

@@ -16,7 +16,7 @@
 describe('ShipmentRepository', function() {
 
     var ShipmentRepository, shipmentRepository, shipmentRepositoryImplMock, ShipmentDataBuilder,
-        ShipmentMock, shipmentJson, $q, shipmentResponse, shipment, $rootScope;
+        ShipmentMock, shipmentJson, $q, shipmentResponse, shipment, $rootScope, Shipment;
 
     beforeEach(function() {
         module('shipment', function($provide) {
@@ -40,6 +40,7 @@ describe('ShipmentRepository', function() {
             ShipmentDataBuilder = $injector.get('ShipmentDataBuilder');
             $q = $injector.get('$q');
             $rootScope = $injector.get('$rootScope');
+            Shipment = $injector.get('Shipment');
         });
 
         shipmentRepository = new ShipmentRepository();
@@ -53,8 +54,8 @@ describe('ShipmentRepository', function() {
     describe('createDraft', function() {
 
         it('should return a shipment', function() {
-            shipmentRepositoryImplMock.createDraft.and.returnValue($q.resolve(shipmentJson));
-            ShipmentMock.and.returnValue(shipment);
+            shipmentRepositoryImplMock.createDraft.andReturn($q.resolve(shipmentJson));
+            ShipmentMock.andReturn(shipment);
 
             var result;
             shipmentRepository.createDraft(shipmentResponse)
@@ -68,7 +69,7 @@ describe('ShipmentRepository', function() {
         });
 
         it('should reject if implementation rejects', function() {
-            shipmentRepositoryImplMock.createDraft.and.returnValue($q.reject());
+            shipmentRepositoryImplMock.createDraft.andReturn($q.reject());
 
             var rejected;
             shipmentRepository.createDraft(shipmentResponse)
@@ -86,8 +87,8 @@ describe('ShipmentRepository', function() {
     describe('getByOrderId', function() {
 
         it('should return a shipment', function() {
-            shipmentRepositoryImplMock.getByOrderId.and.returnValue($q.resolve(shipmentJson));
-            ShipmentMock.and.returnValue(shipment);
+            shipmentRepositoryImplMock.getByOrderId.andReturn($q.resolve(shipmentJson));
+            ShipmentMock.andReturn(shipment);
 
             var result;
             shipmentRepository.getByOrderId(shipmentJson.order.id)
@@ -101,7 +102,7 @@ describe('ShipmentRepository', function() {
         });
 
         it('should reject if implementation rejects', function() {
-            shipmentRepositoryImplMock.getByOrderId.and.returnValue($q.reject());
+            shipmentRepositoryImplMock.getByOrderId.andReturn($q.reject());
 
             var rejected;
             shipmentRepository.getByOrderId(shipmentJson.order.id)
@@ -119,8 +120,8 @@ describe('ShipmentRepository', function() {
     describe('getDraftByOrderId', function() {
 
         it('should return a shipment', function() {
-            shipmentRepositoryImplMock.getDraftByOrderId.and.returnValue($q.resolve(shipmentJson));
-            ShipmentMock.and.returnValue(shipment);
+            shipmentRepositoryImplMock.getDraftByOrderId.andReturn($q.resolve(shipmentJson));
+            ShipmentMock.andReturn(shipment);
 
             var result;
             shipmentRepository.getDraftByOrderId(shipmentJson.order.id)
@@ -134,8 +135,8 @@ describe('ShipmentRepository', function() {
         });
 
         it('should return an instance of the Shipment class', function() {
-            shipmentRepositoryImplMock.getDraftByOrderId.and.returnValue($q.resolve(shipmentJson));
-            ShipmentMock.and.returnValue(shipment);
+            shipmentRepositoryImplMock.getDraftByOrderId.andReturn($q.resolve(shipmentJson));
+            ShipmentMock.andReturn(shipment);
 
             var result;
             shipmentRepository.getDraftByOrderId(shipmentJson.order.id)
@@ -144,12 +145,12 @@ describe('ShipmentRepository', function() {
                 });
             $rootScope.$apply();
 
-            expect(result).toBe(shipment);
+            expect(result instanceof Shipment).toBe(true);
             expect(shipmentRepositoryImplMock.getDraftByOrderId).toHaveBeenCalledWith(shipmentJson.order.id);
         });
 
         it('should reject if implementation rejects', function() {
-            shipmentRepositoryImplMock.getDraftByOrderId.and.returnValue($q.reject());
+            shipmentRepositoryImplMock.getDraftByOrderId.andReturn($q.reject());
 
             var rejected;
             shipmentRepository.getDraftByOrderId(shipmentJson.order.id)
@@ -167,8 +168,8 @@ describe('ShipmentRepository', function() {
     describe('updateDraft', function() {
 
         it('should resolve if update was successful', function() {
-            shipmentRepositoryImplMock.updateDraft.and.returnValue($q.resolve(shipmentJson));
-            ShipmentMock.and.returnValue(shipment);
+            shipmentRepositoryImplMock.updateDraft.andReturn($q.resolve(shipmentJson));
+            ShipmentMock.andReturn(shipment);
 
             var resolved;
             shipmentRepository.updateDraft(shipmentResponse)
@@ -182,7 +183,7 @@ describe('ShipmentRepository', function() {
         });
 
         it('should reject if implementation rejects', function() {
-            shipmentRepositoryImplMock.updateDraft.and.returnValue($q.reject());
+            shipmentRepositoryImplMock.updateDraft.andReturn($q.reject());
 
             var rejected;
             shipmentRepository.updateDraft(shipmentResponse)

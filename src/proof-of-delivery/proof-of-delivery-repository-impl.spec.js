@@ -93,11 +93,11 @@ describe('ProofOfDeliveryRepositoryImpl', function() {
     describe('get', function() {
 
         beforeEach(function() {
-            lotRepositoryImplMock.query.and.returnValue($q.resolve(new PageDataBuilder()
+            lotRepositoryImplMock.query.andReturn($q.resolve(new PageDataBuilder()
                 .withContent(lotJsons)
                 .build()));
 
-            orderableResourceMock.query.and.returnValue($q.resolve(new PageDataBuilder()
+            orderableResourceMock.query.andReturn($q.resolve(new PageDataBuilder()
                 .withContent(orderableJsons)
                 .build()));
         });
@@ -164,7 +164,7 @@ describe('ProofOfDeliveryRepositoryImpl', function() {
                 .expectGET(fulfillmentUrlFactory('/api/proofsOfDelivery/proof-of-delivery-id?expand=shipment.order'))
                 .respond(200, angular.copy(proofOfDeliveryJson));
 
-            lotRepositoryImplMock.query.and.returnValue($q.reject());
+            lotRepositoryImplMock.query.andReturn($q.reject());
 
             var rejected;
             proofOfDeliveryRepositoryImpl.get('proof-of-delivery-id')
@@ -181,7 +181,7 @@ describe('ProofOfDeliveryRepositoryImpl', function() {
                 .expectGET(fulfillmentUrlFactory('/api/proofsOfDelivery/proof-of-delivery-id?expand=shipment.order'))
                 .respond(200, angular.copy(proofOfDeliveryJson));
 
-            orderableResourceMock.query.and.returnValue($q.reject());
+            orderableResourceMock.query.andReturn($q.reject());
 
             var rejected;
             proofOfDeliveryRepositoryImpl.get('proof-of-delivery-id')

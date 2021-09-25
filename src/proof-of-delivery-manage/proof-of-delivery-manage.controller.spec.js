@@ -72,12 +72,12 @@ describe('ProofOfDeliveryManageController', function() {
         spyOn(loadingModalService, 'close');
         spyOn(notificationService, 'success');
         spyOn(notificationService, 'error');
-        spyOn($window, 'open').and.callThrough();
+        spyOn($window, 'open').andCallThrough();
         spyOn(ProofOfDeliveryPrinter.prototype, 'closeTab');
         spyOn(ProofOfDeliveryPrinter.prototype, 'openTab');
         spyOn(ProofOfDeliveryPrinter.prototype, 'print');
 
-        spyOn(loadingModalService, 'open').and.returnValue(loadingDeferred.promise);
+        spyOn(loadingModalService, 'open').andReturn(loadingDeferred.promise);
     });
 
     describe('onInit', function() {
@@ -165,8 +165,8 @@ describe('ProofOfDeliveryManageController', function() {
 
     describe('openPod', function() {
         it('should change state when user select order to view its POD', function() {
-            spyOn(proofOfDeliveryManageService, 'getByOrderId').and.returnValue(deferred.promise);
-            spyOn($state, 'go').and.returnValue();
+            spyOn(proofOfDeliveryManageService, 'getByOrderId').andReturn(deferred.promise);
+            spyOn($state, 'go').andReturn();
 
             vm.openPod(pod.id);
             deferred.resolve(pod);
@@ -182,7 +182,7 @@ describe('ProofOfDeliveryManageController', function() {
 
         beforeEach(function() {
             vm.$onInit();
-            spyOn(proofOfDeliveryManageService, 'getByOrderId').and.returnValue(deferred.promise);
+            spyOn(proofOfDeliveryManageService, 'getByOrderId').andReturn(deferred.promise);
         });
 
         it('should open loading modal', function() {

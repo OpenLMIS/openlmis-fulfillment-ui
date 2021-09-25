@@ -50,8 +50,8 @@ describe('ShipmentViewLineItem', function() {
         });
 
         it('should return quantity in packs by default', function() {
-            shipmentViewLineItem.getAvailableSoh.and.returnValue(160);
-            shipmentViewLineItem.getFillQuantity.and.returnValue(33);
+            shipmentViewLineItem.getAvailableSoh.andReturn(160);
+            shipmentViewLineItem.getFillQuantity.andReturn(33);
 
             var result = shipmentViewLineItem.getRemainingSoh();
 
@@ -59,8 +59,8 @@ describe('ShipmentViewLineItem', function() {
         });
 
         it('should return quantity in doses if flag is set', function() {
-            shipmentViewLineItem.getAvailableSoh.and.returnValue(20);
-            shipmentViewLineItem.getFillQuantity.and.returnValue(5);
+            shipmentViewLineItem.getAvailableSoh.andReturn(20);
+            shipmentViewLineItem.getFillQuantity.andReturn(5);
 
             var result = shipmentViewLineItem.getRemainingSoh(true);
 

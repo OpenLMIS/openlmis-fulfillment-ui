@@ -61,7 +61,7 @@ describe('openlmis.orders.podManage state', function() {
     });
 
     it('should resolve pods with default selection when lists have 1 element', function() {
-        programService.getUserPrograms.and.returnValue($q.when([programs[0]]));
+        programService.getUserPrograms.andReturn($q.when([programs[0]]));
         requestingFacilities = [requestingFacilities[0]];
         supplyingFacilities = [supplyingFacilities[0]];
 
@@ -81,7 +81,7 @@ describe('openlmis.orders.podManage state', function() {
     });
 
     it('should use template', function() {
-        spyOn($templateCache, 'get').and.callThrough();
+        spyOn($templateCache, 'get').andCallThrough();
 
         goToUrl('/orders/manage');
 
@@ -141,11 +141,11 @@ describe('openlmis.orders.podManage state', function() {
     }
 
     function prepareSpies() {
-        spyOn(orderRepository, 'searchOrdersForManagePod').and.returnValue($q.when({
+        spyOn(orderRepository, 'searchOrdersForManagePod').andReturn($q.when({
             content: pods
         }));
-        spyOn(programService, 'getUserPrograms').and.returnValue($q.when(programs));
-        spyOn(facilityFactory, 'getSupervisedFacilitiesBasedOnRights').and.callFake(function(rights) {
+        spyOn(programService, 'getUserPrograms').andReturn($q.when(programs));
+        spyOn(facilityFactory, 'getSupervisedFacilitiesBasedOnRights').andCallFake(function(rights) {
             if (rights.indexOf(FULFILLMENT_RIGHTS.SHIPMENTS_EDIT) > -1 &&
                 rights.indexOf(FULFILLMENT_RIGHTS.SHIPMENTS_VIEW) > -1) {
                 return $q.resolve(supplyingFacilities);
@@ -155,11 +155,11 @@ describe('openlmis.orders.podManage state', function() {
             }
             return $q.when([]);
         });
-        spyOn(authorizationService, 'getUser').and.returnValue($q.when({
+        spyOn(authorizationService, 'getUser').andReturn($q.when({
             //eslint-disable-next-line camelcase
             user_id: 'user-id'
         }));
-        spyOn(paginationService, 'registerUrl').and.callFake(function(stateParams, method) {
+        spyOn(paginationService, 'registerUrl').andCallFake(function(stateParams, method) {
             return method(stateParams);
         });
     }

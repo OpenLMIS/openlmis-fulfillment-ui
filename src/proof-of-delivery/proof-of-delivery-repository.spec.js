@@ -39,7 +39,7 @@ describe('ProofOfDeliveryRepository', function() {
 
         it('should return instance of ProofOfDelivery class', function() {
 
-            implMock.get.and.returnValue($q.resolve(json));
+            implMock.get.andReturn($q.resolve(json));
 
             var result;
             proofOfDeliveryRepository.get('proof-of-delivery-id')
@@ -54,7 +54,7 @@ describe('ProofOfDeliveryRepository', function() {
         });
 
         it('should reject if implementation rejects', function() {
-            implMock.get.and.returnValue($q.reject());
+            implMock.get.andReturn($q.reject());
 
             var rejected;
             proofOfDeliveryRepository.get('proof-of-delivery-id')
@@ -73,7 +73,7 @@ describe('ProofOfDeliveryRepository', function() {
         it('should resolve to updated proof of delivery', function() {
             var proofOfDelivery = new ProofOfDelivery(json, proofOfDeliveryRepository);
 
-            implMock.update.and.callFake(function() {
+            implMock.update.andCallFake(function() {
                 return $q.resolve(json);
             });
 
@@ -91,7 +91,7 @@ describe('ProofOfDeliveryRepository', function() {
 
         it('should reject if implementation rejects', function() {
             var proofOfDelivery = new ProofOfDeliveryDataBuilder().build();
-            implMock.update.and.returnValue($q.reject());
+            implMock.update.andReturn($q.reject());
 
             var rejected;
             proofOfDeliveryRepository.update(proofOfDelivery)

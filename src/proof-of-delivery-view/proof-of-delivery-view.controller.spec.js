@@ -52,7 +52,7 @@ describe('PodViewController', function() {
         spyOn(ProofOfDeliveryPrinter.prototype, 'closeTab');
         spyOn(ProofOfDeliveryPrinter.prototype, 'openTab');
         spyOn(ProofOfDeliveryPrinter.prototype, 'print');
-        spyOn(proofOfDelivery, 'save').and.returnValue($q.resolve(proofOfDelivery));
+        spyOn(proofOfDelivery, 'save').andReturn($q.resolve(proofOfDelivery));
         spyOn(proofOfDelivery, 'isInitiated');
 
         vm = $controller('ProofOfDeliveryViewController', {
@@ -118,7 +118,7 @@ describe('PodViewController', function() {
         });
 
         it('should return translated message', function() {
-            messageService.get.and.returnValue('translated message');
+            messageService.get.andReturn('translated message');
 
             var result = vm.getStatusDisplayName(VVM_STATUS.STAGE_1);
 
@@ -166,8 +166,8 @@ describe('PodViewController', function() {
         });
 
         it('should close the window when save proof of delivery failed', function() {
-            proofOfDelivery.isInitiated.and.returnValue(true);
-            proofOfDelivery.save.and.returnValue($q.reject());
+            proofOfDelivery.isInitiated.andReturn(true);
+            proofOfDelivery.save.andReturn($q.reject());
 
             vm.printProofOfDelivery();
             $rootScope.$apply();
@@ -176,7 +176,7 @@ describe('PodViewController', function() {
         });
 
         it('should attempt to save proof of delivery if it is initiated', function() {
-            proofOfDelivery.isInitiated.and.returnValue(true);
+            proofOfDelivery.isInitiated.andReturn(true);
 
             vm.printProofOfDelivery();
             $rootScope.$apply();
@@ -185,7 +185,7 @@ describe('PodViewController', function() {
         });
 
         it('should not call save if the pod is confirmed', function() {
-            proofOfDelivery.isInitiated.and.returnValue(false);
+            proofOfDelivery.isInitiated.andReturn(false);
 
             vm.printProofOfDelivery();
             $rootScope.$apply();
@@ -194,7 +194,7 @@ describe('PodViewController', function() {
         });
 
         it('should open the window if the pod is confirmed', function() {
-            proofOfDelivery.isInitiated.and.returnValue(true);
+            proofOfDelivery.isInitiated.andReturn(true);
 
             vm.printProofOfDelivery();
 
