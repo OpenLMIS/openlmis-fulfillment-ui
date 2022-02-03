@@ -7,7 +7,7 @@ Bug fixes:
 6.1.0 / 2021-10-28
 ==================
 
-Bug fixes:
+Improvements:
 * [OLMIS-7314](https://openlmis.atlassian.net/browse/OLMIS-7314): Update scss files to enable webpack build.
 
 6.0.9 / 2021-05-27
