@@ -102,6 +102,14 @@ describe('basicOrderFactory', function() {
             expect(result.processingPeriod).toEqual(processingPeriod);
         });
 
+        it('should not fail for null processingPeriod', function() {
+            response.processingPeriod = null;
+
+            var result = basicOrderFactory.buildFromResponse(response);
+
+            expect(result.processingPeriod).toBeNull();
+        });
+
         it('should set parsed processingPeriod.startDate', function() {
             var result = basicOrderFactory.buildFromResponse(response);
 

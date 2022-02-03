@@ -1,7 +1,13 @@
+6.1.1 / WIP
+==================
+
+Bug fixes:
+* [OLMIS-7520](https://openlmis.atlassian.net/browse/OLMIS-7520): Basic order factory can build order with empty processingPeriod
+
 6.1.0 / 2021-10-28
 ==================
 
-Improvements:
+Bug fixes:
 * [OLMIS-7314](https://openlmis.atlassian.net/browse/OLMIS-7314): Update scss files to enable webpack build.
 
 6.0.9 / 2021-05-27

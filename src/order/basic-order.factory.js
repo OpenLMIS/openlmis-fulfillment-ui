@@ -47,13 +47,14 @@
          */
         function buildFromResponse(response) {
             var createdDate = dateUtils.toDate(response.createdDate),
-                lastUpdatedDate = dateUtils.toDate(response.lastUpdatedDate),
-
-                processingPeriod = buildProcessingPeriodFromResponse(response.processingPeriod);
+                lastUpdatedDate = dateUtils.toDate(response.lastUpdatedDate);
 
             response.createdDate = createdDate;
             response.lastUpdatedDate = lastUpdatedDate;
-            response.processingPeriod = processingPeriod;
+
+            if (response.processingPeriod !== null) {
+                response.processingPeriod = buildProcessingPeriodFromResponse(response.processingPeriod);
+            }
 
             return new Order(response);
         }
