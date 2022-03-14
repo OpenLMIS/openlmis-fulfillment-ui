@@ -18,4 +18,8 @@
 	button.retry {
 		@include button-icon-inherit('refresh');
 	}
+
+	button.edit {
+		@include button-icon-inherit('edit');
+	}
 }

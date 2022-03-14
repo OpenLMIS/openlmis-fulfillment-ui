@@ -74,6 +74,11 @@
                             ng-click="vm.retryTransfer(order)">
                         {{'orderView.retry'|message}}
                     </button>
+                    <button ng-if="order.status === 'CREATING'"
+                            class="edit"
+                            ng-click="vm.redirectToOrderEdit(order.id)">
+                        {{ 'orderView.edit' | message }}
+                    </button>
                 </td>
             </tr>
         </tbody>

@@ -4,6 +4,9 @@
 Bug fixes:
 * [OLMIS-7520](https://openlmis.atlassian.net/browse/OLMIS-7520): Basic order factory can build order with empty processingPeriod
 
+New features:
+* [OLMIS-7519](https://openlmis.atlassian.net/browse/OLMIS-7519): Add Requistion-less Orders to "View Orders" page
+
 6.1.0 / 2021-10-28
 ==================
 
