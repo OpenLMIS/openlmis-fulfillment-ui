@@ -24,11 +24,11 @@ services:
       - ui-layout
       - cce-ui
   auth-ui:
-    image: openlmis/auth-ui:6.2.12-SNAPSHOT
+    image: openlmis/auth-ui:6.2.13-SNAPSHOT
     volumes:
       - '/openlmis-auth-ui'
   referencedata-ui:
-    image: openlmis/referencedata-ui:5.6.12-SNAPSHOT
+    image: openlmis/referencedata-ui:5.6.13-SNAPSHOT
     volumes:
       - '/openlmis-referencedata-ui'
   stockmanagement-ui:
@@ -36,15 +36,15 @@ services:
     volumes:
      - '/openlmis-stockmanagement-ui'
   ui-components:
-    image: openlmis/ui-components:7.2.11-SNAPSHOT
+    image: openlmis/ui-components:7.2.12-SNAPSHOT
     volumes:
       - '/openlmis-ui-components'
   ui-layout:
-    image: openlmis/ui-layout:5.2.6-SNAPSHOT
+    image: openlmis/ui-layout:5.2.5
     volumes:
       - '/openlmis-ui-layout'
   cce-ui:
-    image: openlmis/cce-ui:1.1.5-SNAPSHOT
+    image: openlmis/cce-ui:1.1.6-SNAPSHOT
     volumes:
       - '/openlmis-cce-ui'
   image:
