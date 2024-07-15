@@ -53,17 +53,13 @@
                         FULFILLMENT_RIGHTS.PODS_VIEW
                     ]);
                 },
-                pods: function(paginationService, orderRepository, $stateParams, programs, requestingFacilities,
-                    supplyingFacilities) {
+                pods: function(paginationService, orderRepository, $stateParams, programs, requestingFacilities) {
                     return paginationService.registerUrl($stateParams, function(stateParams) {
                         if (programs.length === 1 && !stateParams.programId) {
                             stateParams.programId = programs[0].id;
                         }
                         if (requestingFacilities.length === 1 && !stateParams.requestingFacilityId) {
                             stateParams.requestingFacilityId = requestingFacilities[0].id;
-                        }
-                        if (supplyingFacilities.length === 1 && !stateParams.supplyingFacilityId) {
-                            stateParams.supplyingFacilityId = supplyingFacilities[0].id;
                         }
 
                         if (stateParams.programId &&

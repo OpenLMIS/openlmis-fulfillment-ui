@@ -63,7 +63,6 @@ describe('openlmis.orders.podManage state', function() {
     it('should resolve pods with default selection when lists have 1 element', function() {
         programService.getUserPrograms.andReturn($q.when([programs[0]]));
         requestingFacilities = [requestingFacilities[0]];
-        supplyingFacilities = [supplyingFacilities[0]];
 
         goToUrl('/orders/manage?page=0&size=10');
 
@@ -75,8 +74,7 @@ describe('openlmis.orders.podManage state', function() {
             page: '0',
             size: '10',
             programId: programs[0].id,
-            requestingFacilityId: requestingFacilities[0].id,
-            supplyingFacilityId: supplyingFacilities[0].id
+            requestingFacilityId: requestingFacilities[0].id
         });
     });
 
