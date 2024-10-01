@@ -1,3 +1,13 @@
+.order-view-content {
+	display: flex;
+	flex-direction: row;
+	gap: 1rem;
+
+	.sidebar {
+		height: min-content;
+	}
+}
+
 .order-view {
 
 	@mixin button-icon-inherit($icon) {
