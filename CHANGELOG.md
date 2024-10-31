@@ -1,7 +1,13 @@
-6.1.5-SNAPSHOT / WIP
+6.1.5 / WIP
 ==================
 Bug fixes:
 * [OLMIS-7375](https://openlmis.atlassian.net/browse/OLMIS-7375): Fixed search input overlaping with the table when no supplying facility was selected.
+* [OLMIS-6917](https://openlmis.atlassian.net/browse/OLMIS-6917): Disabled autoselect for supplying facility.
+Improvements:
+* [OIS-24](https://openlmis.atlassian.net/browse/OIS-24): Adjusted all components styles to support RTL
+
+6.1.4 / 2023-11-07
+==================
 
 6.1.3 / 2023-06-26
 ==================
