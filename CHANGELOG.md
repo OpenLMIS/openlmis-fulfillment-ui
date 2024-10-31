@@ -1,4 +1,4 @@
-6.1.5 / WIP
+6.1.5 / 2024-10-31
 ==================
 Bug fixes:
 * [OLMIS-7375](https://openlmis.atlassian.net/browse/OLMIS-7375): Fixed search input overlaping with the table when no supplying facility was selected.
