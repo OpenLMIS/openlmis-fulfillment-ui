@@ -90,7 +90,7 @@
 
                     var promises = getPromises(lotRepositoryImpl, orderableResource, lotIds, orderableIds);
 
-                    return $q.all(promisses)
+                    return $q.all(promises)
                         .then(function(responses) {
                             var lotPage = responses[0],
                                 orderablePage = responses[1];
