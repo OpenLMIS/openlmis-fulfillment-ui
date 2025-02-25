@@ -84,14 +84,13 @@
                     var lotIds = getIdsFromListByObjectName(proofOfDeliveryJson.lineItems, 'lot'),
                         orderableIds = getIdsFromListByObjectName(proofOfDeliveryJson.lineItems, 'orderable');
 
-                    return $q.all([
-                        lotRepositoryImpl.query({
-                            id: lotIds
-                        }),
-                        orderableResource.query({
-                            id: orderableIds
-                        })
-                    ])
+                    if (lotIds.length === 0 && orderableIds.length === 0) {
+                        return $q.resolve(proofOfDeliveryJson);
+                    }
+
+                    var promises = getPromises(lotRepositoryImpl, orderableResource, lotIds, orderableIds);
+
+                    return $q.all(promisses)
                         .then(function(responses) {
                             var lotPage = responses[0],
                                 orderablePage = responses[1];
@@ -99,7 +98,23 @@
                         });
                 });
         }
-
+        function getPromises(lotRepositoryImpl, orderableResource, lotIds, orderableIds) {
+            var lotsPromise = lotIds.length ?
+                lotRepositoryImpl.query({
+                    id: lotIds
+                }) :
+                $q.resolve({
+                    content: []
+                });
+            var orderablesPromise = orderableIds.length ?
+                orderableResource.query({
+                    id: orderableIds
+                }) :
+                $q.resolve({
+                    content: []
+                });
+            return [lotsPromise, orderablesPromise];
+        }
         /**
          * @ngdoc method
          * @methodOf proof-of-delivery.ProofOfDeliveryRepositoryImpl
