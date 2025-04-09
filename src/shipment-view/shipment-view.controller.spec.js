@@ -95,13 +95,13 @@ describe('ShipmentViewController', function() {
         it('should return \'shipmentView.packs\' for packs', function() {
             vm.quantityUnit = QUANTITY_UNIT.PACKS;
 
-            expect(vm.getSelectedQuantityUnitKey()).toEqual('shipmentView.packs');
+            expect(vm.getSelectedQuantityUnitKey()).toEqual('openlmisQuantityUnitToggle.packs');
         });
 
         it('should return \'shipmentView.doses\' for doses', function() {
             vm.quantityUnit = QUANTITY_UNIT.DOSES;
 
-            expect(vm.getSelectedQuantityUnitKey()).toEqual('shipmentView.doses');
+            expect(vm.getSelectedQuantityUnitKey()).toEqual('openlmisQuantityUnitToggle.doses');
         });
 
         it('should return undefined for undefined', function() {

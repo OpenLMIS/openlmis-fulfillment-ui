@@ -34,7 +34,8 @@
         'order',
         'ui.router',
         'openlmis-state-tracker',
-        'stock-card'
+        'stock-card',
+        'openlmis-quantity-unit-toggle'
     ]);
 
 })();

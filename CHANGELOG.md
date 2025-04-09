@@ -1,5 +1,7 @@
 6.1.7-SNAPSHOT / WIP
 ==================
+Improvements:
+* [OE-96](https://openlmis.atlassian.net/browse/OE-96): Removed unnecessary files from the moved quantity-unit-toggle component
 
 6.1.6 / 2025-03-31
 ==================
