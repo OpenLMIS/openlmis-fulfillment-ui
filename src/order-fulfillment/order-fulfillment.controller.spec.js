@@ -19,7 +19,12 @@ describe('OrderFulfillmentController', function() {
         BasicOrderResponseDataBuilder, ORDER_STATUS, ProgramDataBuilder, FacilityDataBuilder;
 
     beforeEach(function() {
-        module('order-fulfillment');
+        module('order-fulfillment', function($provide) {
+            $provide.value('featureFlagService', {
+                set: function() {},
+                get: function() {}
+            });
+        });
         module('referencedata-facility');
         module('referencedata-program');
 

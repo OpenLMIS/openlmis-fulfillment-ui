@@ -18,7 +18,12 @@ describe('ShipmentViewLineItem', function() {
     var shipmentViewLineItem, ShipmentViewLineItem, OrderableDataBuilder, orderable;
 
     beforeEach(function() {
-        module('shipment-view');
+        module('shipment-view', function($provide) {
+            $provide.value('featureFlagService', {
+                set: function() {},
+                get: function() {}
+            });
+        });
 
         inject(function($injector) {
             ShipmentViewLineItem = $injector.get('ShipmentViewLineItem');

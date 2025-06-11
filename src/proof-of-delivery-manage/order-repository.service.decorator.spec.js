@@ -20,6 +20,10 @@ describe('orderRepository decorator', function() {
     beforeEach(function() {
         module('proof-of-delivery-manage', function($provide) {
             orderServiceMock = createMock($provide, 'orderService', ['search']);
+            $provide.value('featureFlagService', {
+                set: function() {},
+                get: function() {}
+            });
         });
 
         inject(function($injector) {

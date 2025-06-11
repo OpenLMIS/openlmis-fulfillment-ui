@@ -95,7 +95,12 @@ describe('openlmis.orders.podManage state', function() {
     });
 
     function loadModules() {
-        module('proof-of-delivery-manage');
+        module('proof-of-delivery-manage', function($provide) {
+            $provide.value('featureFlagService', {
+                set: function() {},
+                get: function() {}
+            });
+        });
     }
 
     function injectServices() {
