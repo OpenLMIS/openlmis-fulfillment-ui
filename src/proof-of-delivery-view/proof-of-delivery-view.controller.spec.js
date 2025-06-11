@@ -24,7 +24,7 @@ describe('PodViewController', function() {
                 set: function() {},
                 get: function() {}
             });
-        });;
+        });
 
         inject(function($injector) {
             $q = $injector.get('$q');
