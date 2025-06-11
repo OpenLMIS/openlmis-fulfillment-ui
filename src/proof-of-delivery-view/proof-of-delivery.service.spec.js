@@ -29,6 +29,10 @@ describe('proofOfDeliveryService', function() {
                     return repositoryMock;
                 };
             });
+            $provide.value('featureFlagService', {
+                set: function() {},
+                get: function() {}
+            });
         });
 
         inject(function($injector) {

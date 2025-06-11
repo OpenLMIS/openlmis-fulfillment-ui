@@ -24,7 +24,12 @@ describe('openlmis.orders.fulfillment state', function() {
         module('order');
         module('referencedata-facilities-permissions');
         module('referencedata-program');
-        module('order-fulfillment');
+        module('order-fulfillment', function($provide) {
+            $provide.value('featureFlagService', {
+                set: function() {},
+                get: function() {}
+            });
+        });
 
         inject(function($injector) {
             $q = $injector.get('$q');

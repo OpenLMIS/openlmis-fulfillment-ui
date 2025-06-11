@@ -29,6 +29,10 @@ describe('ShipmentFactory', function() {
                     return stockCardRepositoryImplMock;
                 };
             });
+            $provide.value('featureFlagService', {
+                set: function() {},
+                get: function() {}
+            });
         });
 
         inject(function($injector) {

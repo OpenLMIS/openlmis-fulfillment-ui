@@ -97,7 +97,12 @@ describe('openlmis.orders.view state', function() {
     function loadModules() {
         module('openlmis-main-state');
         module('order');
-        module('order-view');
+        module('order-view', function($provide) {
+            $provide.value('featureFlagService', {
+                set: function() {},
+                get: function() {}
+            });
+        });
     }
 
     function injectServices() {
