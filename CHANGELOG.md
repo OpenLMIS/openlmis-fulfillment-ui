@@ -1,4 +1,4 @@
-Upcoming Version (WIP)
+6.1.7 / 2025-11-27
 ==================
 Improvements:
 * [OE-96](https://openlmis.atlassian.net/browse/OE-96): Removed unnecessary files from the moved quantity-unit-toggle component
