@@ -28,13 +28,33 @@
         .module('proof-of-delivery')
         .factory('ProofOfDeliveryPrinter', ProofOfDeliveryPrinter);
 
-    ProofOfDeliveryPrinter.$inject = ['classExtender', 'OpenlmisPrinter'];
+    ProofOfDeliveryPrinter.$inject = ['classExtender', 'OpenlmisPrinter', 'localStorageService',
+        '$window', 'openlmisUrlFactory', 'accessTokenFactory'];
 
-    function ProofOfDeliveryPrinter(classExtender, OpenlmisPrinter) {
+    function ProofOfDeliveryPrinter(classExtender, OpenlmisPrinter, localStorageService, $window,
+                                    openlmisUrlFactory, accessTokenFactory) {
 
         classExtender.extend(ProofOfDeliveryPrinter, OpenlmisPrinter);
 
+        ProofOfDeliveryPrinter.prototype.getUri = getUri;
+        ProofOfDeliveryPrinter.prototype.print = print;
+
         return ProofOfDeliveryPrinter;
+
+        function getUri() {
+            var uri = this.resourceUri + '/' + this.id + '/print?format=pdf';
+            var locale = localStorageService.get('current_locale');
+            if (locale) {
+                uri += '&lang=' + locale;
+            }
+            return uri;
+        }
+
+        function print() {
+            var url = openlmisUrlFactory(this.getUri());
+            url = accessTokenFactory.addAccessToken(url);
+            this.tab.location.href = url;
+        }
 
         function ProofOfDeliveryPrinter(proofOfDeliveryId) {
             this.super({

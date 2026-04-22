@@ -40,4 +40,16 @@ describe('ProofOfDeliveryPrinter', function() {
             id: 'some-id'
         });
     });
+
+    it('should have getUri method', function() {
+        var printer = new ProofOfDeliveryPrinter('some-id');
+
+        expect(typeof printer.getUri).toEqual('function');
+    });
+
+    it('should have print method', function() {
+        var printer = new ProofOfDeliveryPrinter('some-id');
+
+        expect(typeof printer.print).toEqual('function');
+    });
 });

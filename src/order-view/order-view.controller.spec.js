@@ -324,11 +324,16 @@ describe('OrderViewController', function() {
 
     describe('getPrintUrl', function() {
 
+        var localStorageServiceMock;
+
         beforeEach(function() {
             this.fulfillmentUrlFactoryMock = jasmine.createSpy();
             this.fulfillmentUrlFactoryMock.andCallFake(function(url) {
                 return 'http://some.url' + url;
             });
+            localStorageServiceMock = {
+                get: jasmine.createSpy('get').andReturn(undefined)
+            };
 
             this.vm = this.$controller('OrderViewController', {
                 supplyingFacilities: this.supplyingFacilities,
@@ -338,6 +343,7 @@ describe('OrderViewController', function() {
                 canRetryTransfer: this.canRetryTransfer,
                 fulfillmentUrlFactory: this.fulfillmentUrlFactoryMock,
                 orderStatusFactory: this.orderStatusFactory,
+                localStorageService: localStorageServiceMock,
                 $scope: this.scope
             });
         });

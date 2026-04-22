@@ -32,12 +32,14 @@
     controller.$inject = [
         'supplyingFacilities', 'requestingFacilities', 'programs', 'requestingFacilityFactory',
         'loadingModalService', 'notificationService', 'fulfillmentUrlFactory', 'orders',
-        'orderService', 'orderStatusFactory', 'canRetryTransfer', '$stateParams', '$filter', '$state', '$scope'
+        'orderService', 'orderStatusFactory', 'canRetryTransfer', '$stateParams', '$filter',
+        '$state', '$scope', 'localStorageService'
     ];
 
     function controller(supplyingFacilities, requestingFacilities, programs, requestingFacilityFactory,
                         loadingModalService, notificationService, fulfillmentUrlFactory, orders, orderService,
-                        orderStatusFactory, canRetryTransfer, $stateParams, $filter, $state, $scope) {
+                        orderStatusFactory, canRetryTransfer, $stateParams, $filter, $state, $scope,
+                        localStorageService) {
 
         var vm = this;
 
@@ -238,7 +240,13 @@
          * @return {String}       the prepared URL
          */
         function getPrintUrl(order) {
-            return fulfillmentUrlFactory('/api/orders/' + order.id + '/print?format=pdf');
+            var locale = localStorageService.get('current_locale');
+            var localeParam = '';
+            if (locale) {
+                localeParam = '&lang=' + locale;
+            }
+            return fulfillmentUrlFactory('/api/orders/' + order.id + '/print?format=pdf' +
+                localeParam);
         }
 
         /**
