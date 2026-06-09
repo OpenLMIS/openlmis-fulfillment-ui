@@ -1,5 +1,8 @@
-Upcoming Version (WIP)
-==================
+6.1.8-sp1 / 2026-06-09
+=================
+Improvements:
+* PoD, Order reports includes translation
+* Translations update
 
 6.1.8 / 2026-02-05
 =================
