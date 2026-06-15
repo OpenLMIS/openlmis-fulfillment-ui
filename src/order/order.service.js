@@ -44,12 +44,17 @@
             retry: {
                 method: 'GET',
                 url: fulfillmentUrlFactory('/api/orders/:id/retry')
+            },
+            cancel: {
+                method: 'PUT',
+                url: fulfillmentUrlFactory('/api/orders/:id/cancel')
             }
         });
 
         this.search = search;
         this.get = get;
         this.retryTransfer = retryTransfer;
+        this.cancel = cancel;
 
         /**
          * @ngdoc method
@@ -102,6 +107,26 @@
         function retryTransfer(orderId) {
             return resource.retry({
                 id: orderId
+            }).$promise;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf order.orderService
+         * @name cancel
+         *
+         * @description
+         * Cancels an order, optionally storing a cancellation reason.
+         *
+         * @param  {String} orderId the ID of the order to cancel
+         * @param  {String} reason  optional cancellation reason
+         * @return {Promise}
+         */
+        function cancel(orderId, reason) {
+            return resource.cancel({
+                id: orderId
+            }, {
+                cancellationReason: reason
             }).$promise;
         }
 

@@ -90,6 +90,30 @@ describe('orderService', function() {
         });
     });
 
+    describe('cancel', function() {
+
+        var orderId;
+
+        beforeEach(function() {
+            orderId = 'order-id';
+
+            $httpBackend.whenPUT(
+                fulfillmentUrlFactory('/api/orders/' + orderId + '/cancel'),
+                { cancellationReason: 'No stock' }
+            ).respond(200, {});
+        });
+
+        it('should cancel an order with a reason', function() {
+            $httpBackend.expectPUT(
+                fulfillmentUrlFactory('/api/orders/' + orderId + '/cancel'),
+                { cancellationReason: 'No stock' }
+            );
+
+            orderService.cancel(orderId, 'No stock');
+            $httpBackend.flush();
+        });
+    });
+
     describe('search', function() {
 
         var searchParams, someId, page;
