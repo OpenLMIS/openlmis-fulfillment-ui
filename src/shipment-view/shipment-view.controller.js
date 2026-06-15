@@ -31,12 +31,15 @@
     ShipmentViewController.$inject = [
         'shipment', 'loadingModalService', '$state', '$window', 'fulfillmentUrlFactory',
         'messageService', 'accessTokenFactory', 'updatedOrder', 'QUANTITY_UNIT', 'tableLineItems',
-        'VVM_STATUS'
+        'VVM_STATUS', 'orderService', 'confirmService', 'notificationService',
+        'stateTrackerService', 'authorizationService', 'FULFILLMENT_RIGHTS'
     ];
 
     function ShipmentViewController(shipment, loadingModalService, $state, $window,
                                     fulfillmentUrlFactory, messageService, accessTokenFactory,
-                                    updatedOrder, QUANTITY_UNIT, tableLineItems, VVM_STATUS) {
+                                    updatedOrder, QUANTITY_UNIT, tableLineItems, VVM_STATUS,
+                                    orderService, confirmService, notificationService,
+                                    stateTrackerService, authorizationService, FULFILLMENT_RIGHTS) {
 
         var vm = this;
 
@@ -45,6 +48,8 @@
         vm.getSelectedQuantityUnitKey = getSelectedQuantityUnitKey;
         vm.getVvmStatusLabel = VVM_STATUS.$getDisplayName;
         vm.printShipment = printShipment;
+        vm.cancelOrder = cancelOrder;
+        vm.canCancelOrder = canCancelOrder;
 
         /**
          * @ngdoc property
@@ -155,6 +160,31 @@
             return fulfillmentUrlFactory(
                 '/api/reports/templates/common/583ccc35-88b7-48a8-9193-6c4857d3ff60/pdf?shipmentDraftId=' + shipmentId
             );
+        }
+
+        function canCancelOrder() {
+            return vm.shipment.isEditable() && authorizationService.hasRight(
+                FULFILLMENT_RIGHTS.ORDERS_EDIT, {
+                    programId: vm.order.program.id,
+                    facilityId: vm.order.supplyingFacility.id
+                });
+        }
+
+        function cancelOrder() {
+            return confirmService
+                .confirm('shipmentView.cancelOrder.confirm', 'shipmentView.cancelOrder')
+                .then(function() {
+                    loadingModalService.open();
+                    return orderService.cancel(vm.order.id, vm.order.cancellationReason)
+                        .then(function() {
+                            notificationService.success('shipmentView.orderCancelled');
+                            stateTrackerService.goToPreviousState('openlmis.orders.view');
+                        })
+                        .catch(function() {
+                            notificationService.error('shipmentView.orderCancelFailed');
+                        })
+                        .finally(loadingModalService.close);
+                });
         }
     }
 })();
