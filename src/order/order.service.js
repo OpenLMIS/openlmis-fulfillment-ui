@@ -116,18 +116,15 @@
          * @name cancel
          *
          * @description
-         * Cancels an order, optionally storing a cancellation reason.
+         * Cancels an order.
          *
          * @param  {String} orderId the ID of the order to cancel
-         * @param  {String} reason  optional cancellation reason
          * @return {Promise}
          */
-        function cancel(orderId, reason) {
+        function cancel(orderId) {
             return resource.cancel({
                 id: orderId
-            }, {
-                cancellationReason: reason
-            }).$promise;
+            }, {}).$promise;
         }
 
     }

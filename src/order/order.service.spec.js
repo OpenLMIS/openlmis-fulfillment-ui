@@ -98,18 +98,16 @@ describe('orderService', function() {
             orderId = 'order-id';
 
             $httpBackend.whenPUT(
-                fulfillmentUrlFactory('/api/orders/' + orderId + '/cancel'),
-                { cancellationReason: 'No stock' }
+                fulfillmentUrlFactory('/api/orders/' + orderId + '/cancel')
             ).respond(200, {});
         });
 
-        it('should cancel an order with a reason', function() {
+        it('should cancel an order', function() {
             $httpBackend.expectPUT(
-                fulfillmentUrlFactory('/api/orders/' + orderId + '/cancel'),
-                { cancellationReason: 'No stock' }
+                fulfillmentUrlFactory('/api/orders/' + orderId + '/cancel')
             );
 
-            orderService.cancel(orderId, 'No stock');
+            orderService.cancel(orderId);
             $httpBackend.flush();
         });
     });

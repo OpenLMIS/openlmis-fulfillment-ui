@@ -174,7 +174,7 @@
                 .confirm('shipmentView.cancelOrder.confirm', 'shipmentView.cancelOrder')
                 .then(function() {
                     loadingModalService.open();
-                    return orderService.cancel(vm.order.id, vm.order.cancellationReason)
+                    return orderService.cancel(vm.order.id)
                         .then(function() {
                             notificationService.success('shipmentView.orderCancelled');
                             stateTrackerService.goToPreviousState('openlmis.orders.view');
