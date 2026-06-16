@@ -204,6 +204,16 @@ describe('ShipmentViewController', function() {
             expect(loadingModalService.close).toHaveBeenCalled();
         });
 
+        it('should notify error when cancel fails', function() {
+            orderService.cancel.andReturn($q.reject());
+
+            vm.cancelOrder();
+            $rootScope.$apply();
+
+            expect(notificationService.error).toHaveBeenCalledWith('shipmentView.orderCancelFailed');
+            expect(loadingModalService.close).toHaveBeenCalled();
+        });
+
         it('should check ORDERS_EDIT right for cancel', function() {
             spyOn(shipment, 'isEditable').andReturn(true);
             authorizationService.hasRight.andReturn(true);
