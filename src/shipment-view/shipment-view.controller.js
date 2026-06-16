@@ -165,7 +165,6 @@
         function canCancelOrder() {
             return vm.shipment.isEditable() && authorizationService.hasRight(
                 FULFILLMENT_RIGHTS.ORDERS_EDIT, {
-                    programId: vm.order.program.id,
                     facilityId: vm.order.supplyingFacility.id
                 });
         }

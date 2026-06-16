@@ -210,7 +210,6 @@ describe('ShipmentViewController', function() {
 
             expect(vm.canCancelOrder()).toBe(true);
             expect(authorizationService.hasRight).toHaveBeenCalledWith('ORDERS_EDIT', {
-                programId: order.program.id,
                 facilityId: order.supplyingFacility.id
             });
         });
