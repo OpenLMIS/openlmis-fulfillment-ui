@@ -196,7 +196,9 @@ describe('ShipmentViewController', function() {
             $rootScope.$apply();
 
             expect(confirmService.confirm).toHaveBeenCalledWith(
-                'shipmentView.cancelOrder.confirm', 'shipmentView.cancelOrder');
+                'shipmentView.cancelOrder.confirm', 'shipmentView.cancelOrder'
+            );
+
             expect(orderService.cancel).toHaveBeenCalledWith(order.id);
             expect(notificationService.success).toHaveBeenCalledWith('shipmentView.orderCancelled');
             expect(stateTrackerService.goToPreviousState).toHaveBeenCalledWith('openlmis.orders.view');

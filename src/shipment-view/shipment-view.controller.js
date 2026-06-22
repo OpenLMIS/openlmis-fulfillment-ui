@@ -166,7 +166,8 @@
             return vm.shipment.isEditable() && authorizationService.hasRight(
                 FULFILLMENT_RIGHTS.ORDERS_EDIT, {
                     facilityId: vm.order.supplyingFacility.id
-                });
+                }
+            );
         }
 
         function cancelOrder() {
