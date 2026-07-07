@@ -1,5 +1,6 @@
 6.1.10-SNAPSHOT (WIP)
 =================
+* [OLMIS-8191](https://openlmis.atlassian.net/browse/OLMIS-8191): Wrap long Proof of Delivery notes consistently — a growing textarea when editing and a wrapping cell when viewing.
 
 6.1.9 / 2026-06-09
 =================
