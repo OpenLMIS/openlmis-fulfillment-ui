@@ -37,7 +37,8 @@
             RECEIVED: 'RECEIVED',
             TRANSFER_FAILED: 'TRANSFER_FAILED',
             IN_ROUTE: 'IN_ROUTE',
-            READY_TO_PACK: 'READY_TO_PACK'
+            READY_TO_PACK: 'READY_TO_PACK',
+            CANCELLED: 'CANCELLED'
         };
     }
 

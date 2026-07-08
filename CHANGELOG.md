@@ -1,5 +1,6 @@
 6.1.10-SNAPSHOT (WIP)
 =================
+* [OPSD-45](https://openlmis.atlassian.net/browse/OPSD-45): Add Cancel order action to the shipment view.
 
 6.1.9 / 2026-06-09
 =================
