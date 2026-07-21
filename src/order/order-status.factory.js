@@ -73,6 +73,10 @@
                 {
                     name: messageService.get('orderStatus.READY_TO_PACK'),
                     value: ORDER_STATUS.READY_TO_PACK
+                },
+                {
+                    name: messageService.get('orderStatus.CANCELLED'),
+                    value: ORDER_STATUS.CANCELLED
                 }
             ];
         }

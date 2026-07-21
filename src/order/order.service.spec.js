@@ -90,6 +90,28 @@ describe('orderService', function() {
         });
     });
 
+    describe('cancel', function() {
+
+        var orderId;
+
+        beforeEach(function() {
+            orderId = 'order-id';
+
+            $httpBackend.whenPUT(
+                fulfillmentUrlFactory('/api/orders/' + orderId + '/cancel')
+            ).respond(200, {});
+        });
+
+        it('should cancel an order', function() {
+            $httpBackend.expectPUT(
+                fulfillmentUrlFactory('/api/orders/' + orderId + '/cancel')
+            );
+
+            orderService.cancel(orderId);
+            $httpBackend.flush();
+        });
+    });
+
     describe('search', function() {
 
         var searchParams, someId, page;
