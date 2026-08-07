@@ -246,15 +246,14 @@
         }
 
         function compareVvmStatuses(left, right) {
-            if (left === right) {
+            var leftIsStage2 = left === VVM_STATUS.STAGE_2;
+            var rightIsStage2 = right === VVM_STATUS.STAGE_2;
+
+            if (leftIsStage2 === rightIsStage2) {
                 return 0;
             }
 
-            if (!left || !right) {
-                return left ? -1 : 1;
-            }
-
-            return left > right ? -1 : 1;
+            return leftIsStage2 ? -1 : 1;
         }
 
         function compareExpirationDate(left, right) {

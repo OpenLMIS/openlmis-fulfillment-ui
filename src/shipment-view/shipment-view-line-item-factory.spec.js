@@ -728,25 +728,26 @@ describe('ShipmentViewLineItemFactory', function() {
             expect(result[4].lot.expirationDate).toBeUndefined();
             expect(result[4].shipmentLineItem.stockOnHand).toEqual(13);
 
-            expect(result[5].vvmStatus).toEqual('STAGE_1');
-            expect(result[5].lot.expirationDate).toEqual('2018-06-21T05:59:51.993Z');
-            expect(result[5].shipmentLineItem.stockOnHand).toEqual(30);
+            // No VVM status equals STAGE_1 in sort order; no-expiry lots sort first (pre-existing).
+            expect(result[5].vvmStatus).toBeUndefined();
+            expect(result[5].lot.expirationDate).toEqual('2016-05-02T05:59:51.993Z');
+            expect(result[5].shipmentLineItem.stockOnHand).toEqual(150);
 
             expect(result[6].vvmStatus).toEqual('STAGE_1');
-            expect(result[6].lot.expirationDate).toEqual('2019-06-21T05:59:51.993Z');
-            expect(result[6].shipmentLineItem.stockOnHand).toEqual(10);
+            expect(result[6].lot.expirationDate).toEqual('2018-06-21T05:59:51.993Z');
+            expect(result[6].shipmentLineItem.stockOnHand).toEqual(30);
 
             expect(result[7].vvmStatus).toEqual('STAGE_1');
             expect(result[7].lot.expirationDate).toEqual('2019-06-21T05:59:51.993Z');
-            expect(result[7].shipmentLineItem.stockOnHand).toEqual(20);
+            expect(result[7].shipmentLineItem.stockOnHand).toEqual(10);
 
             expect(result[8].vvmStatus).toEqual('STAGE_1');
             expect(result[8].lot.expirationDate).toEqual('2019-06-21T05:59:51.993Z');
-            expect(result[8].shipmentLineItem.stockOnHand).toEqual(75);
+            expect(result[8].shipmentLineItem.stockOnHand).toEqual(20);
 
-            expect(result[9].vvmStatus).toBeUndefined();
-            expect(result[9].lot.expirationDate).toEqual('2016-05-02T05:59:51.993Z');
-            expect(result[9].shipmentLineItem.stockOnHand).toEqual(150);
+            expect(result[9].vvmStatus).toEqual('STAGE_1');
+            expect(result[9].lot.expirationDate).toEqual('2019-06-21T05:59:51.993Z');
+            expect(result[9].shipmentLineItem.stockOnHand).toEqual(75);
         });
 
     });
