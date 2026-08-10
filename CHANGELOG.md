@@ -7,6 +7,9 @@ Improvements:
 * SonarCloud now receives JS unit-test coverage (lcov) so the quality gate reflects real coverage on new code.
 * Feed sonar.projectVersion from project.properties so SonarCloud's New Code baseline tracks releases.
 
+Bug fixes:
+* [OLMIS-8294](https://openlmis.atlassian.net/browse/OLMIS-8294): Fixed SonarCloud not picking up unit-test coverage. sonar-project.properties had no trailing newline, so the projectVersion build step appended onto the lcov report-path line and the scanner could not find the coverage report.
+
 6.1.9 / 2026-06-09
 =================
 
