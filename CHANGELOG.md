@@ -1,9 +1,8 @@
 6.1.10-SNAPSHOT (WIP)
 =================
+Improvements:
 * [OPSD-45](https://openlmis.atlassian.net/browse/OPSD-45): Add Cancel order action to the shipment view.
 * [OLMIS-8191](https://openlmis.atlassian.net/browse/OLMIS-8191): Wrap long Proof of Delivery notes consistently — a growing textarea when editing and a wrapping cell when viewing.
-
-Improvements:
 * SonarCloud now receives JS unit-test coverage (lcov) so the quality gate reflects real coverage on new code.
 * Feed sonar.projectVersion from project.properties so SonarCloud's New Code baseline tracks releases.
 
