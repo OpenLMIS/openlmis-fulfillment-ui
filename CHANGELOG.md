@@ -7,6 +7,7 @@ Improvements:
 * Feed sonar.projectVersion from project.properties so SonarCloud's New Code baseline tracks releases.
 
 Bug fixes:
+* [OLMIS-8356](https://openlmis.atlassian.net/browse/OLMIS-8356): Rank Stage 1 and no VVM status equally when sorting shipment line items, so expiration date and stock on hand decide their order.
 * [OLMIS-8294](https://openlmis.atlassian.net/browse/OLMIS-8294): Pass sonar.projectVersion to the SonarCloud scanner through its args instead of appending it to sonar-project.properties during the build, so a missing trailing newline can no longer glue it onto the lcov report-path line and drop coverage to 0%.
 
 6.1.9 / 2026-06-09
