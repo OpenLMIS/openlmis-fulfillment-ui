@@ -43,7 +43,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="tableLineItem in vm.tableLineItems" ng-class="{'is-secondary': tableLineItem.isMainGroup, 'is-child': tableLineItem.isLot}" empty-row="tableLineItem.noStockAvailable" empty-row-message="{{'shipmentView.noStockAvailable' | message}}" empty-row-col-span="9">
+            <tr ng-repeat="tableLineItem in vm.tableLineItems" ng-class="{'is-secondary': tableLineItem.isMainGroup, 'is-child': tableLineItem.isChild}" empty-row="tableLineItem.noStockAvailable" empty-row-message="{{'shipmentView.noStockAvailable' | message}}" empty-row-col-span="9">
                 <td>{{tableLineItem.productCode}}</td>
                 <td>{{tableLineItem.productName}}</td>
                 <td ng-if="!tableLineItem.isLot"></td>

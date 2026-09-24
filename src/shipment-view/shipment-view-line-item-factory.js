@@ -153,7 +153,8 @@
                         lot: canFulfillForMe.lot,
                         vvmStatus: getVvmStatus(canFulfillForMe),
                         shipmentLineItem: shipmentLineItem,
-                        netContent: orderable.netContent
+                        netContent: orderable.netContent,
+                        isChild: true
                     }));
                 }
             });

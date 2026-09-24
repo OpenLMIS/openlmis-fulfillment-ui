@@ -108,6 +108,84 @@ describe('ShipmentViewLineItemFactory', function() {
             expect(result[0].vvmStatus).toBeUndefined();
             expect(result[0].shipmentLineItem).toEqual(shipment.lineItems[0]);
             expect(result[0].isLot).toEqual(true);
+            expect(result[0].isChild).toEqual(false);
+        });
+
+        it('should only mark lot rows inside a trade item group as child rows', function() {
+            summaries = [
+                new StockCardSummaryDataBuilder()
+                    .withOrderable(commodityTypeOne)
+                    .withCanFulfillForMe([
+                        new CanFulfillForMeEntryDataBuilder()
+                            .withOrderable(tradeItemOne)
+                            .withStockOnHand(20)
+                            .withLot(lotOne)
+                            .buildJson(),
+                        new CanFulfillForMeEntryDataBuilder()
+                            .withOrderable(tradeItemOne)
+                            .withStockOnHand(30)
+                            .withLot(lotTwo)
+                            .buildJson(),
+                        new CanFulfillForMeEntryDataBuilder()
+                            .withOrderable(tradeItemTwo)
+                            .withStockOnHand(40)
+                            .withLot(lotThree)
+                            .buildJson()
+                    ])
+                    .build()
+            ];
+
+            shipment = new ShipmentDataBuilder()
+                .withOrder(
+                    new OrderDataBuilder()
+                        .withOrderLineItems([
+                            new OrderLineItemDataBuilder()
+                                .withOrderable(commodityTypeOne)
+                                .build()
+                        ])
+                        .build()
+                )
+                .withLineItems([
+                    new ShipmentLineItemDataBuilder()
+                        .withOrderable(tradeItemOne)
+                        .withCanFulfillForMe(summaries[0].canFulfillForMe[0])
+                        .withLot(summaries[0].canFulfillForMe[0].lot)
+                        .buildJson(),
+                    new ShipmentLineItemDataBuilder()
+                        .withOrderable(tradeItemOne)
+                        .withCanFulfillForMe(summaries[0].canFulfillForMe[1])
+                        .withLot(summaries[0].canFulfillForMe[1].lot)
+                        .buildJson(),
+                    new ShipmentLineItemDataBuilder()
+                        .withOrderable(tradeItemTwo)
+                        .withCanFulfillForMe(summaries[0].canFulfillForMe[2])
+                        .withLot(summaries[0].canFulfillForMe[2].lot)
+                        .buildJson()
+                ])
+                .build();
+
+            var result = shipmentViewLineItemFactory.createFrom(shipment, summaries);
+
+            var childRows = result.filter(function(lineItem) {
+                    return lineItem.isChild;
+                }),
+                groupRows = result.filter(function(lineItem) {
+                    return lineItem instanceof ShipmentViewLineItemGroup;
+                }),
+                collapsedTradeItemRows = result.filter(function(lineItem) {
+                    return !(lineItem instanceof ShipmentViewLineItemGroup) && lineItem.productCode;
+                });
+
+            expect(childRows.length).toBe(2);
+            expect(childRows[0].lot).not.toBeUndefined();
+            expect(childRows[1].lot).not.toBeUndefined();
+
+            groupRows.forEach(function(lineItem) {
+                expect(lineItem.isChild).toBeFalsy();
+            });
+
+            expect(collapsedTradeItemRows.length).toBe(1);
+            expect(collapsedTradeItemRows[0].isChild).toEqual(false);
         });
 
         it('should ignore entries without shipment line items', function() {
