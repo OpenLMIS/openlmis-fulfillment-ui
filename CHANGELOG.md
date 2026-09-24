@@ -7,6 +7,7 @@ Improvements:
 * Feed sonar.projectVersion from project.properties so SonarCloud's New Code baseline tracks releases.
 
 Bug fixes:
+* [OLMIS-8358](https://openlmis.atlassian.net/browse/OLMIS-8358): Give lot rows on the shipment view the shared `is-child` row style, so their vertical padding is smaller than the trade item and commodity type rows above them.
 * [OLMIS-8294](https://openlmis.atlassian.net/browse/OLMIS-8294): Pass sonar.projectVersion to the SonarCloud scanner through its args instead of appending it to sonar-project.properties during the build, so a missing trailing newline can no longer glue it onto the lcov report-path line and drop coverage to 0%.
 
 6.1.9 / 2026-06-09
