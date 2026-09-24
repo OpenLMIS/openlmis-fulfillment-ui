@@ -750,7 +750,6 @@ describe('ShipmentViewLineItemFactory', function() {
             expect(result[9].shipmentLineItem.stockOnHand).toEqual(75);
         });
 
-        // OLMIS-8356: Stage 1 used to outrank no VVM, skipping the expiry and SOH keys
         it('should rank line items with no VVM status alongside Stage 1 ones', function() {
             summaries = [
                 new StockCardSummaryDataBuilder()
