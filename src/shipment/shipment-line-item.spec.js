@@ -76,6 +76,16 @@ describe('ShipmentLineItem', function() {
             expect(result.stockOnHand).toEqual(7);
         });
 
+        it('should set stock on hand to zero if there is no stock card', function() {
+            json = new ShipmentLineItemDataBuilder()
+                .withCanFulfillForMe(undefined)
+                .buildJson();
+
+            var result = new ShipmentLineItem(json);
+
+            expect(result.stockOnHand).toEqual(0);
+        });
+
     });
 
     describe('isInvalid', function() {
