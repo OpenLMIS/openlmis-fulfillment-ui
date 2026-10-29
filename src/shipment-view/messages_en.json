@@ -40,5 +40,6 @@
     "shipmentView.cancelOrder": "Cancel order",
     "shipmentView.cancelOrder.confirm": "Are you sure you want to cancel this order? This cannot be undone.",
     "shipmentView.orderCancelled": "The order has been cancelled.",
-    "shipmentView.orderCancelFailed": "Failed to cancel the order."
+    "shipmentView.orderCancelFailed": "Failed to cancel the order.",
+    "shipmentView.orderHasNoShipment": "This order has no shipment."
 }
