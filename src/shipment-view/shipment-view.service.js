@@ -30,11 +30,13 @@
 
     shipmentViewService.inject = [
         'ShipmentRepository', 'notificationService', '$state', 'stateTrackerService',
-        'loadingModalService', 'ShipmentFactory', 'confirmService', '$q'
+        'loadingModalService', 'ShipmentFactory', 'confirmService', '$q', 'ORDER_STATUS',
+        'authorizationService', 'FULFILLMENT_RIGHTS'
     ];
 
     function shipmentViewService(ShipmentRepository, notificationService, stateTrackerService,
-                                 $state, loadingModalService, ShipmentFactory, confirmService, $q) {
+                                 $state, loadingModalService, ShipmentFactory, confirmService, $q,
+                                 ORDER_STATUS, authorizationService, FULFILLMENT_RIGHTS) {
 
         var shipmentRepository = new ShipmentRepository();
 
@@ -81,9 +83,33 @@
                 return shipmentRepository.getDraftByOrderId(order.id);
             }
 
-            if (order.isShipped()) {
+            if (hasShipment(order)) {
                 return shipmentRepository.getByOrderId(order.id);
             }
+
+            var ordersState = getOrdersState();
+            notificationService.info('shipmentView.orderHasNoShipment');
+            $state.go(ordersState, {}, {
+                reload: ordersState
+            });
+            return $q.reject();
+        }
+
+        function getOrdersState() {
+            if (authorizationService.hasRights([FULFILLMENT_RIGHTS.ORDERS_VIEW, FULFILLMENT_RIGHTS.PODS_MANAGE])) {
+                return 'openlmis.orders.view';
+            }
+            return 'openlmis.orders.fulfillment';
+        }
+
+        function hasShipment(order) {
+            return [
+                ORDER_STATUS.SHIPPED,
+                ORDER_STATUS.RECEIVED,
+                ORDER_STATUS.TRANSFER_FAILED,
+                ORDER_STATUS.IN_ROUTE,
+                ORDER_STATUS.READY_TO_PACK
+            ].indexOf(order.status) > -1;
         }
 
         function decorateSave(originalSave) {

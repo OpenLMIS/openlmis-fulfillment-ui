@@ -1,5 +1,7 @@
 6.3.0-SNAPSHOT (WIP)
 ==================
+Bug fixes:
+* [OLMIS-8418](https://openlmis.atlassian.net/browse/OLMIS-8418): The shipment view no longer shows "Internal application error" for Cancelled or Received orders, or when a shipped product has no stock card.
 
 6.2.0 / 2026-09-29
 =================

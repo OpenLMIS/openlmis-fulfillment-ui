@@ -80,6 +80,9 @@
         }
 
         function calculateAvailableStockOnHandInPacks(canFulfillForMe) {
+            if (!canFulfillForMe) {
+                return 0;
+            }
             return Math.floor(canFulfillForMe.stockOnHand / canFulfillForMe.orderable.netContent);
         }
     }
