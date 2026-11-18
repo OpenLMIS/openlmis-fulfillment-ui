@@ -24,6 +24,12 @@
                 ng-model="vm.program"
                 ng-options="program.name for program in vm.programs" required></select>
     </fieldset>
+    <fieldset class="form-group" ng-if="vm.showTypes">
+        <label for="type">{{'proofOfDeliveryManage.type' | message}}</label>
+        <select id="type"
+                ng-model="vm.type"
+                ng-options="type as type.name for type in vm.orderTypes track by type.value"></select>
+    </fieldset>
     <input type="submit" value="{{'proofOfDeliveryManage.search' | message}}"/>
 </form>
 <section class="openlmis-table-container">
@@ -35,6 +41,7 @@
             <tr>
                 <th>{{'proofOfDeliveryManage.orderNumber' | message}}</th>
                 <th>{{'proofOfDeliveryManage.orderStatus' | message}}</th>
+                <th ng-if="vm.showTypes">{{'proofOfDeliveryManage.type' | message}}</th>
                 <th>{{'proofOfDeliveryManage.requestingFacility' | message}}</th>
                 <th>{{'proofOfDeliveryManage.supplyingDepot' | message}}</th>
                 <th>{{'proofOfDeliveryManage.program' | message}}</th>
@@ -48,6 +55,7 @@
             <tr ng-repeat="order in vm.pods">
                 <td>{{order.orderCode}}</td>
                 <td>{{order.status}}</td>
+                <td ng-if="vm.showTypes">{{'orderType.' + order.type | message}}</td>
                 <td>{{order.requestingFacility.name}}</td>
                 <td>{{order.supplyingFacility.name}}</td>
                 <td>{{order.program.name}}</td>

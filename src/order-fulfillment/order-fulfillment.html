@@ -15,6 +15,11 @@
     <select id="orderStatus"
             ng-model="vm.orderStatus"
             ng-options="orderStatus for orderStatus in vm.orderStatuses"></select>
+    <label ng-if="vm.showTypes" for="type">{{'orderFulfillment.type' | message}}</label>
+    <select ng-if="vm.showTypes"
+            id="type"
+            ng-model="vm.type"
+            ng-options="type as type.name for type in vm.orderTypes track by type.value"></select>
     <input type="submit" class="btn btn-primary" value="{{'orderFulfillment.search' | message}}"/>
   </form>
   <table>
@@ -24,6 +29,7 @@
       <th>{{'orderFulfillment.emergency' | message}}</th>
       <th>{{'orderFulfillment.orderNumber' | message}}</th>
       <th>{{'orderFulfillment.status' | message}}</th>
+      <th ng-if="vm.showTypes">{{'orderFulfillment.type' | message}}</th>
       <th>{{'orderFulfillment.orderingFacility' | message}}</th>
       <th>{{'orderFulfillment.program' | message}}</th>
       <th>{{'orderFulfillment.period' | message}}</th>
@@ -38,6 +44,7 @@
       </td>
       <td>{{order.orderCode}}</td>
       <td>{{order.status}}</td>
+      <td ng-if="vm.showTypes">{{'orderType.' + order.type | message}}</td>
       <td>{{order.facility | facility}}</td>
       <td>{{order.program.name}}</td>
       <td>{{order.processingPeriod.name}}</td>

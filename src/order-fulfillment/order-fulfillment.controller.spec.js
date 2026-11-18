@@ -199,6 +199,68 @@ describe('OrderFulfillmentController', function() {
 
     });
 
+    describe('order types', function() {
+
+        var orderTypes, orderTypeFactory;
+
+        beforeEach(function() {
+            orderTypes = [{
+                name: 'Requisition',
+                value: 'REQUISITION'
+            }, {
+                name: 'Transfer request',
+                value: 'TRANSFER_REQUEST'
+            }];
+            orderTypeFactory = jasmine.createSpyObj('orderTypeFactory', ['getAll', 'isEnabled']);
+            orderTypeFactory.getAll.andReturn(orderTypes);
+            spyOn($state, 'go').andReturn();
+        });
+
+        function initWithTypes(enabled) {
+            orderTypeFactory.isEnabled.andReturn(enabled);
+            vm = $controller('OrderFulfillmentController', {
+                orderingFacilities: orderingFacilities,
+                programs: programs,
+                orders: orders,
+                orderTypeFactory: orderTypeFactory
+            });
+            vm.$onInit();
+        }
+
+        it('should expose the order types when transfers are enabled', function() {
+            initWithTypes(true);
+
+            expect(vm.showTypes).toBe(true);
+            expect(vm.orderTypes).toEqual(orderTypes);
+        });
+
+        it('should select the order type from the state params', function() {
+            $stateParams.type = 'TRANSFER_REQUEST';
+
+            initWithTypes(true);
+
+            expect(vm.type).toEqual(orderTypes[1]);
+        });
+
+        it('should search by the selected order type', function() {
+            initWithTypes(true);
+            vm.type = orderTypes[1];
+
+            vm.loadOrders();
+
+            expect($state.go.mostRecentCall.args[1].type).toEqual('TRANSFER_REQUEST');
+        });
+
+        it('should not touch the order type when transfers are disabled', function() {
+            initWithTypes(false);
+
+            vm.loadOrders();
+
+            expect(vm.showTypes).toBe(false);
+            expect($state.go.mostRecentCall.args[1].hasOwnProperty('type')).toBe(false);
+        });
+    });
+
     function initController() {
         vm = $controller('OrderFulfillmentController', {
             orderingFacilities: orderingFacilities,

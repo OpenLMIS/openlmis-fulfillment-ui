@@ -30,11 +30,11 @@
 
     controller.$inject = [
         'orderingFacilities', 'programs', 'loadingModalService', 'orders',
-        '$stateParams', '$state', 'ORDER_STATUS'
+        '$stateParams', '$state', 'ORDER_STATUS', 'orderTypeFactory'
     ];
 
     function controller(orderingFacilities, programs, loadingModalService, orders,
-                        $stateParams, $state, ORDER_STATUS) {
+                        $stateParams, $state, ORDER_STATUS, orderTypeFactory) {
 
         var vm = this;
 
@@ -115,6 +115,8 @@
 
             vm.orderingFacilities = orderingFacilities;
             vm.orderStatuses = [ORDER_STATUS.FULFILLING, ORDER_STATUS.ORDERED];
+            vm.showTypes = orderTypeFactory.isEnabled();
+            vm.orderTypes = orderTypeFactory.getAll();
             vm.programs = programs;
 
             vm.orders = orders;
@@ -134,6 +136,12 @@
                     return program.id === $stateParams.programId;
                 })[0];
             }
+
+            if ($stateParams.type) {
+                vm.type = vm.orderTypes.filter(function(type) {
+                    return type.value === $stateParams.type;
+                })[0];
+            }
         }
 
         /**
@@ -150,6 +158,9 @@
             stateParams.status = vm.orderStatus ? vm.orderStatus : null;
             stateParams.requestingFacilityId = vm.orderingFacility ? vm.orderingFacility.id : null;
             stateParams.programId = vm.program ? vm.program.id : null;
+            if (vm.showTypes) {
+                stateParams.type = vm.type ? vm.type.value : null;
+            }
 
             $state.go('openlmis.orders.fulfillment', stateParams, {
                 reload: true

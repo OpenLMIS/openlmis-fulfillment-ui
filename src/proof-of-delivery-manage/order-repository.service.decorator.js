@@ -34,8 +34,8 @@
         $provide.decorator('orderRepository', decorator);
     }
 
-    decorator.$inject = ['$delegate', 'ORDER_STATUS', 'orderService'];
-    function decorator($delegate, ORDER_STATUS, orderService) {
+    decorator.$inject = ['$delegate', 'ORDER_STATUS', 'orderService', 'orderTypeFactory'];
+    function decorator($delegate, ORDER_STATUS, orderService, orderTypeFactory) {
 
         $delegate.searchOrdersForManagePod = searchOrdersForManagePod;
 
@@ -57,14 +57,15 @@
          * @return {Promise} the promise resolving to a list of all matching orders
          */
         function searchOrdersForManagePod(searchParams) {
-            searchParams.status = [
+            var params = orderTypeFactory.applyDefault(searchParams);
+            params.status = [
                 ORDER_STATUS.TRANSFER_FAILED,
                 ORDER_STATUS.READY_TO_PACK,
                 ORDER_STATUS.RECEIVED,
                 ORDER_STATUS.SHIPPED,
                 ORDER_STATUS.IN_ROUTE
             ];
-            return orderService.search(searchParams);
+            return orderService.search(params);
         }
     }
 })();

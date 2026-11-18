@@ -28,7 +28,7 @@
         $stateProvider.state('openlmis.orders.podManage', {
             showInNavigation: true,
             label: 'proofOfDeliveryManage.managePods',
-            url: '/manage?programId&requestingFacilityId&supplyingFacilityId&page&size',
+            url: '/manage?programId&requestingFacilityId&supplyingFacilityId&type&page&size',
             controller: 'ProofOfDeliveryManageController',
             controllerAs: 'vm',
             templateUrl: 'proof-of-delivery-manage/proof-of-delivery-manage.html',

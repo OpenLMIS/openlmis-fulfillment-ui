@@ -30,12 +30,13 @@
 
     controller.$inject = [
         'proofOfDeliveryManageService', '$state', 'loadingModalService', 'notificationService', 'pods',
-        '$stateParams', 'programs', 'requestingFacilities', 'supplyingFacilities', 'ProofOfDeliveryPrinter'
+        '$stateParams', 'programs', 'requestingFacilities', 'supplyingFacilities', 'ProofOfDeliveryPrinter',
+        'orderTypeFactory'
     ];
 
     function controller(proofOfDeliveryManageService, $state, loadingModalService, notificationService,
                         pods, $stateParams, programs, requestingFacilities, supplyingFacilities,
-                        ProofOfDeliveryPrinter) {
+                        ProofOfDeliveryPrinter, orderTypeFactory) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -161,6 +162,11 @@
             vm.supplyingFacility = getSelectedObjectById(supplyingFacilities, $stateParams.supplyingFacilityId);
             vm.facilityName = getName(vm.requestingFacility);
             vm.programName = getName(vm.program);
+            vm.showTypes = orderTypeFactory.isEnabled();
+            vm.orderTypes = orderTypeFactory.getAll();
+            vm.type = vm.orderTypes.filter(function(type) {
+                return type.value === $stateParams.type;
+            })[0];
         }
 
         /**
@@ -179,6 +185,9 @@
             stateParams.programId = vm.program.id;
             stateParams.requestingFacilityId = vm.requestingFacility ? vm.requestingFacility.id : null;
             stateParams.supplyingFacilityId = vm.supplyingFacility ? vm.supplyingFacility.id : null;
+            if (vm.showTypes) {
+                stateParams.type = vm.type ? vm.type.value : null;
+            }
 
             $state.go('openlmis.orders.podManage', stateParams, {
                 reload: true

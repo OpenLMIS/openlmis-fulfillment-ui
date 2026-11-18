@@ -58,6 +58,67 @@ describe('orderRepository decorator', function() {
 
 });
 
+describe('orderRepository decorator with transfers enabled', function() {
+
+    var orderRepository, orderServiceMock, ORDER_STATUS, $q;
+
+    beforeEach(function() {
+        module('proof-of-delivery-manage', function($provide) {
+            orderServiceMock = createMock($provide, 'orderService', ['search']);
+            $provide.value('featureFlagService', {
+                set: function() {},
+                get: function() {}
+            });
+            $provide.constant('SHOW_TRANSFERS', true);
+        });
+
+        inject(function($injector) {
+            ORDER_STATUS = $injector.get('ORDER_STATUS');
+            orderRepository = $injector.get('orderRepository');
+            $q = $injector.get('$q');
+        });
+
+        orderServiceMock.search.andReturn($q.when());
+    });
+
+    it('should search requisition and requisition-less orders by default', function() {
+        orderRepository.searchOrdersForManagePod({
+            programId: 'program-id'
+        });
+
+        expect(orderServiceMock.search.mostRecentCall.args[0].type).toEqual(['REQUISITION', 'REQUISITION_LESS']);
+    });
+
+    it('should keep the chosen order type', function() {
+        orderRepository.searchOrdersForManagePod({
+            programId: 'program-id',
+            type: 'TRANSFER_REQUEST'
+        });
+
+        expect(orderServiceMock.search.mostRecentCall.args[0].type).toEqual('TRANSFER_REQUEST');
+    });
+
+    it('should not change the given search params', function() {
+        var searchParams = {
+            programId: 'program-id'
+        };
+
+        orderRepository.searchOrdersForManagePod(searchParams);
+
+        expect(searchParams).toEqual({
+            programId: 'program-id'
+        });
+
+        expect(orderServiceMock.search.mostRecentCall.args[0].status).toEqual([
+            ORDER_STATUS.TRANSFER_FAILED,
+            ORDER_STATUS.READY_TO_PACK,
+            ORDER_STATUS.RECEIVED,
+            ORDER_STATUS.SHIPPED,
+            ORDER_STATUS.IN_ROUTE
+        ]);
+    });
+});
+
 function createMock($provide, name, methods) {
     var mock = jasmine.createSpyObj(name, methods);
     $provide.factory(name, function() {
