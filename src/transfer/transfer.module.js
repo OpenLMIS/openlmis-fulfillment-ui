@@ -23,6 +23,9 @@
      * @description
      * Shared pieces of the transfers between facilities: the feature flag and the API service.
      */
-    angular.module('transfer', []);
+    angular.module('transfer', [
+        'fulfillment',
+        'ngResource'
+    ]);
 
 })();

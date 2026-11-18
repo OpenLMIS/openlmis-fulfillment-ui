@@ -153,20 +153,6 @@ export const orderTableColumns = (
       );
 };
 
-export const transferRequestFormTableColumns = (formatMessage) => [
-  {
-    Header: formatMessage('transferRequest.table.facility'),
-    accessor: 'name',
-  },
-  {
-    Header: formatMessage('transferRequest.table.actions'),
-    accessor: 'value',
-    Cell: ({ row: { index }, deleteRow }) => (
-      <TrashButton onClick={() => deleteRow(index)} />
-    ),
-  },
-];
-
 export const ORDER_STATUS = {
   CREATING: 'CREATING',
 };
