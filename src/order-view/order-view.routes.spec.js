@@ -39,6 +39,37 @@ describe('openlmis.orders.view state', function() {
         expect(requestingFacilityFactory.loadRequestingFacilities).toHaveBeenCalledWith('supplying-facility');
     });
 
+    it('should accept the order type in the url', function() {
+        expect(state.url).toContain('&type');
+    });
+
+    it('should search orders with the default order types applied', function() {
+        var orderRepository = jasmine.createSpyObj('orderRepository', ['search']),
+            paginationService = jasmine.createSpyObj('paginationService', ['registerUrl']),
+            orderTypeFactory = jasmine.createSpyObj('orderTypeFactory', ['applyDefault']);
+
+        paginationService.registerUrl.andCallFake(function(stateParams, method) {
+            return method(stateParams);
+        });
+        orderTypeFactory.applyDefault.andReturn({
+            supplyingFacilityId: 'supplying-facility',
+            type: ['REQUISITION', 'REQUISITION_LESS']
+        });
+        $stateParams.supplyingFacilityId = 'supplying-facility';
+
+        state.resolve.orders(paginationService, orderRepository, $stateParams, orderTypeFactory);
+
+        expect(orderTypeFactory.applyDefault).toHaveBeenCalledWith({
+            supplyingFacilityId: 'supplying-facility',
+            sort: 'createdDate,desc'
+        });
+
+        expect(orderRepository.search).toHaveBeenCalledWith({
+            supplyingFacilityId: 'supplying-facility',
+            type: ['REQUISITION', 'REQUISITION_LESS']
+        });
+    });
+
     it('should require FULFILLMENT_RIGHTS right to enter', function() {
         expect(state.accessRights).toEqual([FULFILLMENT_RIGHTS.PODS_MANAGE, FULFILLMENT_RIGHTS.ORDERS_VIEW]);
     });

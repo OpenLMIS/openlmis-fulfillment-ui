@@ -452,14 +452,105 @@ describe('OrderViewController', function() {
             spyOn(this.$state, 'go').andReturn();
         });
 
-        it('should redirect to order edit', function() {
+        it('should redirect a requisition-less order to order edit', function() {
             var orderId = '19121381-9f3d-4e77-b9e5-d3f59fc1639e';
 
-            this.vm.redirectToOrderEdit(orderId);
+            this.vm.redirectToOrderEdit({
+                id: orderId,
+                type: 'REQUISITION_LESS'
+            });
 
             expect(this.$state.go).toHaveBeenCalledWith('openlmis.requisitions.orderCreate.table', {
                 orderId: orderId
             });
+        });
+
+        it('should redirect a transfer request to the transfer request page', function() {
+            var orderId = '19121381-9f3d-4e77-b9e5-d3f59fc1639e';
+
+            this.vm.redirectToOrderEdit({
+                id: orderId,
+                type: 'TRANSFER_REQUEST'
+            });
+
+            expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.transferRequest.table', {
+                orderId: orderId
+            });
+        });
+
+    });
+
+    describe('order types', function() {
+
+        beforeEach(function() {
+            this.orderTypes = [{
+                name: 'Requisition',
+                value: 'REQUISITION'
+            }, {
+                name: 'Transfer request',
+                value: 'TRANSFER_REQUEST'
+            }];
+            this.orderTypeFactory = jasmine.createSpyObj('orderTypeFactory', ['getAll', 'isEnabled']);
+            this.orderTypeFactory.getAll.andReturn(this.orderTypes);
+
+            this.initWithTypes = function(enabled) {
+                this.orderTypeFactory.isEnabled.andReturn(enabled);
+                this.vm = this.$controller('OrderViewController', {
+                    supplyingFacilities: this.supplyingFacilities,
+                    requestingFacilities: this.requestingFacilities,
+                    programs: this.programs,
+                    orders: this.orders,
+                    canRetryTransfer: this.canRetryTransfer,
+                    orderStatusFactory: this.orderStatusFactory,
+                    orderTypeFactory: this.orderTypeFactory,
+                    $scope: this.scope
+                });
+                this.vm.$onInit();
+            };
+            spyOn(this.$state, 'go').andReturn();
+        });
+
+        it('should expose the order types when transfers are enabled', function() {
+            this.initWithTypes(true);
+
+            expect(this.vm.showTypes).toBe(true);
+            expect(this.vm.orderTypes).toEqual(this.orderTypes);
+        });
+
+        it('should select the order type from the state params', function() {
+            this.$stateParams.type = 'TRANSFER_REQUEST';
+
+            this.initWithTypes(true);
+
+            expect(this.vm.type).toEqual(this.orderTypes[1]);
+        });
+
+        it('should search by the selected order type', function() {
+            this.initWithTypes(true);
+            this.vm.type = this.orderTypes[1];
+
+            this.vm.loadOrders();
+
+            expect(this.$state.go.mostRecentCall.args[1].type).toEqual('TRANSFER_REQUEST');
+        });
+
+        it('should clear the order type when none is selected', function() {
+            this.$stateParams.type = 'TRANSFER_REQUEST';
+            this.initWithTypes(true);
+            this.vm.type = undefined;
+
+            this.vm.loadOrders();
+
+            expect(this.$state.go.mostRecentCall.args[1].type).toBeNull();
+        });
+
+        it('should not touch the order type when transfers are disabled', function() {
+            this.initWithTypes(false);
+
+            this.vm.loadOrders();
+
+            expect(this.vm.showTypes).toBe(false);
+            expect(this.$state.go.mostRecentCall.args[1].hasOwnProperty('type')).toBe(false);
         });
 
     });

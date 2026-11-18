@@ -33,13 +33,13 @@
         'supplyingFacilities', 'requestingFacilities', 'programs', 'requestingFacilityFactory',
         'loadingModalService', 'notificationService', 'fulfillmentUrlFactory', 'orders',
         'orderService', 'orderStatusFactory', 'canRetryTransfer', '$stateParams', '$filter',
-        '$state', '$scope', 'localStorageService'
+        '$state', '$scope', 'localStorageService', 'orderTypeFactory', 'ORDER_TYPE'
     ];
 
     function controller(supplyingFacilities, requestingFacilities, programs, requestingFacilityFactory,
                         loadingModalService, notificationService, fulfillmentUrlFactory, orders, orderService,
                         orderStatusFactory, canRetryTransfer, $stateParams, $filter, $state, $scope,
-                        localStorageService) {
+                        localStorageService, orderTypeFactory, ORDER_TYPE) {
 
         var vm = this;
 
@@ -153,6 +153,8 @@
             vm.canRetryTransfer = canRetryTransfer;
             vm.programs = programs;
             vm.orderStatuses = orderStatusFactory.getAll();
+            vm.showTypes = orderTypeFactory.isEnabled();
+            vm.orderTypes = orderTypeFactory.getAll();
 
             vm.orders = orders;
 
@@ -189,6 +191,12 @@
                 })[0];
             }
 
+            if ($stateParams.type) {
+                vm.type = vm.orderTypes.filter(function(type) {
+                    return $stateParams.type === type.value;
+                })[0];
+            }
+
             $scope.$watch(function() {
                 return vm.supplyingFacility;
             }, function(newValue, oldValue) {
@@ -222,6 +230,9 @@
             stateParams.periodStartDate = vm.periodStartDate ? $filter('isoDate')(vm.periodStartDate) : null;
             stateParams.periodEndDate = vm.periodEndDate ? $filter('isoDate')(vm.periodEndDate) : null;
             stateParams.sort = 'createdDate,desc';
+            if (vm.showTypes) {
+                stateParams.type = vm.type ? vm.type.value : null;
+            }
 
             $state.go('openlmis.orders.view', stateParams, {
                 reload: true
@@ -310,17 +321,18 @@
          * @name redirectToOrderEdit
          *
          * @description
-         * Redirects to page with order edit
+         * Redirects to the edit page of the order's type: transfer requests have their own page.
          *
-         * @param  {String} orderId
+         * @param  {Object} order the order to edit
          */
-        function redirectToOrderEdit(orderId) {
-            $state.go(
-                'openlmis.requisitions.orderCreate.table',
-                {
-                    orderId: orderId
-                }
-            );
+        function redirectToOrderEdit(order) {
+            var state = order.type === ORDER_TYPE.TRANSFER_REQUEST
+                ? 'openlmis.stockmanagement.transferRequest.table'
+                : 'openlmis.requisitions.orderCreate.table';
+
+            $state.go(state, {
+                orderId: order.id
+            });
         }
 
     }
