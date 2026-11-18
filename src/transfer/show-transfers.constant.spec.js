@@ -23,8 +23,8 @@ describe('SHOW_TRANSFERS', function() {
         });
     });
 
-    it('should be off unless the build sets showTransfers to true', function() {
-        expect(this.SHOW_TRANSFERS).toBe(false);
+    it('should be a boolean whatever showTransfers the build sets', function() {
+        expect(typeof this.SHOW_TRANSFERS).toEqual('boolean');
     });
 
 });

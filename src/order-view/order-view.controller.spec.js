@@ -21,6 +21,8 @@ describe('OrderViewController', function() {
                 set: function() {},
                 get: function() {}
             });
+            // these specs assert today's requests, which are sent only while transfers are off
+            $provide.constant('SHOW_TRANSFERS', false);
         });
         module('referencedata-facility');
         module('referencedata-program');

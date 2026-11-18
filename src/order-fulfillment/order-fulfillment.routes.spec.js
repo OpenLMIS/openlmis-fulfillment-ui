@@ -29,6 +29,8 @@ describe('openlmis.orders.fulfillment state', function() {
                 set: function() {},
                 get: function() {}
             });
+            // these specs assert today's requests, which are sent only while transfers are off
+            $provide.constant('SHOW_TRANSFERS', false);
         });
 
         inject(function(_$injector_) {
