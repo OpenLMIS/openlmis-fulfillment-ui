@@ -17,6 +17,9 @@
     'use strict';
 
     angular.module('transfer-request', [
+        'transfer',
+        'stockmanagement',
+        'openlmis-rights',
         'stock-card-summary',
         'openlmis-quantity-unit-toggle'
     ]);

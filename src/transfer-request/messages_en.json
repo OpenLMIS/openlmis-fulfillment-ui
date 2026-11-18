@@ -1,4 +1,5 @@
 {
+  "transferRequest.title": "Request Transfer",
   "transferRequest": "Create Orders",
   "transferRequest.cancel": "Cancel",
   "transferRequest.loading": "Loading",
