@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import { saveRequests, sendRequests } from './transfer-request-table-helper-functions';
+import { deleteRequests, saveRequests, sendRequests } from './transfer-request-table-helper-functions';
 
 describe('transfer request table helpers', function() {
 
@@ -50,6 +50,53 @@ describe('transfer request table helpers', function() {
             expect(transferService.sendRequest).toHaveBeenCalledWith(orders[0]);
             expect(transferService.sendRequest).toHaveBeenCalledWith(orders[1]);
             expect(transferService.updateRequest).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('deleteRequests', function() {
+
+        var $q, $rootScope, transferRequestService, notificationService;
+
+        beforeEach(function() {
+            inject(function($injector) {
+                $q = $injector.get('$q');
+                $rootScope = $injector.get('$rootScope');
+            });
+
+            transferRequestService = jasmine.createSpyObj('transferRequestService', ['delete']);
+            notificationService = jasmine.createSpyObj('notificationService', ['success', 'error']);
+        });
+
+        it('should delete the requests and report it', function() {
+            transferRequestService.delete.andReturn($q.resolve());
+
+            var deleted;
+            deleteRequests(['first-id'], transferRequestService, notificationService)
+                .then(function(result) {
+                    deleted = result;
+                });
+            $rootScope.$apply();
+
+            expect(transferRequestService.delete).toHaveBeenCalledWith(['first-id']);
+            expect(notificationService.success).toHaveBeenCalledWith('transferRequest.delete.success');
+            expect(deleted).toBe(true);
+        });
+
+        it('should leave a failed delete to the server error handler and settle', function() {
+            transferRequestService.delete.andReturn($q.reject({
+                status: 400
+            }));
+
+            var deleted;
+            deleteRequests(['first-id'], transferRequestService, notificationService)
+                .then(function(result) {
+                    deleted = result;
+                });
+            $rootScope.$apply();
+
+            expect(notificationService.error).not.toHaveBeenCalled();
+            expect(notificationService.success).not.toHaveBeenCalled();
+            expect(deleted).toBe(false);
         });
     });
 });

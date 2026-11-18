@@ -98,3 +98,11 @@ export const saveRequests = (orders, transferService) => Promise.all(
 export const sendRequests = (orders, transferService) => Promise.all(
     orders.map(order => transferService.sendRequest(order))
 );
+
+export const deleteRequests = (orderIds, transferRequestService, notificationService) => transferRequestService
+    .delete(orderIds)
+    .then(() => {
+        notificationService.success('transferRequest.delete.success');
+        return true;
+    })
+    .catch(() => false);

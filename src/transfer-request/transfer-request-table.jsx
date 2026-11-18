@@ -20,6 +20,7 @@ import getService from '../react-components/utils/angular-utils';
 import {
     createOrderDisabled,
     getIsOrderValidArray,
+    deleteRequests,
     getOrderValue,
     saveDraftDisabled,
     saveRequests,
@@ -123,9 +124,12 @@ const TransferRequestTable = ({ isReadOnly }) => {
       ).then(() => {
         const orderToDelete = orders[index];
 
-        orderService
-          .delete([orderToDelete.id])
-          .then(() => {
+        deleteRequests([orderToDelete.id], orderService, notificationService)
+          .then((deleted) => {
+            if (!deleted) {
+              return;
+            }
+
             const updatedOrderIds = orderIds
               .split(',')
               .filter((orderId) => orderId !== orderToDelete.id)
@@ -133,19 +137,9 @@ const TransferRequestTable = ({ isReadOnly }) => {
 
             const updatedOrders = orders.filter((_, i) => i !== index);
 
-            notificationService.success(
-              'transferRequest.delete.success'
-            );
             history.push(`/stockmanagement/transferRequest/${updatedOrderIds}`);
             setOrders(updatedOrders);
             setCurrentTab(0);
-          })
-          .catch((error) => {
-            notificationService.error('transferRequest.delete.error');
-            throw new Error(
-              formatMessage('transferRequest.delete.error'),
-              error
-            );
           });
       });
     };
@@ -157,20 +151,11 @@ const TransferRequestTable = ({ isReadOnly }) => {
         ).then(() => {
           const orderIdsArray = orderIds.split(',');
 
-          orderService
-            .delete(orderIdsArray)
-            .then(() => {
-              notificationService.success(
-                'transferRequest.delete.success'
-              );
-              history.push('/stockmanagement/transferRequest');
-            })
-            .catch((error) => {
-              notificationService.error('transferRequest.delete.error');
-              throw new Error(
-                formatMessage('transferRequest.delete.error'),
-                error
-              );
+          deleteRequests(orderIdsArray, orderService, notificationService)
+            .then((deleted) => {
+              if (deleted) {
+                history.push('/stockmanagement/transferRequest');
+              }
             });
         });
       };
