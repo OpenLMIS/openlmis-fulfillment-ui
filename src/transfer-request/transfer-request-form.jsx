@@ -20,8 +20,7 @@ import { SearchSelect } from './search-select';
 import {
     buildTransferRequest,
     goToRequestEdit,
-    ignoreShownError,
-    loadSupplierOptions
+    loadCurrentSupplierOptions
 } from './transfer-request-form-helper-functions';
 
 const toOptions = (items) => _.map(items, item => ({ name: item.name, value: item.id }));
@@ -86,12 +85,18 @@ const TransferRequestForm = () => {
                 return;
             }
 
-            loadSupplierOptions(transferService, selectedProgram, selectedRequestingFacility)
-                .then(({ options, empty }) => {
+            let cancelled = false;
+
+            loadCurrentSupplierOptions(transferService, selectedProgram, selectedRequestingFacility,
+                () => cancelled,
+                ({ options, empty }) => {
                     setSupplyingFacilityOptions(options);
                     setNoPartners(empty);
-                })
-                .catch(ignoreShownError);
+                });
+
+            return () => {
+                cancelled = true;
+            };
         },
         [selectedProgram, selectedRequestingFacility]
     );

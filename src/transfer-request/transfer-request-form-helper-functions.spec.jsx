@@ -16,6 +16,7 @@
 import {
     buildTransferRequest,
     goToRequestEdit,
+    loadCurrentSupplierOptions,
     loadSupplierOptions,
     toSupplierOptions
 } from './transfer-request-form-helper-functions';
@@ -111,6 +112,74 @@ describe('transfer request form helpers', function() {
             expect(settled).toBe(true);
             expect(history.push).not.toHaveBeenCalled();
             expect(notificationService.error).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('loadCurrentSupplierOptions', function() {
+
+        var $q, $rootScope, transferService, apply;
+
+        beforeEach(function() {
+            inject(function($injector) {
+                $q = $injector.get('$q');
+                $rootScope = $injector.get('$rootScope');
+            });
+
+            transferService = jasmine.createSpyObj('transferService', ['getPartners']);
+            apply = jasmine.createSpy('apply');
+        });
+
+        it('should apply the partners of a selection that is still current', function() {
+            transferService.getPartners.andReturn($q.resolve([{
+                id: 'partner-id',
+                name: 'Partner'
+            }]));
+
+            loadCurrentSupplierOptions(transferService, 'program-id', 'facility-id', function() {
+                return false;
+            }, apply);
+            $rootScope.$apply();
+
+            expect(apply).toHaveBeenCalledWith({
+                options: [{
+                    name: 'Partner',
+                    value: 'partner-id'
+                }],
+                empty: false
+            });
+        });
+
+        it('should drop the partners of a selection that changed while they loaded', function() {
+            var deferred = $q.defer(),
+                cancelled = false;
+            transferService.getPartners.andReturn(deferred.promise);
+
+            loadCurrentSupplierOptions(transferService, 'program-id', 'facility-id', function() {
+                return cancelled;
+            }, apply);
+            cancelled = true;
+            deferred.resolve([]);
+            $rootScope.$apply();
+
+            expect(apply).not.toHaveBeenCalled();
+        });
+
+        it('should settle when the partners cannot be read', function() {
+            transferService.getPartners.andReturn($q.reject({
+                status: 403
+            }));
+
+            var settled = false;
+            loadCurrentSupplierOptions(transferService, 'program-id', 'facility-id', function() {
+                return false;
+            }, apply)
+                .then(function() {
+                    settled = true;
+                });
+            $rootScope.$apply();
+
+            expect(settled).toBe(true);
+            expect(apply).not.toHaveBeenCalled();
         });
     });
 

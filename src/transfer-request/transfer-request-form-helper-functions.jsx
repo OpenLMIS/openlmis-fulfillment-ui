@@ -18,6 +18,15 @@ export const loadSupplierOptions = (transferService, programId, facilityId) => t
 // A failed call needs no message here: the server error handler already shows the backend's.
 export const ignoreShownError = () => {};
 
+export const loadCurrentSupplierOptions = (transferService, programId, facilityId, isCancelled, apply) =>
+    loadSupplierOptions(transferService, programId, facilityId)
+        .then((result) => {
+            if (!isCancelled()) {
+                apply(result);
+            }
+        })
+        .catch(ignoreShownError);
+
 export const goToRequestEdit = (order, transferService, history) => transferService
     .createRequest(order)
     .then((createdOrder) => {
