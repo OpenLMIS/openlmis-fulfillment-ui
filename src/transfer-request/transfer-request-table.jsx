@@ -17,7 +17,15 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import getService from '../react-components/utils/angular-utils';
-import { createOrderDisabled, getIsOrderValidArray, getOrderValue, saveDraftDisabled } from './transfer-request-table-helper-functions';
+import {
+    createOrderDisabled,
+    getIsOrderValidArray,
+    getOrderValue,
+    saveDraftDisabled,
+    saveRequests,
+    sendRequests
+} from './transfer-request-table-helper-functions';
+import { getErrorMessage } from './transfer-request-form-helper-functions';
 import TransferRequestTab from './transfer-request-tab';
 import { isOrderInvalid } from './transfer-request-validation-helper-functions';
 import TransferRequestSummaryModal from './transfer-request-summary-modal';
@@ -36,6 +44,7 @@ const TransferRequestTable = ({ isReadOnly }) => {
     const history = useHistory();
 
     const orderService = useMemo(() => getService('transferRequestService'), []);
+    const transferService = useMemo(() => getService('transferService'), []);
     const notificationService = useMemo(() => getService('notificationService'), []);
     const { confirmDestroy } = useMemo(() => getService('confirmService'), []);
     const { formatMessage } = useMemo(() => getService('messageService'), []);
@@ -84,11 +93,15 @@ const TransferRequestTable = ({ isReadOnly }) => {
             return;
         }
 
-        const transferRequestPromisses = orders.map(order => orderService.send(order));
-        Promise.all(transferRequestPromisses).then(() => {
-            notificationService.success('transferRequest.submitted');
-            history.push('/stockmanagement/transferRequest');
-        });
+        sendRequests(orders, transferService)
+            .then(() => {
+                notificationService.success('transferRequest.submitted');
+                history.push('/stockmanagement/transferRequest');
+            })
+            .catch((response) => {
+                setIsSummaryModalOpen(false);
+                notificationService.error(getErrorMessage(response, 'transferRequest.send.error'));
+            });
     };
 
     const updateOrders = () => {
@@ -97,10 +110,13 @@ const TransferRequestTable = ({ isReadOnly }) => {
         }
 
         setShowValidationErrors(false);
-        const updateOrdersPromises = orders.map(order => orderService.update(order));
-        Promise.all(updateOrdersPromises).then(() => {
-            toast.success("Orders saved successfully");
-        });
+        saveRequests(orders, transferService)
+            .then(() => {
+                toast.success(formatMessage('transferRequest.save.success'));
+            })
+            .catch((response) => {
+                notificationService.error(getErrorMessage(response, 'transferRequest.save.error'));
+            });
     };
 
     const onOrderDelete = (index) => {
@@ -244,7 +260,7 @@ const TransferRequestTable = ({ isReadOnly }) => {
                             className="btn primary"
                             disabled={createOrderDisabled(orders)}
                             onClick={() => setIsSummaryModalOpen(true)}
-                        >{formatMessage('transferRequest.create')}</button>
+                        >{formatMessage('transferRequest.send')}</button>
                     </>
                 }
             </div>

@@ -7,7 +7,7 @@
   "transferRequest.edit": "Edit",
   "transferRequest.create": "Create Request",
   "transferRequest.saveDraft": "Save Draft",
-  "transferRequest.submitted": "Orders created successfully",
+  "transferRequest.submitted": "Transfer request sent successfully",
   "transferRequest.delete": "Delete",
   "transferRequest.deleteBatch": "Delete Batch",
   "transferRequest.delete.prompt": "Are you sure you want to delete this order?",
@@ -26,7 +26,7 @@
   "transferRequest.table.soh": "Stock On Hand",
   "transferRequest.table.quantity": "Quantity",
   "transferRequest.table.actions": "Actions",
-  "transferRequest.summary": "Orders Summary",
+  "transferRequest.summary": "Request Summary",
   "transferRequest.table.addProduct": "Add",
   "transferRequest.table.productAlreadyAdded": "This product was already added to the table",
   "transferRequest.info.status": "Status",
@@ -35,5 +35,9 @@
   "transferRequest.searchSelect.empty.message": "Not found",
   "transferRequest.create.error": "Error occurred while creating the transfer request.",
   "transferRequest.partners.error": "Error occurred while loading the facilities you can request from.",
-  "transferRequest.noPartners": "This facility has no transfer partners for the selected program."
+  "transferRequest.noPartners": "This facility has no transfer partners for the selected program.",
+  "transferRequest.send": "Send Request",
+  "transferRequest.send.error": "Error occurred while sending the transfer request.",
+  "transferRequest.save.success": "Transfer request saved successfully",
+  "transferRequest.save.error": "Error occurred while saving the transfer request."
 }

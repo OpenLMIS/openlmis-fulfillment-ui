@@ -22,34 +22,20 @@
      * @name transfer-request.transferRequestService
      *
      * @description
-     * Communicates with the /api/orders endpoint of the OpenLMIS server.
+     * Reads and deletes transfer request orders through the /api/orders endpoint. Saving and sending
+     * go through transferService, because the order endpoints reject transfer requests.
      */
     angular
         .module('transfer-request')
         .service('transferRequestService', service);
 
-    service.$inject = ['$resource', '$http', 'openlmisUrlFactory'];
+    service.$inject = ['$resource', '$http', 'fulfillmentUrlFactory'];
 
-    function service($resource, $http, openlmisUrlFactory) {
+    function service($resource, $http, fulfillmentUrlFactory) {
 
-        var resource = $resource(openlmisUrlFactory('/api/orders/:id'), {}, {
-            update: {
-                method: 'PUT'
-            },
-            create: {
-                url: openlmisUrlFactory('/api/orders/requisitionLess'),
-                method: 'POST'
-            },
-            send: {
-                url: openlmisUrlFactory('/api/orders/:id/requisitionLess/send'),
-                method: 'PUT'
-            }
-        });
+        var resource = $resource(fulfillmentUrlFactory('/api/orders/:id'));
 
         this.get = get;
-        this.create = create;
-        this.update = update;
-        this.send = send;
         this.delete = deleteOrders;
 
         function get(orderId) {
@@ -58,26 +44,10 @@
             }).$promise;
         }
 
-        function create(orderId) {
-            return resource.create(orderId).$promise;
-        }
-
-        function update(order) {
-            return resource.update({
-                id: order.id
-            }, order).$promise;
-        }
-
-        function send(order) {
-            return resource.send({
-                id: order.id
-            }, order).$promise;
-        }
-
         function deleteOrders(orderIds) {
             return $http({
                 method: 'DELETE',
-                url: openlmisUrlFactory('/api/orders'),
+                url: fulfillmentUrlFactory('/api/orders'),
                 data: {
                     ids: orderIds
                 },

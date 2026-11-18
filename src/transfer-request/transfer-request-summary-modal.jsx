@@ -61,7 +61,7 @@ const TransferRequestSummaryModal = ({ isOpen, orders, onSaveClick, onModalClose
                             type="button"
                             className="btn primary"
                             onClick={() => onSaveClick()}
-                        >{ formatMessage('transferRequest') }</button>
+                        >{ formatMessage('transferRequest.send') }</button>
                     </div>
                 </>
             ]}

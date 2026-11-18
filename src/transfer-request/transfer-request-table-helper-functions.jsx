@@ -90,3 +90,11 @@ export const saveDraftDisabled = (orders) => {
   const mappedOrders = orders.map((order) => order.id !== undefined);
   return mappedOrders.length === 0 || mappedOrders.includes(false);
 };
+
+export const saveRequests = (orders, transferService) => Promise.all(
+    orders.map(order => transferService.updateRequest(order))
+);
+
+export const sendRequests = (orders, transferService) => Promise.all(
+    orders.map(order => transferService.sendRequest(order))
+);
