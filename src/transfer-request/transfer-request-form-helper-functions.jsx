@@ -11,17 +11,16 @@ export const toSupplierOptions = (partners) => ({
     empty: partners.length === 0
 });
 
-export const getErrorMessage = (response, fallback) => _.get(response, ['data', 'message']) || fallback;
-
 export const loadSupplierOptions = (transferService, programId, facilityId) => transferService
     .getPartners(facilityId, programId, 'REQUEST')
     .then(toSupplierOptions);
 
-export const goToRequestEdit = (order, transferService, history, notificationService) => transferService
+// A failed call needs no message here: the server error handler already shows the backend's.
+export const ignoreShownError = () => {};
+
+export const goToRequestEdit = (order, transferService, history) => transferService
     .createRequest(order)
     .then((createdOrder) => {
         history.push(`/stockmanagement/transferRequest/${createdOrder.id}`);
     })
-    .catch((response) => {
-        notificationService.error(getErrorMessage(response, 'transferRequest.create.error'));
-    });
+    .catch(ignoreShownError);

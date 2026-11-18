@@ -15,7 +15,7 @@
 
 import {
     buildTransferRequest,
-    getErrorMessage,
+    goToRequestEdit,
     loadSupplierOptions,
     toSupplierOptions
 } from './transfer-request-form-helper-functions';
@@ -67,21 +67,50 @@ describe('transfer request form helpers', function() {
         });
     });
 
-    describe('getErrorMessage', function() {
+    describe('goToRequestEdit', function() {
 
-        it('should return the backend message', function() {
-            expect(getErrorMessage({
-                status: 403,
-                data: {
-                    message: 'Missing permission'
-                }
-            }, 'fallback')).toEqual('Missing permission');
+        var $q, $rootScope, transferService, history, notificationService;
+
+        beforeEach(function() {
+            inject(function($injector) {
+                $q = $injector.get('$q');
+                $rootScope = $injector.get('$rootScope');
+            });
+
+            transferService = jasmine.createSpyObj('transferService', ['createRequest']);
+            history = jasmine.createSpyObj('history', ['push']);
+            notificationService = jasmine.createSpyObj('notificationService', ['error']);
         });
 
-        it('should return the fallback when the response has no message', function() {
-            expect(getErrorMessage({
-                status: 500
-            }, 'fallback')).toEqual('fallback');
+        it('should open the created request', function() {
+            transferService.createRequest.andReturn($q.resolve({
+                id: 'order-id'
+            }));
+
+            goToRequestEdit({}, transferService, history);
+            $rootScope.$apply();
+
+            expect(history.push).toHaveBeenCalledWith('/stockmanagement/transferRequest/order-id');
+        });
+
+        it('should leave the error message to the server error handler', function() {
+            transferService.createRequest.andReturn($q.reject({
+                status: 400,
+                data: {
+                    message: 'Not a transfer partner'
+                }
+            }));
+
+            var settled = false;
+            goToRequestEdit({}, transferService, history, notificationService)
+                .then(function() {
+                    settled = true;
+                });
+            $rootScope.$apply();
+
+            expect(settled).toBe(true);
+            expect(history.push).not.toHaveBeenCalled();
+            expect(notificationService.error).not.toHaveBeenCalled();
         });
     });
 

@@ -19,8 +19,8 @@ import getService from '../react-components/utils/angular-utils';
 import { SearchSelect } from './search-select';
 import {
     buildTransferRequest,
-    getErrorMessage,
     goToRequestEdit,
+    ignoreShownError,
     loadSupplierOptions
 } from './transfer-request-form-helper-functions';
 
@@ -42,7 +42,6 @@ const TransferRequestForm = () => {
     const programService = useMemo(() => getService('programService'), []);
     const { formatMessage } = useMemo(() => getService('messageService'), []);
     const facilityService = useMemo(() => getService('facilityService'), []);
-    const notificationService = useMemo(() => getService('notificationService'), []);
     const transferService = useMemo(() => getService('transferService'), []);
 
     const userId = useMemo(
@@ -54,7 +53,7 @@ const TransferRequestForm = () => {
 
     const createRequest = () => {
         const request = buildTransferRequest(selectedProgram, selectedRequestingFacility, selectedSupplyingFacility);
-        goToRequestEdit(request, transferService, history, notificationService);
+        goToRequestEdit(request, transferService, history);
     };
 
     useEffect(
@@ -92,9 +91,7 @@ const TransferRequestForm = () => {
                     setSupplyingFacilityOptions(options);
                     setNoPartners(empty);
                 })
-                .catch((response) => {
-                    notificationService.error(getErrorMessage(response, 'transferRequest.partners.error'));
-                });
+                .catch(ignoreShownError);
         },
         [selectedProgram, selectedRequestingFacility]
     );

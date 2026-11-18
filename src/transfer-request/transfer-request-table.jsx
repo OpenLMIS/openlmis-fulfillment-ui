@@ -25,7 +25,7 @@ import {
     saveRequests,
     sendRequests
 } from './transfer-request-table-helper-functions';
-import { getErrorMessage } from './transfer-request-form-helper-functions';
+import { ignoreShownError } from './transfer-request-form-helper-functions';
 import TransferRequestTab from './transfer-request-tab';
 import { isOrderInvalid } from './transfer-request-validation-helper-functions';
 import TransferRequestSummaryModal from './transfer-request-summary-modal';
@@ -98,9 +98,8 @@ const TransferRequestTable = ({ isReadOnly }) => {
                 notificationService.success('transferRequest.submitted');
                 history.push('/stockmanagement/transferRequest');
             })
-            .catch((response) => {
+            .catch(() => {
                 setIsSummaryModalOpen(false);
-                notificationService.error(getErrorMessage(response, 'transferRequest.send.error'));
             });
     };
 
@@ -114,9 +113,7 @@ const TransferRequestTable = ({ isReadOnly }) => {
             .then(() => {
                 toast.success(formatMessage('transferRequest.save.success'));
             })
-            .catch((response) => {
-                notificationService.error(getErrorMessage(response, 'transferRequest.save.error'));
-            });
+            .catch(ignoreShownError);
     };
 
     const onOrderDelete = (index) => {
