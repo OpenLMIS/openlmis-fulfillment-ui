@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import { deleteRequests, saveRequests, sendRequests } from './transfer-request-table-helper-functions';
+import { deleteRequests, loadRequests, saveRequests, sendRequests } from './transfer-request-table-helper-functions';
 
 describe('transfer request table helpers', function() {
 
@@ -97,6 +97,59 @@ describe('transfer request table helpers', function() {
             expect(notificationService.error).not.toHaveBeenCalled();
             expect(notificationService.success).not.toHaveBeenCalled();
             expect(deleted).toBe(false);
+        });
+    });
+
+    describe('loadRequests', function() {
+
+        var orderService, stockCardSummaryRepositoryImpl;
+
+        beforeEach(function() {
+            orderService = jasmine.createSpyObj('orderService', ['get']);
+            stockCardSummaryRepositoryImpl = jasmine.createSpyObj('stockCardSummaryRepositoryImpl', ['query']);
+        });
+
+        it('should resolve to the requests', function() {
+            var order = {
+                id: 'first-id',
+                orderLineItems: []
+            };
+            orderService.get.andReturn(Promise.resolve(order));
+
+            var result;
+            runs(function() {
+                loadRequests(['first-id'], orderService, stockCardSummaryRepositoryImpl)
+                    .then(function(orders) {
+                        result = orders;
+                    });
+            });
+            waitsFor(function() {
+                return result !== undefined;
+            }, 'the requests to load', 1000);
+            runs(function() {
+                expect(orderService.get).toHaveBeenCalledWith('first-id');
+                expect(result).toEqual([order]);
+            });
+        });
+
+        it('should reject when a request cannot be read, so the page can leave', function() {
+            orderService.get.andReturn(Promise.reject({
+                status: 403
+            }));
+
+            var rejection;
+            runs(function() {
+                loadRequests(['first-id'], orderService, stockCardSummaryRepositoryImpl)
+                    .catch(function(response) {
+                        rejection = response;
+                    });
+            });
+            waitsFor(function() {
+                return rejection !== undefined;
+            }, 'the load to fail', 1000);
+            runs(function() {
+                expect(rejection.status).toEqual(403);
+            });
         });
     });
 });

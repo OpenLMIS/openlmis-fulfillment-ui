@@ -106,3 +106,7 @@ export const deleteRequests = (orderIds, transferRequestService, notificationSer
         return true;
     })
     .catch(() => false);
+
+export const loadRequests = (orderIds, orderService, stockCardSummaryRepositoryImpl) => Promise
+    .all(orderIds.map(orderId => orderService.get(orderId)))
+    .then(orders => Promise.all(orders.map(order => getOrderValue(order, stockCardSummaryRepositoryImpl))));

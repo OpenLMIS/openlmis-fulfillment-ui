@@ -21,7 +21,7 @@ import {
     createOrderDisabled,
     getIsOrderValidArray,
     deleteRequests,
-    getOrderValue,
+    loadRequests,
     saveDraftDisabled,
     saveRequests,
     sendRequests
@@ -62,16 +62,10 @@ const TransferRequestTable = ({ isReadOnly }) => {
         () => {
             if (orderIds) {
                 const orderIdsArray = orderIds.split(',');
-                const ordersPromises = orderIdsArray.map(orderId => orderService.get(orderId));
                 setCachedOrderableOptions(orderIdsArray.map(() => []));
-                Promise.all(ordersPromises)
-                    .then((orders) => {
-                        const orderValuePromisses = orders.map(order => getOrderValue(order, stockCardSummaryRepositoryImpl));
-                        Promise.all(orderValuePromisses)
-                            .then((orders) => {
-                                setOrders(orders);
-                            });
-                    });
+                loadRequests(orderIdsArray, orderService, stockCardSummaryRepositoryImpl)
+                    .then(setOrders)
+                    .catch(() => history.push('/stockmanagement/transferRequest'));
             }
         },
         [orderService]
