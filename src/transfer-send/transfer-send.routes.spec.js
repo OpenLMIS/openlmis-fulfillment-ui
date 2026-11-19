@@ -236,8 +236,9 @@ describe('openlmis.stockmanagement.transferSend state', function() {
                 .andReturn(this.$q.resolve([vaccineGroup, syringeGroup, expiredGroup]));
 
             var result;
-            this.creationState.resolve.orderableGroups(this.existingStockOrderableGroupsFactory, program, facility,
-                this.moment).then(function(response) {
+            this.creationState.resolve.orderableGroups(this.existingStockOrderableGroupsFactory, program, facility, {
+                id: 'partner-id'
+            }, this.moment, this.$state, {}).then(function(response) {
                 result = response;
             });
             this.$rootScope.$apply();
@@ -246,6 +247,52 @@ describe('openlmis.stockmanagement.transferSend state', function() {
                 .toHaveBeenCalledWith({}, program, facility);
 
             expect(result).toEqual([[vaccineGroup[0], vaccineGroup[1]], syringeGroup]);
+        });
+
+        it('should go back to the selection when the destination is no longer a transfer partner', function() {
+            spyOn(this.existingStockOrderableGroupsFactory, 'getGroupsWithNotZeroSoh');
+            spyOn(this.$state, 'go');
+
+            this.creationState.resolve.orderableGroups(this.existingStockOrderableGroupsFactory, {
+                id: 'program-id'
+            }, {
+                id: 'facility-id'
+            }, undefined, this.moment, this.$state, {
+                programId: 'program-id',
+                facilityId: 'facility-id',
+                destinationId: 'removed-partner-id'
+            });
+
+            expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.transferSend', {
+                programId: 'program-id',
+                facilityId: 'facility-id',
+                destinationId: null
+            });
+
+            expect(this.existingStockOrderableGroupsFactory.getGroupsWithNotZeroSoh).not.toHaveBeenCalled();
+        });
+
+        it('should go back to the selection when the program or facility is not available', function() {
+            spyOn(this.existingStockOrderableGroupsFactory, 'getGroupsWithNotZeroSoh');
+            spyOn(this.$state, 'go');
+
+            this.creationState.resolve.orderableGroups(this.existingStockOrderableGroupsFactory, undefined, {
+                id: 'facility-id'
+            }, {
+                id: 'partner-id'
+            }, this.moment, this.$state, {
+                programId: 'unknown-program-id',
+                facilityId: 'facility-id',
+                destinationId: 'partner-id'
+            });
+
+            expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.transferSend', {
+                programId: 'unknown-program-id',
+                facilityId: 'facility-id',
+                destinationId: null
+            });
+
+            expect(this.existingStockOrderableGroupsFactory.getGroupsWithNotZeroSoh).not.toHaveBeenCalled();
         });
     });
 

@@ -78,7 +78,17 @@
                     destination: function(partners, $stateParams) {
                         return findById(partners, $stateParams.destinationId);
                     },
-                    orderableGroups: function(existingStockOrderableGroupsFactory, program, facility, moment) {
+                    orderableGroups: function(existingStockOrderableGroupsFactory, program, facility, destination,
+                        moment, $state, $stateParams) {
+                        if (!program || !facility || !destination) {
+                            $state.go('openlmis.stockmanagement.transferSend', {
+                                programId: $stateParams.programId,
+                                facilityId: $stateParams.facilityId,
+                                destinationId: null
+                            });
+                            return [];
+                        }
+
                         return existingStockOrderableGroupsFactory
                             .getGroupsWithNotZeroSoh({}, program, facility)
                             .then(function(groups) {
