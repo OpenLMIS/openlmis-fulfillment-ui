@@ -13,47 +13,52 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import { deleteRequests, loadRequests, saveRequests, sendRequests } from './transfer-request-table-helper-functions';
+import { deleteRequest, isRequestValid, loadRequest } from './transfer-request-table-helper-functions';
 
 describe('transfer request table helpers', function() {
 
-    var transferService, orders;
+    describe('isRequestValid', function() {
 
-    beforeEach(function() {
-        transferService = jasmine.createSpyObj('transferService', ['updateRequest', 'sendRequest']);
-        transferService.updateRequest.andReturn(Promise.resolve());
-        transferService.sendRequest.andReturn(Promise.resolve());
+        it('should not accept a request without lines', function() {
+            expect(isRequestValid({
+                id: 'order-id',
+                orderLineItems: []
+            })).toBe(false);
+        });
 
-        orders = [{
-            id: 'first-id'
-        }, {
-            id: 'second-id'
-        }];
-    });
+        it('should not accept a line without a positive quantity', function() {
+            expect(isRequestValid({
+                id: 'order-id',
+                orderLineItems: [{
+                    orderedQuantity: 10
+                }, {
+                    orderedQuantity: ''
+                }]
+            })).toBe(false);
 
-    describe('saveRequests', function() {
+            expect(isRequestValid({
+                id: 'order-id',
+                orderLineItems: [{
+                    orderedQuantity: 0
+                }]
+            })).toBe(false);
+        });
 
-        it('should save every request through the transfer endpoint', function() {
-            saveRequests(orders, transferService);
+        it('should accept a saved request whose lines all have a positive quantity', function() {
+            expect(isRequestValid({
+                id: 'order-id',
+                orderLineItems: [{
+                    orderedQuantity: 10
+                }]
+            })).toBe(true);
+        });
 
-            expect(transferService.updateRequest).toHaveBeenCalledWith(orders[0]);
-            expect(transferService.updateRequest).toHaveBeenCalledWith(orders[1]);
-            expect(transferService.sendRequest).not.toHaveBeenCalled();
+        it('should not accept a request that is not loaded yet', function() {
+            expect(isRequestValid(undefined)).toBe(false);
         });
     });
 
-    describe('sendRequests', function() {
-
-        it('should send every request through the transfer endpoint', function() {
-            sendRequests(orders, transferService);
-
-            expect(transferService.sendRequest).toHaveBeenCalledWith(orders[0]);
-            expect(transferService.sendRequest).toHaveBeenCalledWith(orders[1]);
-            expect(transferService.updateRequest).not.toHaveBeenCalled();
-        });
-    });
-
-    describe('deleteRequests', function() {
+    describe('deleteRequest', function() {
 
         var $q, $rootScope, transferRequestService, notificationService;
 
@@ -67,17 +72,17 @@ describe('transfer request table helpers', function() {
             notificationService = jasmine.createSpyObj('notificationService', ['success', 'error']);
         });
 
-        it('should delete the requests and report it', function() {
+        it('should delete the request and report it', function() {
             transferRequestService.delete.andReturn($q.resolve());
 
             var deleted;
-            deleteRequests(['first-id'], transferRequestService, notificationService)
+            deleteRequest('order-id', transferRequestService, notificationService)
                 .then(function(result) {
                     deleted = result;
                 });
             $rootScope.$apply();
 
-            expect(transferRequestService.delete).toHaveBeenCalledWith(['first-id']);
+            expect(transferRequestService.delete).toHaveBeenCalledWith(['order-id']);
             expect(notificationService.success).toHaveBeenCalledWith('transferRequest.delete.success');
             expect(deleted).toBe(true);
         });
@@ -88,7 +93,7 @@ describe('transfer request table helpers', function() {
             }));
 
             var deleted;
-            deleteRequests(['first-id'], transferRequestService, notificationService)
+            deleteRequest('order-id', transferRequestService, notificationService)
                 .then(function(result) {
                     deleted = result;
                 });
@@ -100,7 +105,7 @@ describe('transfer request table helpers', function() {
         });
     });
 
-    describe('loadRequests', function() {
+    describe('loadRequest', function() {
 
         var orderService, stockCardSummaryRepositoryImpl;
 
@@ -109,37 +114,37 @@ describe('transfer request table helpers', function() {
             stockCardSummaryRepositoryImpl = jasmine.createSpyObj('stockCardSummaryRepositoryImpl', ['query']);
         });
 
-        it('should resolve to the requests', function() {
+        it('should resolve to the request', function() {
             var order = {
-                id: 'first-id',
+                id: 'order-id',
                 orderLineItems: []
             };
             orderService.get.andReturn(Promise.resolve(order));
 
             var result;
             runs(function() {
-                loadRequests(['first-id'], orderService, stockCardSummaryRepositoryImpl)
-                    .then(function(orders) {
-                        result = orders;
+                loadRequest('order-id', orderService, stockCardSummaryRepositoryImpl)
+                    .then(function(loaded) {
+                        result = loaded;
                     });
             });
             waitsFor(function() {
                 return result !== undefined;
-            }, 'the requests to load', 1000);
+            }, 'the request to load', 1000);
             runs(function() {
-                expect(orderService.get).toHaveBeenCalledWith('first-id');
-                expect(result).toEqual([order]);
+                expect(orderService.get).toHaveBeenCalledWith('order-id');
+                expect(result).toEqual(order);
             });
         });
 
-        it('should reject when a request cannot be read, so the page can leave', function() {
+        it('should reject when the request cannot be read, so the page can leave', function() {
             orderService.get.andReturn(Promise.reject({
                 status: 403
             }));
 
             var rejection;
             runs(function() {
-                loadRequests(['first-id'], orderService, stockCardSummaryRepositoryImpl)
+                loadRequest('order-id', orderService, stockCardSummaryRepositoryImpl)
                     .catch(function(response) {
                         rejection = response;
                     });

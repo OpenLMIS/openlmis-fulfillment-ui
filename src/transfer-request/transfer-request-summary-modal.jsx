@@ -1,11 +1,10 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import Modal from '../react-components/modals/Modal';
 import EditableTable from '../react-components/table/editable-table';
 import { requestSummaryColumns } from './transfer-request.constant';
-import TabNavigation from '../react-components/tab-navigation/tab-navigation';
 import getService from '../react-components/utils/angular-utils';
 
-const TransferRequestSummaryModal = ({ isOpen, orders, onSaveClick, onModalClose }) => {
+const TransferRequestSummaryModal = ({ isOpen, order, onSaveClick, onModalClose }) => {
     const { formatMessage } = useMemo(() => getService('messageService'), []);
     const quantityUnitCalculateService = useMemo(() => getService('quantityUnitCalculateService'), []);
     const localStorageService = useMemo(() => getService('localStorageService'), []);
@@ -13,7 +12,6 @@ const TransferRequestSummaryModal = ({ isOpen, orders, onSaveClick, onModalClose
     const showInDoses = (localStorageService.get('quantityUnit') || QUANTITY_UNIT.DOSES) === QUANTITY_UNIT.DOSES;
     const columns = useMemo(() => requestSummaryColumns(formatMessage, showInDoses,
         quantityUnitCalculateService), [showInDoses]);
-    const [currentTab, setCurrentTab] = useState(0);
 
     return (
         <Modal
@@ -24,32 +22,11 @@ const TransferRequestSummaryModal = ({ isOpen, orders, onSaveClick, onModalClose
                         <span className='modal-title'>{ formatMessage('transferRequest.summary') }</span>
                     </div>
                     <div className="react-modal-body">
-                        <TabNavigation
-                            config={
-                                {
-                                    data: orders.map((order, index) => ({
-                                        header: order.facility.name,
-                                        key: order.id,
-                                        isActive: currentTab === index
-                                    })),
-                                    onTabChange: (index) => {
-                                        setCurrentTab(index);
-                                    }
-                                }
-                            }
-                        ></TabNavigation>
-                        <div>
-                            <div>
-                                {
-                                    currentTab !== undefined &&
-                                    <EditableTable
-                                        columns={columns}
-                                        data={orders[currentTab].orderLineItems || []}
-                                        isReadOnly={true}
-                                    />
-                                }
-                            </div>
-                        </div>
+                        <EditableTable
+                            columns={columns}
+                            data={order.orderLineItems || []}
+                            isReadOnly={true}
+                        />
                     </div>
                     <div className="react-modal-footer">
                         <button

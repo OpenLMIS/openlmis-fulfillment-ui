@@ -17,30 +17,20 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import getService from '../react-components/utils/angular-utils';
-import {
-    createOrderDisabled,
-    getIsOrderValidArray,
-    deleteRequests,
-    loadRequests,
-    saveDraftDisabled,
-    saveRequests,
-    sendRequests
-} from './transfer-request-table-helper-functions';
+import { deleteRequest, isRequestValid, loadRequest } from './transfer-request-table-helper-functions';
 import { ignoreShownError } from './transfer-request-form-helper-functions';
 import TransferRequestTab from './transfer-request-tab';
-import { isOrderInvalid } from './transfer-request-validation-helper-functions';
+import { isRequestInvalid } from './transfer-request-validation-helper-functions';
 import TransferRequestSummaryModal from './transfer-request-summary-modal';
-import TabNavigation from '../react-components/tab-navigation/tab-navigation';
-import { ORDER_STATUS } from './transfer-request.constant';
+
+const FORM_PATH = '/stockmanagement/transferRequest';
 
 const TransferRequestTable = () => {
-    const [orders, setOrders] = useState([]);
-    const [currentTab, setCurrentTab] = useState(0);
+    const [order, setOrder] = useState();
     const [showValidationErrors, setShowValidationErrors] = useState(false);
     const [isSummaryModalOpen, setIsSummaryModalOpen] = useState(false);
-    const [cachedOrderableOptions, setCachedOrderableOptions] = useState([]);
 
-    const { orderIds } = useParams();
+    const { orderId } = useParams();
 
     const history = useHistory();
 
@@ -60,99 +50,51 @@ const TransferRequestTable = () => {
 
     useEffect(
         () => {
-            if (orderIds) {
-                const orderIdsArray = orderIds.split(',');
-                setCachedOrderableOptions(orderIdsArray.map(() => []));
-                loadRequests(orderIdsArray, orderService, stockCardSummaryRepositoryImpl)
-                    .then(setOrders)
-                    .catch(() => history.push('/stockmanagement/transferRequest'));
-            }
+            loadRequest(orderId, orderService, stockCardSummaryRepositoryImpl)
+                .then(setOrder)
+                .catch(() => history.push(FORM_PATH));
         },
-        [orderService]
+        [orderId]
     );
 
-    const onProductAdded = (updatedOrder) => {
-        setOrders(prevOrders => {
-            const updatedOrders = prevOrders.map(order => {
-                if (order.id === updatedOrder.id) {
-                    return updatedOrder;
-                }
-                return order;
-            });
-            return updatedOrders;
-        });
-    }
-
-    const sendOrders = () => {
-        if (isOrderInvalid(orders, setShowValidationErrors, toast)) {
+    const sendRequest = () => {
+        if (isRequestInvalid(order, setShowValidationErrors, toast)) {
             return;
         }
 
-        sendRequests(orders, transferService)
+        transferService.sendRequest(order)
             .then(() => {
                 notificationService.success('transferRequest.submitted');
-                history.push('/stockmanagement/transferRequest');
+                history.push(FORM_PATH);
             })
             .catch(() => {
                 setIsSummaryModalOpen(false);
             });
     };
 
-    const updateOrders = () => {
-        if (isOrderInvalid(orders, setShowValidationErrors, toast)) {
+    const saveRequest = () => {
+        if (isRequestInvalid(order, setShowValidationErrors, toast)) {
             return;
         }
 
         setShowValidationErrors(false);
-        saveRequests(orders, transferService)
+        transferService.updateRequest(order)
             .then(() => {
                 toast.success(formatMessage('transferRequest.save.success'));
             })
             .catch(ignoreShownError);
     };
 
-    const onOrderDelete = (index) => {
-      confirmDestroy(
-        'transferRequest.delete.prompt',
-        'transferRequest.delete'
-      ).then(() => {
-        const orderToDelete = orders[index];
-
-        deleteRequests([orderToDelete.id], orderService, notificationService)
-          .then((deleted) => {
-            if (!deleted) {
-              return;
-            }
-
-            const updatedOrderIds = orderIds
-              .split(',')
-              .filter((orderId) => orderId !== orderToDelete.id)
-              .join(',');
-
-            const updatedOrders = orders.filter((_, i) => i !== index);
-
-            history.push(`/stockmanagement/transferRequest/${updatedOrderIds}`);
-            setOrders(updatedOrders);
-            setCurrentTab(0);
-          });
-      });
-    };
-
-      const onOrderBatchDelete = () => {
-        confirmDestroy(
-          'transferRequest.delete.prompt.batch',
-          'transferRequest.deleteBatch'
-        ).then(() => {
-          const orderIdsArray = orderIds.split(',');
-
-          deleteRequests(orderIdsArray, orderService, notificationService)
+    const onDelete = () => {
+        confirmDestroy('transferRequest.delete.prompt', 'transferRequest.delete')
+            .then(() => deleteRequest(order.id, orderService, notificationService))
             .then((deleted) => {
-              if (deleted) {
-                history.push('/stockmanagement/transferRequest');
-              }
-            });
-        });
-      };
+                if (deleted) {
+                    history.push(FORM_PATH);
+                }
+            })
+            .catch(ignoreShownError);
+    };
 
     return (
         <div className="page-container">
@@ -160,81 +102,43 @@ const TransferRequestTable = () => {
                 isSummaryModalOpen &&
                 <TransferRequestSummaryModal
                     isOpen={isSummaryModalOpen}
-                    orders={orders}
-                    onSaveClick={sendOrders}
+                    order={order}
+                    onSaveClick={sendRequest}
                     onModalClose={() => setIsSummaryModalOpen(false)}
                 />
             }
             <div className="page-header-responsive">
                 <h2>{ formatMessage('transferRequest.title') }</h2>
             </div>
-            {
-                orders.length > 0 &&
-                <div className="tabs-container">
-                    <TabNavigation
-                        config={
-                            {
-                                data: orders.map((order, index) => ({
-                                    header: order.facility.name,
-                                    key: order.id,
-                                    isActive: currentTab === index,
-                                    isCreatingStatus: order.status === ORDER_STATUS.CREATING,
-                                })),
-                                onTabChange: (index) => {
-                                    setCurrentTab(index);
-                                },
-                                onOrderDelete,
-                                formatMessage,
-                                isTabValidArray: getIsOrderValidArray(orders)
-                            }
-                        }
-                    ></TabNavigation>
-                </div>
-            }
-            <div className="currentTab">
-                {(orders.length > 0) ? (
-                    <TransferRequestTab
-                        key={currentTab}
-                        passedOrder={orders[currentTab]}
-                        stockCardSummaryRepositoryImpl={stockCardSummaryRepositoryImpl}
-                        showValidationErrors={showValidationErrors}
-                        tabIndex={currentTab}
-                        cachedOrderableOptions={cachedOrderableOptions[currentTab]}
-                        cacheOrderableOptions={(orderableOptions, tabIndex) => {
-                            const updatedCachedOrderableOptions = cachedOrderableOptions;
-                            updatedCachedOrderableOptions[tabIndex] = orderableOptions;
-                            setCachedOrderableOptions(updatedCachedOrderableOptions);
-                        }}
-                        updateOrderArray={
-                            (updatedOrder) => {
-                                onProductAdded(updatedOrder);
-                            }
-                        } />
-                ) : (
-                    <p>{ formatMessage('transferRequest.loading') }...</p>
-                )}
-            </div>
+            {order ? (
+                <TransferRequestTab
+                    passedOrder={order}
+                    stockCardSummaryRepositoryImpl={stockCardSummaryRepositoryImpl}
+                    showValidationErrors={showValidationErrors}
+                    onOrderChange={setOrder}
+                />
+            ) : (
+                <p>{ formatMessage('transferRequest.loading') }...</p>
+            )}
             <div className="page-footer">
-                    <>
-                        <button
-                            type="button"
-                            className="btn danger"
-                            disabled={!orders.length || orders.length === 0}
-                            onClick={onOrderBatchDelete}
-                        >{formatMessage('transferRequest.deleteBatch')}</button>
-                        <button
-                            type="button"
-                            className="btn"
-                            disabled={saveDraftDisabled(orders)}
-                            onClick={() => updateOrders()}
-                        >{formatMessage('transferRequest.saveDraft')}</button>
-                        <button
-                            type="button"
-                            className="btn primary"
-                            disabled={createOrderDisabled(orders)}
-                            onClick={() => setIsSummaryModalOpen(true)}
-                        >{formatMessage('transferRequest.send')}</button>
-                    </>
+                <button
+                    type="button"
+                    className="btn danger"
+                    disabled={!order}
+                    onClick={onDelete}
+                >{formatMessage('transferRequest.delete')}</button>
+                <button
+                    type="button"
+                    className="btn"
+                    disabled={!order}
+                    onClick={saveRequest}
+                >{formatMessage('transferRequest.saveDraft')}</button>
+                <button
+                    type="button"
+                    className="btn primary"
+                    disabled={!isRequestValid(order)}
+                    onClick={() => setIsSummaryModalOpen(true)}
+                >{formatMessage('transferRequest.send')}</button>
             </div>
         </div>
     );

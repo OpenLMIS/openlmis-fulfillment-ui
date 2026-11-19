@@ -14,12 +14,9 @@ const QUANTITY_UNIT_KEY = 'quantityUnit';
 
 const TransferRequestTab = ({
   passedOrder,
-  updateOrderArray,
+  onOrderChange,
   showValidationErrors,
   stockCardSummaryRepositoryImpl,
-  tabIndex,
-  cacheOrderableOptions,
-  cachedOrderableOptions,
 }) => {
   const localStorageService = useMemo(
     () => getService('localStorageService'),
@@ -46,9 +43,7 @@ const TransferRequestTab = ({
 
   const [order, setOrder] = useState({ orderLineItems: [], ...passedOrder });
   const [selectedOrderable, setSelectedOrderable] = useState('');
-  const [orderableOptions, setOrderableOptions] = useState(
-    cachedOrderableOptions
-  );
+  const [orderableOptions, setOrderableOptions] = useState([]);
 
   const [currentQuantityUnit, setCurrentQuantityUnit] = useState('');
   const showInDoses = useMemo(
@@ -105,23 +100,18 @@ const TransferRequestTab = ({
       const updatedOrder = { ...order, orderLineItems: recalculatedOrderItems };
 
       setOrder(updatedOrder);
-      updateOrderArray(updatedOrder);
+      onOrderChange(updatedOrder);
     },
     [
       localStorageService,
       order,
       quantityUnitCalculateService,
       showInDoses,
-      updateOrderArray,
+      onOrderChange,
     ]
   );
 
-  useMemo(() => {
-    if (cachedOrderableOptions?.length) {
-      setOrderableOptions(cachedOrderableOptions);
-      return;
-    }
-
+  useEffect(() => {
     loadingModalService.open();
     stockCardSummaryRepositoryImpl
       .query({
@@ -145,12 +135,6 @@ const TransferRequestTab = ({
       });
   }, []);
 
-  useEffect(() => {
-    if (orderableOptions.length > 0) {
-      cacheOrderableOptions(orderableOptions, tabIndex);
-    }
-  }, [orderableOptions]);
-
   const updateData = (changedItems) => {
     const updatedOrder = {
       ...order,
@@ -158,14 +142,14 @@ const TransferRequestTab = ({
     };
 
     setOrder(updatedOrder);
-    updateOrderArray(updatedOrder);
+    onOrderChange(updatedOrder);
   };
 
   const addOrderable = () => {
     const updatedOrder = getUpdatedOrder(selectedOrderable, order);
     setOrder(updatedOrder);
     setSelectedOrderable('');
-    updateOrderArray(updatedOrder);
+    onOrderChange(updatedOrder);
   };
 
   const validateRow = (row) => {

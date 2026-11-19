@@ -28,12 +28,12 @@ const TransferRequestRouting = () => {
             <Breadcrumbs
                 routes={[
                     { path: "/stockmanagement/transferRequest", breadcrumb: formatMessage('transferRequest.title') },
-                    { path: "/stockmanagement/transferRequest/:orderIds",
+                    { path: "/stockmanagement/transferRequest/:orderId",
                         breadcrumb: formatMessage('transferRequest.edit') }
                 ]}
             />
             <Switch>
-                <Route path="/stockmanagement/transferRequest/:orderIds">
+                <Route path="/stockmanagement/transferRequest/:orderId">
                     <TransferRequestTable />
                 </Route>
                 <Route path="/stockmanagement/transferRequest/">

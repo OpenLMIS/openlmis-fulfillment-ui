@@ -67,46 +67,20 @@ export const getUpdatedOrder = (selectedOrderable, order) => {
   return updatedOrder;
 };
 
-export const getIsOrderValidArray = (orders) => {
-  return orders.map((order) => {
-    if (!order?.orderLineItems.length) {
-      return false;
-    }
-    const mappedOrderLineItems = order.orderLineItems.map(
-      (item) => item.orderedQuantity !== '' && item.orderedQuantity > 0
-    );
-    return Boolean(
-      !mappedOrderLineItems.includes(false) && order.id !== undefined
-    );
-  });
-};
-
-export const createOrderDisabled = (orders) => {
-  const mappedOrders = getIsOrderValidArray(orders);
-  return mappedOrders.length === 0 || mappedOrders.includes(false);
-};
-
-export const saveDraftDisabled = (orders) => {
-  const mappedOrders = orders.map((order) => order.id !== undefined);
-  return mappedOrders.length === 0 || mappedOrders.includes(false);
-};
-
-export const saveRequests = (orders, transferService) => Promise.all(
-    orders.map(order => transferService.updateRequest(order))
+export const isRequestValid = (order) => Boolean(
+    order?.id
+    && order.orderLineItems.length
+    && order.orderLineItems.every(item => item.orderedQuantity !== '' && item.orderedQuantity > 0)
 );
 
-export const sendRequests = (orders, transferService) => Promise.all(
-    orders.map(order => transferService.sendRequest(order))
-);
-
-export const deleteRequests = (orderIds, transferRequestService, notificationService) => transferRequestService
-    .delete(orderIds)
+export const deleteRequest = (orderId, transferRequestService, notificationService) => transferRequestService
+    .delete([orderId])
     .then(() => {
         notificationService.success('transferRequest.delete.success');
         return true;
     })
     .catch(() => false);
 
-export const loadRequests = (orderIds, orderService, stockCardSummaryRepositoryImpl) => Promise
-    .all(orderIds.map(orderId => orderService.get(orderId)))
-    .then(orders => Promise.all(orders.map(order => getOrderValue(order, stockCardSummaryRepositoryImpl))));
+export const loadRequest = (orderId, orderService, stockCardSummaryRepositoryImpl) => orderService
+    .get(orderId)
+    .then(order => getOrderValue(order, stockCardSummaryRepositoryImpl));

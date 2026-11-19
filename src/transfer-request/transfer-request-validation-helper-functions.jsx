@@ -26,12 +26,8 @@ const validateOrder = (orderToValidate) => {
     return _.uniq(errors);
 };
 
-export const isOrderInvalid = (orders, setShowValidationErrors, toast) => {
-    let validationErrors = [];
-
-    orders.forEach(order => {
-        validationErrors = validationErrors.concat(validateOrder(order));
-    });
+export const isRequestInvalid = (order, setShowValidationErrors, toast) => {
+    const validationErrors = validateOrder(order);
 
     if (validationErrors.length) {
         validationErrors.forEach(error => {
@@ -42,4 +38,4 @@ export const isOrderInvalid = (orders, setShowValidationErrors, toast) => {
     }
 
     return false;
-}
+};

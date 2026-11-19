@@ -131,7 +131,3 @@ export const requestSummaryColumns = (
     },
   },
 ];
-
-export const ORDER_STATUS = {
-  CREATING: 'CREATING',
-};
