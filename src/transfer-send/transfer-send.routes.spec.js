@@ -35,6 +35,7 @@ describe('openlmis.stockmanagement.transferSend state', function() {
         });
 
         this.state = this.$state.get('openlmis.stockmanagement.transferSend');
+        this.creationState = this.$state.get('openlmis.stockmanagement.transferSend.creation');
         this.partners = [{
             id: 'partner-id',
             name: 'Partner'
@@ -131,6 +132,121 @@ describe('openlmis.stockmanagement.transferSend state', function() {
 
         expect(result).toEqual(this.partners);
         expect(this.transferService.getPartners).toHaveBeenCalledWith('facility-id', 'program-id', 'SEND');
+    });
+
+    describe('creation', function() {
+
+        beforeEach(function() {
+            inject(function($injector) {
+                this.existingStockOrderableGroupsFactory = $injector.get('existingStockOrderableGroupsFactory');
+                this.moment = $injector.get('moment');
+            });
+
+            this.vaccine = {
+                id: 'vaccine-id'
+            };
+            this.syringe = {
+                id: 'syringe-id'
+            };
+            this.validLot = {
+                id: 'valid-lot',
+                expirationDate: this.moment().add(1, 'days')
+                    .format('YYYY-MM-DD')
+            };
+            this.expiringTodayLot = {
+                id: 'expiring-today-lot',
+                expirationDate: this.moment().format('YYYY-MM-DD')
+            };
+            this.expiredLot = {
+                id: 'expired-lot',
+                expirationDate: this.moment().subtract(1, 'days')
+                    .format('YYYY-MM-DD')
+            };
+        });
+
+        it('should open under the selection with SHIPMENTS_EDIT right', function() {
+            expect(this.creationState.url).toEqual('/creation');
+            expect(this.creationState.accessRights).toEqual([this.FULFILLMENT_RIGHTS.SHIPMENTS_EDIT]);
+            expect(this.creationState.isOffline).toBe(false);
+            expect(this.creationState.views['@openlmis'].controller).toEqual('TransferSendCreationController');
+            expect(this.creationState.views['@openlmis'].templateUrl)
+                .toEqual('transfer-send/transfer-send-creation.html');
+        });
+
+        it('should resolve the selected program, facility and destination', function() {
+            var stateParams = {
+                programId: 'program-2',
+                facilityId: 'facility-2',
+                destinationId: 'partner-2'
+            };
+
+            expect(this.creationState.resolve.program([{
+                id: 'program-1'
+            }, {
+                id: 'program-2'
+            }], stateParams)).toEqual({
+                id: 'program-2'
+            });
+
+            expect(this.creationState.resolve.facility([{
+                id: 'facility-1'
+            }, {
+                id: 'facility-2'
+            }], stateParams)).toEqual({
+                id: 'facility-2'
+            });
+
+            expect(this.creationState.resolve.destination([{
+                id: 'partner-1'
+            }, {
+                id: 'partner-2'
+            }], stateParams)).toEqual({
+                id: 'partner-2'
+            });
+        });
+
+        it('should resolve the products in stock without expired lots', function() {
+            var program = {
+                    id: 'program-id'
+                },
+                facility = {
+                    id: 'facility-id'
+                },
+                vaccineGroup = [{
+                    orderable: this.vaccine,
+                    lot: this.validLot
+                }, {
+                    orderable: this.vaccine,
+                    lot: this.expiringTodayLot
+                }, {
+                    orderable: this.vaccine,
+                    lot: this.expiredLot
+                }],
+                syringeGroup = [{
+                    orderable: this.syringe,
+                    lot: null
+                }],
+                expiredGroup = [{
+                    orderable: {
+                        id: 'expired-id'
+                    },
+                    lot: this.expiredLot
+                }];
+            spyOn(this.existingStockOrderableGroupsFactory, 'getGroupsWithNotZeroSoh')
+                .andReturn(this.$q.resolve([vaccineGroup, syringeGroup, expiredGroup]));
+
+            var result;
+            this.creationState.resolve.orderableGroups(this.existingStockOrderableGroupsFactory, program, facility,
+                this.moment).then(function(response) {
+                result = response;
+            });
+            this.$rootScope.$apply();
+
+            expect(this.existingStockOrderableGroupsFactory.getGroupsWithNotZeroSoh)
+                .toHaveBeenCalledWith({}, program, facility);
+
+            expect(result).toEqual([[vaccineGroup[0], vaccineGroup[1]], syringeGroup]);
+        });
     });
 
 });

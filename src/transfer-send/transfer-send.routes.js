@@ -56,6 +56,57 @@
                     return transferService.getPartners($stateParams.facilityId, $stateParams.programId, 'SEND');
                 }
             }
-        });
+        })
+            .state('openlmis.stockmanagement.transferSend.creation', {
+                url: '/creation',
+                isOffline: false,
+                accessRights: [FULFILLMENT_RIGHTS.SHIPMENTS_EDIT],
+                views: {
+                    '@openlmis': {
+                        controller: 'TransferSendCreationController',
+                        controllerAs: 'vm',
+                        templateUrl: 'transfer-send/transfer-send-creation.html'
+                    }
+                },
+                resolve: {
+                    program: function(programs, $stateParams) {
+                        return findById(programs, $stateParams.programId);
+                    },
+                    facility: function(facilities, $stateParams) {
+                        return findById(facilities, $stateParams.facilityId);
+                    },
+                    destination: function(partners, $stateParams) {
+                        return findById(partners, $stateParams.destinationId);
+                    },
+                    orderableGroups: function(existingStockOrderableGroupsFactory, program, facility, moment) {
+                        return existingStockOrderableGroupsFactory
+                            .getGroupsWithNotZeroSoh({}, program, facility)
+                            .then(function(groups) {
+                                return withoutExpiredLots(groups, moment);
+                            });
+                    }
+                }
+            });
+    }
+
+    function findById(items, id) {
+        return items.filter(function(item) {
+            return item.id === id;
+        })[0];
+    }
+
+    function withoutExpiredLots(groups, moment) {
+        var today = moment().format('YYYY-MM-DD');
+
+        return groups
+            .map(function(group) {
+                return group.filter(function(item) {
+                    return !item.lot || !item.lot.expirationDate ||
+                        moment(item.lot.expirationDate).format('YYYY-MM-DD') >= today;
+                });
+            })
+            .filter(function(group) {
+                return group.length > 0;
+            });
     }
 })();

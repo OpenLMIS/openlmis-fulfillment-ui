@@ -29,7 +29,12 @@
         'openlmis-auth',
         'openlmis-rights',
         'referencedata-program',
-        'referencedata-facilities-permissions'
+        'referencedata-facilities-permissions',
+        'openlmis-date',
+        'stock-orderable-group',
+        'stock-adjustment-creation',
+        'openlmis-quantity-unit-toggle',
+        'openlmis-quantity-unit-input'
     ]);
 
 })();

@@ -4,5 +4,21 @@
   "transferSend.facility": "Sending facility",
   "transferSend.destination": "Destination",
   "transferSend.noPartners": "This facility has no facilities it can send stock to for this program. Valid destinations and valid sources need to be configured for both facilities.",
-  "transferSend.proceed": "Select products"
+  "transferSend.proceed": "Select products",
+  "transferSend.creation.title": "Reallocate stock from ${facility} to ${destination}: ${program}",
+  "transferSend.product": "Product",
+  "transferSend.productCode": "Product code",
+  "transferSend.packSize": "Pack size",
+  "transferSend.lotCode": "Lot code",
+  "transferSend.noLot": "No lot defined",
+  "transferSend.expiryDate": "Expiry date",
+  "transferSend.stockOnHand": "Stock on hand",
+  "transferSend.quantity": "Quantity",
+  "transferSend.actions": "Actions",
+  "transferSend.add": "Add",
+  "transferSend.remove": "Remove",
+  "transferSend.noProducts": "No products added",
+  "transferSend.positiveQuantity": "You must input a positive number",
+  "transferSend.quantityGreaterThanStockOnHand": "Quantity cannot be greater than stock on hand",
+  "transferSend.wholePacksOnly": "Stock can only be reallocated in whole packs"
 }
