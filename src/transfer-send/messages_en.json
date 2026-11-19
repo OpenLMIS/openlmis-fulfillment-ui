@@ -17,6 +17,7 @@
   "transferSend.actions": "Actions",
   "transferSend.add": "Add",
   "transferSend.remove": "Remove",
+  "transferSend.alreadyAdded": "This product and lot are already on the list",
   "transferSend.noProducts": "No products added",
   "transferSend.positiveQuantity": "You must input a positive number",
   "transferSend.quantityGreaterThanStockOnHand": "Quantity cannot be greater than stock on hand",

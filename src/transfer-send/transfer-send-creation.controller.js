@@ -79,12 +79,16 @@
          * @name addProduct
          *
          * @description
-         * Adds the selected product and lot, unless that lot is already on the list.
+         * Adds the selected product and lot. A lot already on the list is not added again; the user is told so.
          */
         function addProduct() {
             var item = orderableGroupService.findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
 
-            if (!item || isAdded(item)) {
+            if (!item) {
+                return;
+            }
+            if (isAdded(item)) {
+                notificationService.info('transferSend.alreadyAdded');
                 return;
             }
 

@@ -172,6 +172,18 @@ describe('TransferSendCreationController', function() {
             expect(this.vm.lineItems.length).toBe(1);
         });
 
+        it('should tell the user when the lot is already on the list', function() {
+            spyOn(this.notificationService, 'info');
+
+            this.addLot(this.vaccineGroup, this.firstLot);
+
+            expect(this.notificationService.info).not.toHaveBeenCalled();
+
+            this.addLot(this.vaccineGroup, this.firstLot);
+
+            expect(this.notificationService.info).toHaveBeenCalledWith('transferSend.alreadyAdded');
+        });
+
         it('should add other lots of the same product', function() {
             this.addLot(this.vaccineGroup, this.firstLot);
             this.addLot(this.vaccineGroup, this.secondLot);
