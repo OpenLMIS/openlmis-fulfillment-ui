@@ -103,7 +103,7 @@ const TransferRequestForm = () => {
 
     useEffect(
         () => {
-            if (programOptions && programOptions.length === 1) {
+            if (programOptions?.length === 1) {
                 setSelectedProgram(programOptions[0].value);
             }
         },
@@ -112,7 +112,7 @@ const TransferRequestForm = () => {
 
     useEffect(
         () => {
-            if (requestingFacilityOptions && requestingFacilityOptions.length === 1) {
+            if (requestingFacilityOptions?.length === 1) {
                 setSelectedRequestingFacility(requestingFacilityOptions[0].value);
             }
         },
@@ -121,7 +121,7 @@ const TransferRequestForm = () => {
 
     useEffect(
         () => {
-            if (supplyingFacilityOptions && supplyingFacilityOptions.length === 1) {
+            if (supplyingFacilityOptions?.length === 1) {
                 setSelectedSupplyingFacility(supplyingFacilityOptions[0].value);
             }
         },

@@ -24,7 +24,7 @@ const filterOptions = options => {
 
         const lowercaseSearchValue = searchValue.toLowerCase();
 
-        return options.filter(option => option.name && option.name.toLowerCase().includes(lowercaseSearchValue));
+        return options.filter(option => option.name?.toLowerCase().includes(lowercaseSearchValue));
     };
 };
 

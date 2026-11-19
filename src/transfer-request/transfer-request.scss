@@ -70,7 +70,7 @@
         position: relative;
 
         &:before {
-          font-family: "FONTAWESOME";
+          font-family: "FONTAWESOME", sans-serif;
           content: "\f0d7"; // fa-caret-down
           position: absolute;
           left: 1em;
