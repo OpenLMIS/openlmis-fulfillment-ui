@@ -30,6 +30,13 @@
             priority: 46,
             showInNavigation: SHOW_TRANSFERS,
             accessRights: [FULFILLMENT_RIGHTS.SHIPMENTS_EDIT],
+            views: {
+                '@openlmis': {
+                    controller: 'TransferSendController',
+                    controllerAs: 'vm',
+                    templateUrl: 'transfer-send/transfer-send.html'
+                }
+            },
             resolve: {
                 user: function(authorizationService) {
                     return authorizationService.getUser();

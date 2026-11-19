@@ -55,6 +55,11 @@ describe('openlmis.stockmanagement.transferSend state', function() {
         expect(this.state.showInNavigation).toBe(this.SHOW_TRANSFERS);
     });
 
+    it('should show the selection form', function() {
+        expect(this.state.views['@openlmis'].controller).toEqual('TransferSendController');
+        expect(this.state.views['@openlmis'].templateUrl).toEqual('transfer-send/transfer-send.html');
+    });
+
     it('should not be available offline', function() {
         expect(this.state.isOffline).toBe(false);
     });

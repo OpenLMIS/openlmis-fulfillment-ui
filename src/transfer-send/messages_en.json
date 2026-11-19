@@ -1,3 +1,8 @@
 {
-  "transferSend.title": "Reallocate Stock"
+  "transferSend.title": "Reallocate Stock",
+  "transferSend.program": "Program",
+  "transferSend.facility": "Sending facility",
+  "transferSend.destination": "Destination",
+  "transferSend.noPartners": "This facility has no facilities it can send stock to for this program. Valid destinations and valid sources need to be configured for both facilities.",
+  "transferSend.proceed": "Select products"
 }
