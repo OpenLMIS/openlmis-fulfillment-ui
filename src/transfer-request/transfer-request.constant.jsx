@@ -3,7 +3,7 @@ import QuantityUnitInput from '../openlmis-quantity-unit-input/openlmis-quantity
 import TrashButton from '../react-components/buttons/trash-button';
 import getService from '../react-components/utils/angular-utils';
 
-const orderTableDefaultColumns = (
+export const requestTableColumns = (
   formatMessage,
   showInDoses,
   updateData,
@@ -78,7 +78,7 @@ const orderTableDefaultColumns = (
   ];
 };
 
-const orderReadonlyTableColumns = (
+export const requestSummaryColumns = (
   formatMessage,
   showInDoses,
   quantityUnitCalculateService
@@ -131,27 +131,6 @@ const orderReadonlyTableColumns = (
     },
   },
 ];
-
-export const orderTableColumns = (
-  isTableReadOnly,
-  formatMessage,
-  showInDoses,
-  updateData,
-  quantityUnitCalculateService
-) => {
-  return isTableReadOnly
-    ? orderReadonlyTableColumns(
-        formatMessage,
-        showInDoses,
-        quantityUnitCalculateService
-      )
-    : orderTableDefaultColumns(
-        formatMessage,
-        showInDoses,
-        updateData,
-        quantityUnitCalculateService
-      );
-};
 
 export const ORDER_STATUS = {
   CREATING: 'CREATING',

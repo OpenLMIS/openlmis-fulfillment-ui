@@ -1,7 +1,6 @@
 {
   "dependencies": {
-    "react-select-search": "^3.0.9",
-    "@tippyjs/react": "^4.2.6"
+    "react-select-search": "^3.0.9"
   },
   "engines": {
     "yarn": ">= 1.0.0"

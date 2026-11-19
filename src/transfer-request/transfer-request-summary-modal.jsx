@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import Modal from '../react-components/modals/Modal';
 import EditableTable from '../react-components/table/editable-table';
-import { orderTableColumns } from './transfer-request.constant';
+import { requestSummaryColumns } from './transfer-request.constant';
 import TabNavigation from '../react-components/tab-navigation/tab-navigation';
 import getService from '../react-components/utils/angular-utils';
 
@@ -11,7 +11,7 @@ const TransferRequestSummaryModal = ({ isOpen, orders, onSaveClick, onModalClose
     const localStorageService = useMemo(() => getService('localStorageService'), []);
     const QUANTITY_UNIT = useMemo(() => getService('QUANTITY_UNIT'), []);
     const showInDoses = (localStorageService.get('quantityUnit') || QUANTITY_UNIT.DOSES) === QUANTITY_UNIT.DOSES;
-    const columns = useMemo(() => orderTableColumns(true, formatMessage, showInDoses, null,
+    const columns = useMemo(() => requestSummaryColumns(formatMessage, showInDoses,
         quantityUnitCalculateService), [showInDoses]);
     const [currentTab, setCurrentTab] = useState(0);
 

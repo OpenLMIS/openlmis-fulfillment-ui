@@ -1,9 +1,7 @@
 {
   "transferRequest.title": "Request Transfer",
-  "transferRequest": "Request Transfer",
   "transferRequest.cancel": "Cancel",
   "transferRequest.loading": "Loading",
-  "transferRequest.view": "View",
   "transferRequest.edit": "Edit",
   "transferRequest.create": "Create Request",
   "transferRequest.saveDraft": "Save Draft",
@@ -30,8 +28,6 @@
   "transferRequest.table.productAlreadyAdded": "This product was already added to the table",
   "transferRequest.info.status": "Status",
   "transferRequest.info.dateCreated": "Date Created",
-  "transferRequest.searchSelect.placeholder": "Select an option",
-  "transferRequest.searchSelect.empty.message": "Not found",
   "transferRequest.noPartners": "This facility has no transfer partners for the selected program.",
   "transferRequest.send": "Send Request",
   "transferRequest.save.success": "Transfer request saved successfully"

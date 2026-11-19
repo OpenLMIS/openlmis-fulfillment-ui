@@ -33,7 +33,7 @@ import TransferRequestSummaryModal from './transfer-request-summary-modal';
 import TabNavigation from '../react-components/tab-navigation/tab-navigation';
 import { ORDER_STATUS } from './transfer-request.constant';
 
-const TransferRequestTable = ({ isReadOnly }) => {
+const TransferRequestTable = () => {
     const [orders, setOrders] = useState([]);
     const [currentTab, setCurrentTab] = useState(0);
     const [showValidationErrors, setShowValidationErrors] = useState(false);
@@ -166,7 +166,7 @@ const TransferRequestTable = ({ isReadOnly }) => {
                 />
             }
             <div className="page-header-responsive">
-                <h2>{ formatMessage('transferRequest') }</h2>
+                <h2>{ formatMessage('transferRequest.title') }</h2>
             </div>
             {
                 orders.length > 0 &&
@@ -185,7 +185,7 @@ const TransferRequestTable = ({ isReadOnly }) => {
                                 },
                                 onOrderDelete,
                                 formatMessage,
-                                isTabValidArray: !isReadOnly ? getIsOrderValidArray(orders) : undefined
+                                isTabValidArray: getIsOrderValidArray(orders)
                             }
                         }
                     ></TabNavigation>
@@ -198,7 +198,6 @@ const TransferRequestTable = ({ isReadOnly }) => {
                         passedOrder={orders[currentTab]}
                         stockCardSummaryRepositoryImpl={stockCardSummaryRepositoryImpl}
                         showValidationErrors={showValidationErrors}
-                        isTableReadOnly={isReadOnly}
                         tabIndex={currentTab}
                         cachedOrderableOptions={cachedOrderableOptions[currentTab]}
                         cacheOrderableOptions={(orderableOptions, tabIndex) => {
@@ -216,8 +215,6 @@ const TransferRequestTable = ({ isReadOnly }) => {
                 )}
             </div>
             <div className="page-footer">
-                {
-                    isReadOnly ||
                     <>
                         <button
                             type="button"
@@ -238,7 +235,6 @@ const TransferRequestTable = ({ isReadOnly }) => {
                             onClick={() => setIsSummaryModalOpen(true)}
                         >{formatMessage('transferRequest.send')}</button>
                     </>
-                }
             </div>
         </div>
     );

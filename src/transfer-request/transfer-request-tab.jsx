@@ -1,4 +1,3 @@
-import Tippy from '@tippyjs/react';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import QuantityUnitToggle from '../openlmis-quantity-unit-toggle/quantity-unit-toggle';
@@ -8,7 +7,7 @@ import TransferRequestInfo from './transfer-request-info';
 
 import { getUpdatedOrder } from './transfer-request-table-helper-functions';
 import { validateOrderItem } from './transfer-request-validation-helper-functions';
-import { orderTableColumns } from './transfer-request.constant';
+import { requestTableColumns } from './transfer-request.constant';
 import { SearchSelect } from './search-select';
 
 const QUANTITY_UNIT_KEY = 'quantityUnit';
@@ -17,7 +16,6 @@ const TransferRequestTab = ({
   passedOrder,
   updateOrderArray,
   showValidationErrors,
-  isTableReadOnly,
   stockCardSummaryRepositoryImpl,
   tabIndex,
   cacheOrderableOptions,
@@ -184,15 +182,13 @@ const TransferRequestTab = ({
 
   const columns = useMemo(
     () =>
-      orderTableColumns(
-        isTableReadOnly,
+      requestTableColumns(
         formatMessage,
         showInDoses,
         updateData,
         quantityUnitCalculateService
       ),
     [
-      isTableReadOnly,
       formatMessage,
       showInDoses,
       updateData,
@@ -207,38 +203,28 @@ const TransferRequestTab = ({
         <div className='transfer-request-table-container'>
           <div className='transfer-request-table'>
             <div className='transfer-request-table-header'>
-              {!isTableReadOnly && (
-                <SearchSelect
-                  options={orderableOptions}
-                  value={selectedOrderable}
-                  onChange={(value) => setSelectedOrderable(value)}
-                  objectKey={'id'}
-                  disabled={isTableReadOnly}
-                >
-                  {formatMessage('transferRequest.table.product')}
-                </SearchSelect>
-              )}
+              <SearchSelect
+                options={orderableOptions}
+                value={selectedOrderable}
+                onChange={(value) => setSelectedOrderable(value)}
+                objectKey={'id'}
+              >
+                {formatMessage('transferRequest.table.product')}
+              </SearchSelect>
               <div className='buttons-container'>
-                <Tippy
-                  content={formatMessage(
-                    'transferRequest.table.productAlreadyAdded'
-                  )}
-                  disabled={!isProductAdded}
+                <div
+                  title={isProductAdded
+                    ? formatMessage('transferRequest.table.productAlreadyAdded')
+                    : undefined}
                 >
-                  {!isTableReadOnly && (
-                    <div>
-                      <button
-                        className={'add'}
-                        onClick={addOrderable}
-                        disabled={!selectedOrderable || isProductAdded}
-                      >
-                        {formatMessage(
-                          'transferRequest.table.addProduct'
-                        )}
-                      </button>
-                    </div>
-                  )}
-                </Tippy>
+                  <button
+                    className={'add'}
+                    onClick={addOrderable}
+                    disabled={!selectedOrderable || isProductAdded}
+                  >
+                    {formatMessage('transferRequest.table.addProduct')}
+                  </button>
+                </div>
                 <QuantityUnitToggle
                   selectedUnit={currentQuantityUnit}
                   onUnitChange={handleQuantityUnitChange}
@@ -252,7 +238,6 @@ const TransferRequestTab = ({
               updateData={updateData}
               validateRow={validateRow}
               showValidationErrors={showValidationErrors}
-              isReadOnly={isTableReadOnly}
               pageSize={6}
             />
           </div>
