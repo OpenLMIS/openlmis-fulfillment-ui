@@ -73,8 +73,8 @@ export const isRequestValid = (order) => Boolean(
     && order.orderLineItems.every(item => item.orderedQuantity !== '' && item.orderedQuantity > 0)
 );
 
-export const deleteRequest = (orderId, transferRequestService, notificationService) => transferRequestService
-    .delete([orderId])
+export const deleteRequest = (orderId, transferService, notificationService) => transferService
+    .deleteRequest(orderId)
     .then(() => {
         notificationService.success('transferRequest.delete.success');
         return true;

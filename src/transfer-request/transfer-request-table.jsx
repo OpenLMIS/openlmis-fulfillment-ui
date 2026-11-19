@@ -34,7 +34,7 @@ const TransferRequestTable = () => {
 
     const history = useHistory();
 
-    const orderService = useMemo(() => getService('transferRequestService'), []);
+    const orderService = useMemo(() => getService('orderService'), []);
     const transferService = useMemo(() => getService('transferService'), []);
     const notificationService = useMemo(() => getService('notificationService'), []);
     const { confirmDestroy } = useMemo(() => getService('confirmService'), []);
@@ -87,7 +87,7 @@ const TransferRequestTable = () => {
 
     const onDelete = () => {
         confirmDestroy('transferRequest.delete.prompt', 'transferRequest.delete')
-            .then(() => deleteRequest(order.id, orderService, notificationService))
+            .then(() => deleteRequest(order.id, transferService, notificationService))
             .then((deleted) => {
                 if (deleted) {
                     history.push(FORM_PATH);

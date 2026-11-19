@@ -1,7 +1,11 @@
 import React from 'react';
 import QuantityUnitInput from '../openlmis-quantity-unit-input/openlmis-quantity-unit-input';
 import TrashButton from '../react-components/buttons/trash-button';
-import getService from '../react-components/utils/angular-utils';
+
+const packSizeColumn = (formatMessage) => ({
+  Header: formatMessage('transferRequest.table.packSize'),
+  accessor: 'orderable.netContent',
+});
 
 export const requestTableColumns = (
   formatMessage,
@@ -18,7 +22,7 @@ export const requestTableColumns = (
       Header: formatMessage('transferRequest.table.product'),
       accessor: 'orderable.fullProductName',
     },
-    getService('transferRequestPackSizeColumnFactory').build(formatMessage),
+    packSizeColumn(formatMessage),
     {
       Header: formatMessage('transferRequest.table.soh'),
       accessor: 'soh',
@@ -91,7 +95,7 @@ export const requestSummaryColumns = (
     Header: formatMessage('transferRequest.table.product'),
     accessor: 'orderable.fullProductName',
   },
-  getService('transferRequestPackSizeColumnFactory').build(formatMessage),
+  packSizeColumn(formatMessage),
   {
     Header: formatMessage('transferRequest.table.soh'),
     accessor: 'soh',

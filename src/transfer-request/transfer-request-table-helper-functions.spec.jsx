@@ -60,7 +60,7 @@ describe('transfer request table helpers', function() {
 
     describe('deleteRequest', function() {
 
-        var $q, $rootScope, transferRequestService, notificationService;
+        var $q, $rootScope, transferService, notificationService;
 
         beforeEach(function() {
             inject(function($injector) {
@@ -68,32 +68,32 @@ describe('transfer request table helpers', function() {
                 $rootScope = $injector.get('$rootScope');
             });
 
-            transferRequestService = jasmine.createSpyObj('transferRequestService', ['delete']);
+            transferService = jasmine.createSpyObj('transferService', ['deleteRequest']);
             notificationService = jasmine.createSpyObj('notificationService', ['success', 'error']);
         });
 
         it('should delete the request and report it', function() {
-            transferRequestService.delete.andReturn($q.resolve());
+            transferService.deleteRequest.andReturn($q.resolve());
 
             var deleted;
-            deleteRequest('order-id', transferRequestService, notificationService)
+            deleteRequest('order-id', transferService, notificationService)
                 .then(function(result) {
                     deleted = result;
                 });
             $rootScope.$apply();
 
-            expect(transferRequestService.delete).toHaveBeenCalledWith(['order-id']);
+            expect(transferService.deleteRequest).toHaveBeenCalledWith('order-id');
             expect(notificationService.success).toHaveBeenCalledWith('transferRequest.delete.success');
             expect(deleted).toBe(true);
         });
 
         it('should leave a failed delete to the server error handler and settle', function() {
-            transferRequestService.delete.andReturn($q.reject({
+            transferService.deleteRequest.andReturn($q.reject({
                 status: 400
             }));
 
             var deleted;
-            deleteRequest('order-id', transferRequestService, notificationService)
+            deleteRequest('order-id', transferService, notificationService)
                 .then(function(result) {
                     deleted = result;
                 });

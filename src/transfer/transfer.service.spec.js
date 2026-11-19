@@ -180,4 +180,23 @@ describe('transferService', function() {
             expect(rejection.data.message).toEqual('Quantity required');
         });
     });
+
+    describe('deleteRequest', function() {
+
+        it('should delete the request through /api/orders', function() {
+            $httpBackend.expect('DELETE', fulfillmentUrlFactory('/api/orders'), {
+                ids: ['order-id']
+            }).respond(204);
+
+            var resolved = false;
+            transferService.deleteRequest('order-id')
+                .then(function() {
+                    resolved = true;
+                });
+            $httpBackend.flush();
+            $rootScope.$apply();
+
+            expect(resolved).toBe(true);
+        });
+    });
 });

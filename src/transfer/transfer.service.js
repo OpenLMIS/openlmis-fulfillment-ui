@@ -28,9 +28,9 @@
         .module('transfer')
         .service('transferService', service);
 
-    service.$inject = ['$resource', 'fulfillmentUrlFactory'];
+    service.$inject = ['$resource', '$http', 'fulfillmentUrlFactory'];
 
-    function service($resource, fulfillmentUrlFactory) {
+    function service($resource, $http, fulfillmentUrlFactory) {
         var resource = $resource(fulfillmentUrlFactory('/api/transfers/requests/:id'), {}, {
             getPartners: {
                 method: 'GET',
@@ -54,6 +54,7 @@
         this.createRequest = createRequest;
         this.updateRequest = updateRequest;
         this.sendRequest = sendRequest;
+        this.deleteRequest = deleteRequest;
 
         /**
          * @ngdoc method
@@ -123,6 +124,30 @@
             return resource.sendRequest({
                 id: order.id
             }, order).$promise;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf transfer.transferService
+         * @name deleteRequest
+         *
+         * @description
+         * Deletes a transfer request that has not been sent yet.
+         *
+         * @param  {String}  orderId the id of the request
+         * @return {Promise}         resolved once the request is deleted
+         */
+        function deleteRequest(orderId) {
+            return $http({
+                method: 'DELETE',
+                url: fulfillmentUrlFactory('/api/orders'),
+                data: {
+                    ids: [orderId]
+                },
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                }
+            });
         }
     }
 })();
