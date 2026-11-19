@@ -172,11 +172,12 @@
          * @methodOf transfer-send.controller:TransferSendCreationController
          * @name canSubmit
          *
-         * @return {boolean} true if there is at least one line item and every line item is valid
+         * @return {boolean} true if there is at least one line item and none shows an error; a quantity not
+         *                  entered yet doesn't count, so that submit can point at it
          */
         function canSubmit() {
-            return vm.lineItems.length > 0 && vm.lineItems.every(function(lineItem) {
-                return lineItem.$errors.quantityInvalid === false;
+            return vm.lineItems.length > 0 && !vm.lineItems.some(function(lineItem) {
+                return lineItem.$errors.quantityInvalid;
             });
         }
 

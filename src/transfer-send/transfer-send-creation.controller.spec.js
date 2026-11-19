@@ -292,11 +292,11 @@ describe('TransferSendCreationController', function() {
             expect(this.vm.canSubmit()).toBe(false);
         });
 
-        it('should not allow submitting a line item without a quantity entered', function() {
+        it('should allow submitting while a quantity is still to be entered, so submit can point at it', function() {
             this.validateDoses(this.addLot(this.vaccineGroup, this.firstLot), 10);
             this.addLot(this.vaccineGroup, this.secondLot);
 
-            expect(this.vm.canSubmit()).toBe(false);
+            expect(this.vm.canSubmit()).toBe(true);
         });
 
         it('should allow submitting when every line item is valid', function() {
@@ -333,6 +333,17 @@ describe('TransferSendCreationController', function() {
             this.$rootScope.$apply();
 
             expect(this.syringeLine.$errors.quantityInvalid).toEqual('transferSend.quantityGreaterThanStockOnHand');
+            expect(this.confirmService.confirm).not.toHaveBeenCalled();
+            expect(this.transferService.send).not.toHaveBeenCalled();
+        });
+
+        it('should flag a line item without a quantity instead of sending', function() {
+            this.syringeLine.quantity = undefined;
+
+            this.vm.submit();
+            this.$rootScope.$apply();
+
+            expect(this.syringeLine.$errors.quantityInvalid).toEqual('openlmisForm.required');
             expect(this.confirmService.confirm).not.toHaveBeenCalled();
             expect(this.transferService.send).not.toHaveBeenCalled();
         });
