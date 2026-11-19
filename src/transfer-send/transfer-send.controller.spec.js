@@ -69,6 +69,40 @@ describe('TransferSendController', function() {
             expect(this.vm.facility).toBe(this.facilities[0]);
         });
 
+        it('should load the partners of the only program and facility', function() {
+            this.programs = [this.programs[0]];
+            this.facilities = [this.facilities[0]];
+
+            this.initController();
+
+            expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.transferSend', {
+                programId: this.programs[0].id,
+                facilityId: this.facilities[0].id,
+                destinationId: null
+            }, {
+                reload: true
+            });
+        });
+
+        it('should not reload once the program and facility are in the url', function() {
+            this.programs = [this.programs[0]];
+            this.facilities = [this.facilities[0]];
+            this.stateParams.programId = this.programs[0].id;
+            this.stateParams.facilityId = this.facilities[0].id;
+
+            this.initController();
+
+            expect(this.$state.go).not.toHaveBeenCalled();
+        });
+
+        it('should not reload while a program or a facility is still to be chosen', function() {
+            this.facilities = [this.facilities[0]];
+
+            this.initController();
+
+            expect(this.$state.go).not.toHaveBeenCalled();
+        });
+
         it('should not preselect a program or a facility out of several', function() {
             this.initController();
 

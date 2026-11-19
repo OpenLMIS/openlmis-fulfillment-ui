@@ -45,6 +45,11 @@
             vm.facility = findById(facilities, $stateParams.facilityId) || getOnly(facilities);
             vm.destination = findById(partners, $stateParams.destinationId);
             vm.noPartners = Boolean($stateParams.programId && $stateParams.facilityId) && partners.length === 0;
+
+            // a select with a single option is filled without a change event, so nothing else would load the partners
+            if (!($stateParams.programId && $stateParams.facilityId)) {
+                search();
+            }
         }
 
         /**
