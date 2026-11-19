@@ -229,6 +229,22 @@ describe('TransferSendCreationController', function() {
             expect(this.validateDoses(syringes, 3).$errors.quantityInvalid).toBe(false);
         });
 
+        it('should reject any quantity of a product without a pack size', function() {
+            var unpacked = this.addLot([{
+                orderable: {
+                    id: 'unpacked-id',
+                    netContent: 0,
+                    meta: {
+                        versionNumber: 1
+                    }
+                },
+                lot: null,
+                stockOnHand: 10
+            }], null);
+
+            expect(this.validateDoses(unpacked, 5).$errors.quantityInvalid).toEqual('transferSend.noPackSize');
+        });
+
         it('should require a quantity when the packs input is empty', function() {
             this.vm.quantityUnit = this.QUANTITY_UNIT.PACKS;
             this.lineItem.quantityInPacks = '';

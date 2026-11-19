@@ -126,7 +126,9 @@
         function validateQuantity(lineItem) {
             var quantity = lineItem.quantity;
 
-            if (isPacksInputEmpty(lineItem) || isBlank(quantity)) {
+            if (isWithoutPackSize(lineItem)) {
+                lineItem.$errors.quantityInvalid = messageService.get('transferSend.noPackSize');
+            } else if (isPacksInputEmpty(lineItem) || isBlank(quantity)) {
                 lineItem.$errors.quantityInvalid = messageService.get('openlmisForm.required');
             } else if (quantity < 1) {
                 lineItem.$errors.quantityInvalid = messageService.get('transferSend.positiveQuantity');
@@ -244,6 +246,10 @@
 
         function getLotId(item) {
             return item.lot ? item.lot.id : null;
+        }
+
+        function isWithoutPackSize(lineItem) {
+            return !lineItem.orderable.netContent;
         }
 
         function isPacksInputEmpty(lineItem) {

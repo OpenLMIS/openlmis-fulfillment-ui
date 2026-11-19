@@ -21,6 +21,7 @@
   "transferSend.positiveQuantity": "You must input a positive number",
   "transferSend.quantityGreaterThanStockOnHand": "Quantity cannot be greater than stock on hand",
   "transferSend.wholePacksOnly": "Stock can only be reallocated in whole packs",
+  "transferSend.noPackSize": "This product has no pack size, so it cannot be reallocated",
   "transferSend.send": "Send",
   "transferSend.confirm": "Send ${count} line item(s) of ${program} from ${facility} to ${destination}? The stock is issued now, and the destination receives it through its proof of delivery.",
   "transferSend.submitted": "Stock sent successfully"
