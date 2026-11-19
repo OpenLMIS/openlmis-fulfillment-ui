@@ -30,12 +30,14 @@
         .controller('TransferSendCreationController', controller);
 
     controller.$inject = [
-        'program', 'facility', 'destination', 'orderableGroups', 'orderableGroupService',
-        'quantityUnitCalculateService', 'messageService', 'QUANTITY_UNIT'
+        '$state', 'program', 'facility', 'destination', 'orderableGroups', 'orderableGroupService',
+        'quantityUnitCalculateService', 'messageService', 'QUANTITY_UNIT', 'confirmService', 'loadingModalService',
+        'notificationService', 'transferService'
     ];
 
-    function controller(program, facility, destination, orderableGroups, orderableGroupService,
-                        quantityUnitCalculateService, messageService, QUANTITY_UNIT) {
+    function controller($state, program, facility, destination, orderableGroups, orderableGroupService,
+                        quantityUnitCalculateService, messageService, QUANTITY_UNIT, confirmService,
+                        loadingModalService, notificationService, transferService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -45,6 +47,8 @@
         vm.validateQuantity = validateQuantity;
         vm.showInDoses = showInDoses;
         vm.recalculateSOHQuantity = recalculateSOHQuantity;
+        vm.canSubmit = canSubmit;
+        vm.submit = submit;
 
         function onInit() {
             vm.program = program;
@@ -159,6 +163,77 @@
          */
         function recalculateSOHQuantity(stockOnHand, netContent) {
             return quantityUnitCalculateService.recalculateSOHQuantity(stockOnHand, netContent, showInDoses());
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf transfer-send.controller:TransferSendCreationController
+         * @name canSubmit
+         *
+         * @return {boolean} true if there is at least one line item and every line item is valid
+         */
+        function canSubmit() {
+            return vm.lineItems.length > 0 && vm.lineItems.every(function(lineItem) {
+                return lineItem.$errors.quantityInvalid === false;
+            });
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf transfer-send.controller:TransferSendCreationController
+         * @name submit
+         *
+         * @description
+         * Validates every line item, asks for confirmation and sends the stock. Once sent, the page starts
+         * over with the same program and facility. On an error the line items stay for correction.
+         */
+        function submit() {
+            vm.lineItems.forEach(validateQuantity);
+            if (!canSubmit()) {
+                return;
+            }
+
+            confirmService.confirm(messageService.get('transferSend.confirm', {
+                count: vm.lineItems.length,
+                facility: vm.facility.name,
+                destination: vm.destination.name,
+                program: vm.program.name
+            }), 'transferSend.send')
+                .then(function() {
+                    loadingModalService.open();
+                    return transferService.send(buildTransfer())
+                        .then(function() {
+                            notificationService.success('transferSend.submitted');
+                            $state.go('openlmis.stockmanagement.transferSend', {
+                                programId: vm.program.id,
+                                facilityId: vm.facility.id,
+                                destinationId: null
+                            }, {
+                                reload: true
+                            });
+                        })
+                        // the server error handler already shows the backend message; the line items stay
+                        .catch(angular.noop)
+                        .finally(loadingModalService.close);
+                });
+        }
+
+        function buildTransfer() {
+            return {
+                programId: vm.program.id,
+                supplyingFacilityId: vm.facility.id,
+                receivingFacilityId: vm.destination.id,
+                lineItems: vm.lineItems.map(function(lineItem) {
+                    return {
+                        orderable: {
+                            id: lineItem.orderable.id,
+                            versionNumber: lineItem.orderable.meta.versionNumber
+                        },
+                        lotId: getLotId(lineItem),
+                        quantity: lineItem.quantity / lineItem.orderable.netContent
+                    };
+                })
+            };
         }
 
         function isAdded(item) {

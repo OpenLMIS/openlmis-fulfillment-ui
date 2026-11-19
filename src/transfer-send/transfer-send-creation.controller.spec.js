@@ -28,6 +28,13 @@ describe('TransferSendCreationController', function() {
             this.messageService = $injector.get('messageService');
             this.quantityUnitCalculateService = $injector.get('quantityUnitCalculateService');
             this.QUANTITY_UNIT = $injector.get('QUANTITY_UNIT');
+            this.$q = $injector.get('$q');
+            this.$rootScope = $injector.get('$rootScope');
+            this.$state = $injector.get('$state');
+            this.confirmService = $injector.get('confirmService');
+            this.loadingModalService = $injector.get('loadingModalService');
+            this.notificationService = $injector.get('notificationService');
+            this.transferService = $injector.get('transferService');
         });
 
         spyOn(this.messageService, 'get').andCallFake(function(key) {
@@ -79,13 +86,16 @@ describe('TransferSendCreationController', function() {
 
         this.vm = this.$controller('TransferSendCreationController', {
             program: {
-                id: 'program-id'
+                id: 'program-id',
+                name: 'EPI'
             },
             facility: {
-                id: 'facility-id'
+                id: 'facility-id',
+                name: 'Sender'
             },
             destination: {
-                id: 'partner-id'
+                id: 'partner-id',
+                name: 'Receiver'
             },
             orderableGroups: [this.vaccineGroup, this.syringeGroup]
         });
@@ -250,6 +260,161 @@ describe('TransferSendCreationController', function() {
 
             expect(this.vm.recalculateSOHQuantity(20, 10)).toEqual('2 ( +0 )');
             expect(this.quantityUnitCalculateService.recalculateSOHQuantity).toHaveBeenCalledWith(20, 10, false);
+        });
+    });
+
+    describe('canSubmit', function() {
+
+        it('should not allow submitting without line items', function() {
+            expect(this.vm.canSubmit()).toBe(false);
+        });
+
+        it('should not allow submitting while a line item is invalid', function() {
+            this.validateDoses(this.addLot(this.vaccineGroup, this.firstLot), 10);
+            this.validateDoses(this.addLot(this.vaccineGroup, this.secondLot), 15);
+
+            expect(this.vm.canSubmit()).toBe(false);
+        });
+
+        it('should not allow submitting a line item without a quantity entered', function() {
+            this.validateDoses(this.addLot(this.vaccineGroup, this.firstLot), 10);
+            this.addLot(this.vaccineGroup, this.secondLot);
+
+            expect(this.vm.canSubmit()).toBe(false);
+        });
+
+        it('should allow submitting when every line item is valid', function() {
+            this.validateDoses(this.addLot(this.vaccineGroup, this.firstLot), 10);
+            this.validateDoses(this.addLot(this.syringeGroup, null), 3);
+
+            expect(this.vm.canSubmit()).toBe(true);
+        });
+    });
+
+    describe('submit', function() {
+
+        beforeEach(function() {
+            this.vm.quantityUnit = this.QUANTITY_UNIT.DOSES;
+            this.vaccineLine = this.addLot(this.vaccineGroup, this.secondLot);
+            this.syringeLine = this.addLot(this.syringeGroup, null);
+            this.vaccineLine.quantity = 20;
+            this.syringeLine.quantity = 3;
+
+            this.sendDeferred = this.$q.defer();
+            spyOn(this.confirmService, 'confirm').andReturn(this.$q.resolve());
+            spyOn(this.transferService, 'send').andReturn(this.sendDeferred.promise);
+            spyOn(this.loadingModalService, 'open');
+            spyOn(this.loadingModalService, 'close');
+            spyOn(this.notificationService, 'success');
+            spyOn(this.notificationService, 'error');
+            spyOn(this.$state, 'go');
+        });
+
+        it('should not send anything while a line item is invalid', function() {
+            this.syringeLine.quantity = 6;
+
+            this.vm.submit();
+            this.$rootScope.$apply();
+
+            expect(this.syringeLine.$errors.quantityInvalid).toEqual('transferSend.quantityGreaterThanStockOnHand');
+            expect(this.confirmService.confirm).not.toHaveBeenCalled();
+            expect(this.transferService.send).not.toHaveBeenCalled();
+        });
+
+        it('should ask to confirm the source, destination, program and number of line items', function() {
+            this.vm.submit();
+            this.$rootScope.$apply();
+
+            expect(this.messageService.get).toHaveBeenCalledWith('transferSend.confirm', {
+                count: 2,
+                facility: 'Sender',
+                destination: 'Receiver',
+                program: 'EPI'
+            });
+
+            expect(this.confirmService.confirm).toHaveBeenCalledWith('transferSend.confirm', 'transferSend.send');
+        });
+
+        it('should not send anything when the confirmation is cancelled', function() {
+            this.confirmService.confirm.andReturn(this.$q.reject());
+
+            this.vm.submit();
+            this.$rootScope.$apply();
+
+            expect(this.transferService.send).not.toHaveBeenCalled();
+        });
+
+        it('should send the line items once, in whole packs', function() {
+            this.vm.submit();
+            this.$rootScope.$apply();
+
+            expect(this.transferService.send.callCount).toBe(1);
+            expect(this.transferService.send).toHaveBeenCalledWith({
+                programId: 'program-id',
+                supplyingFacilityId: 'facility-id',
+                receivingFacilityId: 'partner-id',
+                lineItems: [{
+                    orderable: {
+                        id: 'vaccine-id',
+                        versionNumber: 3
+                    },
+                    lotId: 'lot-2',
+                    quantity: 2
+                }, {
+                    orderable: {
+                        id: 'syringe-id',
+                        versionNumber: 1
+                    },
+                    lotId: null,
+                    quantity: 3
+                }]
+            });
+
+            expect(this.loadingModalService.open).toHaveBeenCalled();
+        });
+
+        it('should notify and start a new reallocation once sent', function() {
+            this.vm.submit();
+            this.sendDeferred.resolve({
+                id: 'order-id'
+            });
+            this.$rootScope.$apply();
+
+            expect(this.notificationService.success).toHaveBeenCalledWith('transferSend.submitted');
+            expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.transferSend', {
+                programId: 'program-id',
+                facilityId: 'facility-id',
+                destinationId: null
+            }, {
+                reload: true
+            });
+        });
+
+        it('should close the loading modal once sent', function() {
+            this.vm.submit();
+            this.sendDeferred.resolve({
+                id: 'order-id'
+            });
+            this.$rootScope.$apply();
+
+            expect(this.loadingModalService.close).toHaveBeenCalled();
+        });
+
+        it('should keep the line items on a server error and not show the message again', function() {
+            this.vm.submit();
+            this.sendDeferred.reject({
+                status: 400,
+                data: {
+                    message: 'Not enough stock'
+                }
+            });
+            this.$rootScope.$apply();
+
+            expect(this.loadingModalService.close).toHaveBeenCalled();
+            expect(this.vm.lineItems).toEqual([this.vaccineLine, this.syringeLine]);
+            expect(this.$state.go).not.toHaveBeenCalled();
+            expect(this.notificationService.success).not.toHaveBeenCalled();
+            expect(this.notificationService.error).not.toHaveBeenCalled();
         });
     });
 });
