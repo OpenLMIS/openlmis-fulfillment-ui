@@ -1,19 +1,17 @@
 <h2>{{'transferSend.title' | message}}</h2>
-<form class="openlmis-form" ng-submit="vm.proceed()">
+<p class="is-empty" ng-if="!vm.facility">{{'transferSend.noHomeFacility' | message}}</p>
+<p class="is-empty" ng-if="vm.facility && !vm.canSend">{{'transferSend.noRightAtHomeFacility' | message:{facility: vm.facility.name} }}</p>
+<form class="openlmis-form" ng-submit="vm.proceed()" ng-if="vm.canSend">
+    <fieldset class="form-group">
+        <label for="facility">{{'transferSend.facility' | message}}</label>
+        <input id="facility" type="text" ng-value="vm.facility.name" disabled/>
+    </fieldset>
     <fieldset class="form-group">
         <label for="program">{{'transferSend.program' | message}}</label>
         <select id="program"
                 ng-model="vm.program"
                 ng-change="vm.search()"
                 ng-options="program.name for program in vm.programs"
-                required></select>
-    </fieldset>
-    <fieldset class="form-group">
-        <label for="facility">{{'transferSend.facility' | message}}</label>
-        <select id="facility"
-                ng-model="vm.facility"
-                ng-change="vm.search()"
-                ng-options="facility.name for facility in vm.facilities | orderBy:'name'"
                 required></select>
     </fieldset>
     <fieldset class="form-group" ng-if="vm.partners.length > 0">

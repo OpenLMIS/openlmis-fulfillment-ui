@@ -192,7 +192,7 @@
          *
          * @description
          * Validates every line item, asks for confirmation and sends the stock. Once sent, the page starts
-         * over with the same program and facility. On an error the line items stay for correction.
+         * over with the same program. On an error the line items stay for correction.
          */
         function submit() {
             vm.lineItems.forEach(validateQuantity);
@@ -213,7 +213,6 @@
                             notificationService.success('transferSend.submitted');
                             $state.go('openlmis.stockmanagement.transferSend', {
                                 programId: vm.program.id,
-                                facilityId: vm.facility.id,
                                 destinationId: null
                             }, {
                                 reload: true

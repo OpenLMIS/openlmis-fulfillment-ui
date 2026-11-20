@@ -22,15 +22,16 @@
      * @name transfer-send.controller:TransferSendController
      *
      * @description
-     * Selects the program, the sending facility and the facility the stock is sent to.
+     * Selects the program and the facility the stock is sent to. The stock is always sent from the user's
+     * home facility.
      */
     angular
         .module('transfer-send')
         .controller('TransferSendController', controller);
 
-    controller.$inject = ['$state', '$stateParams', 'programs', 'facilities', 'partners'];
+    controller.$inject = ['$state', '$stateParams', 'programs', 'facility', 'canSend', 'partners'];
 
-    function controller($state, $stateParams, programs, facilities, partners) {
+    function controller($state, $stateParams, programs, facility, canSend, partners) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -39,15 +40,15 @@
 
         function onInit() {
             vm.programs = programs;
-            vm.facilities = facilities;
+            vm.facility = facility;
+            vm.canSend = canSend;
             vm.partners = partners;
             vm.program = findById(programs, $stateParams.programId) || getOnly(programs);
-            vm.facility = findById(facilities, $stateParams.facilityId) || getOnly(facilities);
             vm.destination = findById(partners, $stateParams.destinationId);
-            vm.noPartners = Boolean($stateParams.programId && $stateParams.facilityId) && partners.length === 0;
+            vm.noPartners = Boolean($stateParams.programId) && canSend && partners.length === 0;
 
             // a select with a single option is filled without a change event, so nothing else would load the partners
-            if (!($stateParams.programId && $stateParams.facilityId)) {
+            if (!$stateParams.programId) {
                 search();
             }
         }
@@ -58,16 +59,15 @@
          * @name search
          *
          * @description
-         * Reloads the page with the selected program and facility, which loads their transfer partners.
+         * Reloads the page with the selected program, which loads the transfer partners of the home facility.
          */
         function search() {
-            if (!vm.program || !vm.facility) {
+            if (!vm.program || !vm.canSend) {
                 return;
             }
 
             $state.go('openlmis.stockmanagement.transferSend', {
                 programId: vm.program.id,
-                facilityId: vm.facility.id,
                 destinationId: null
             }, {
                 reload: true
@@ -83,13 +83,12 @@
          * Opens the product and lot selection for the chosen destination.
          */
         function proceed() {
-            if (!vm.program || !vm.facility || !vm.destination) {
+            if (!vm.program || !vm.destination) {
                 return;
             }
 
             $state.go('openlmis.stockmanagement.transferSend.creation', {
                 programId: vm.program.id,
-                facilityId: vm.facility.id,
                 destinationId: vm.destination.id
             });
         }

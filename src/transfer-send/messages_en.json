@@ -4,6 +4,8 @@
   "transferSend.facility": "Sending facility",
   "transferSend.destination": "Destination",
   "transferSend.noPartners": "This facility has no facilities it can send stock to for this program. Valid destinations and valid sources need to be configured for both facilities.",
+  "transferSend.noHomeFacility": "You have no home facility, so there is no facility to send stock from.",
+  "transferSend.noRightAtHomeFacility": "You need the right to edit shipments at your home facility, ${facility}, to send its stock.",
   "transferSend.proceed": "Select products",
   "transferSend.creation.title": "Reallocate stock from ${facility} to ${destination}: ${program}",
   "transferSend.product": "Product",

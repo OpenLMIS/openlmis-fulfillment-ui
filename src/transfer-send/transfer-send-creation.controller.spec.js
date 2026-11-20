@@ -422,7 +422,6 @@ describe('TransferSendCreationController', function() {
             expect(this.notificationService.success).toHaveBeenCalledWith('transferSend.submitted');
             expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.transferSend', {
                 programId: 'program-id',
-                facilityId: 'facility-id',
                 destinationId: null
             }, {
                 reload: true

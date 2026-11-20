@@ -24,7 +24,7 @@
 
     function routes($stateProvider, FULFILLMENT_RIGHTS, SHOW_TRANSFERS) {
         $stateProvider.state('openlmis.stockmanagement.transferSend', {
-            url: '/transferSend?programId&facilityId&destinationId',
+            url: '/transferSend?programId&destinationId',
             label: 'transferSend.title',
             isOffline: false,
             priority: 46,
@@ -44,16 +44,33 @@
                 programs: function(user, programService) {
                     return programService.getUserPrograms(user.user_id);
                 },
-                facilities: function(facilityFactory) {
-                    return facilityFactory.getSupervisedFacilitiesBasedOnRights([
-                        FULFILLMENT_RIGHTS.SHIPMENTS_EDIT
-                    ]);
+                facility: function(facilityFactory) {
+                    // stock is always sent from the user's own facility; without one there is nothing to send from
+                    return facilityFactory.getUserHomeFacility()
+                        .catch(function() {
+                            return undefined;
+                        });
                 },
-                partners: function($stateParams, transferService) {
-                    if (!$stateParams.programId || !$stateParams.facilityId) {
+                canSend: function(user, facility, permissionService) {
+                    if (!facility) {
+                        return false;
+                    }
+                    return permissionService.hasPermissionWithAnyProgram(user.user_id, {
+                        right: FULFILLMENT_RIGHTS.SHIPMENTS_EDIT,
+                        facilityId: facility.id
+                    })
+                        .then(function() {
+                            return true;
+                        })
+                        .catch(function() {
+                            return false;
+                        });
+                },
+                partners: function($stateParams, facility, canSend, transferService) {
+                    if (!$stateParams.programId || !canSend) {
                         return [];
                     }
-                    return transferService.getPartners($stateParams.facilityId, $stateParams.programId, 'SEND');
+                    return transferService.getPartners(facility.id, $stateParams.programId, 'SEND');
                 }
             }
         })
@@ -72,9 +89,6 @@
                     program: function(programs, $stateParams) {
                         return findById(programs, $stateParams.programId);
                     },
-                    facility: function(facilities, $stateParams) {
-                        return findById(facilities, $stateParams.facilityId);
-                    },
                     destination: function(partners, $stateParams) {
                         return findById(partners, $stateParams.destinationId);
                     },
@@ -83,7 +97,6 @@
                         if (!program || !facility || !destination) {
                             $state.go('openlmis.stockmanagement.transferSend', {
                                 programId: $stateParams.programId,
-                                facilityId: $stateParams.facilityId,
                                 destinationId: null
                             });
                             return [];

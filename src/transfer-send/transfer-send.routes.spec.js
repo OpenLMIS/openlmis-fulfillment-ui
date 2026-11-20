@@ -32,10 +32,15 @@ describe('openlmis.stockmanagement.transferSend state', function() {
             this.transferService = $injector.get('transferService');
             this.programService = $injector.get('programService');
             this.facilityFactory = $injector.get('facilityFactory');
+            this.permissionService = $injector.get('permissionService');
         });
 
         this.state = this.$state.get('openlmis.stockmanagement.transferSend');
         this.creationState = this.$state.get('openlmis.stockmanagement.transferSend.creation');
+        this.user = {
+            //eslint-disable-next-line camelcase
+            user_id: 'user-id'
+        };
         this.partners = [{
             id: 'partner-id',
             name: 'Partner'
@@ -45,7 +50,7 @@ describe('openlmis.stockmanagement.transferSend state', function() {
     });
 
     it('should keep the selection in the url', function() {
-        expect(this.state.url).toEqual('/transferSend?programId&facilityId&destinationId');
+        expect(this.state.url).toEqual('/transferSend?programId&destinationId');
     });
 
     it('should require SHIPMENTS_EDIT right', function() {
@@ -84,48 +89,99 @@ describe('openlmis.stockmanagement.transferSend state', function() {
         expect(this.programService.getUserPrograms).toHaveBeenCalledWith('user-id');
     });
 
-    it('should resolve the facilities the user can ship from', function() {
-        var facilities = [{
+    it('should resolve the home facility of the user', function() {
+        var facility = {
             id: 'facility-id'
-        }];
-        this.facilityFactory.getSupervisedFacilitiesBasedOnRights = jasmine.createSpy()
-            .andReturn(this.$q.resolve(facilities));
+        };
+        spyOn(this.facilityFactory, 'getUserHomeFacility').andReturn(this.$q.resolve(facility));
 
         var result;
-        this.state.resolve.facilities(this.facilityFactory).then(function(response) {
+        this.state.resolve.facility(this.facilityFactory).then(function(response) {
             result = response;
         });
         this.$rootScope.$apply();
 
-        expect(result).toEqual(facilities);
-        expect(this.facilityFactory.getSupervisedFacilitiesBasedOnRights)
-            .toHaveBeenCalledWith([this.FULFILLMENT_RIGHTS.SHIPMENTS_EDIT]);
+        expect(result).toEqual(facility);
     });
 
-    it('should resolve no partners without a facility', function() {
-        var result = this.state.resolve.partners({
-            programId: 'program-id'
-        }, this.transferService);
+    it('should resolve no facility when the user has no home facility', function() {
+        spyOn(this.facilityFactory, 'getUserHomeFacility').andReturn(this.$q.reject());
 
-        expect(result).toEqual([]);
-        expect(this.transferService.getPartners).not.toHaveBeenCalled();
+        var result = 'not resolved';
+        this.state.resolve.facility(this.facilityFactory).then(function(response) {
+            result = response;
+        });
+        this.$rootScope.$apply();
+
+        expect(result).toBeUndefined();
+    });
+
+    it('should allow sending with SHIPMENTS_EDIT at the home facility', function() {
+        spyOn(this.permissionService, 'hasPermissionWithAnyProgram').andReturn(this.$q.resolve());
+
+        var result;
+        this.state.resolve.canSend(this.user, {
+            id: 'facility-id'
+        }, this.permissionService).then(function(response) {
+            result = response;
+        });
+        this.$rootScope.$apply();
+
+        expect(result).toBe(true);
+        expect(this.permissionService.hasPermissionWithAnyProgram).toHaveBeenCalledWith('user-id', {
+            right: this.FULFILLMENT_RIGHTS.SHIPMENTS_EDIT,
+            facilityId: 'facility-id'
+        });
+    });
+
+    it('should not allow sending without SHIPMENTS_EDIT at the home facility', function() {
+        spyOn(this.permissionService, 'hasPermissionWithAnyProgram').andReturn(this.$q.reject());
+
+        var result;
+        this.state.resolve.canSend(this.user, {
+            id: 'facility-id'
+        }, this.permissionService).then(function(response) {
+            result = response;
+        });
+        this.$rootScope.$apply();
+
+        expect(result).toBe(false);
+    });
+
+    it('should not allow sending without a home facility', function() {
+        spyOn(this.permissionService, 'hasPermissionWithAnyProgram');
+
+        expect(this.state.resolve.canSend(this.user, undefined, this.permissionService)).toBe(false);
+        expect(this.permissionService.hasPermissionWithAnyProgram).not.toHaveBeenCalled();
     });
 
     it('should resolve no partners without a program', function() {
-        var result = this.state.resolve.partners({
-            facilityId: 'facility-id'
-        }, this.transferService);
+        var result = this.state.resolve.partners({}, {
+            id: 'facility-id'
+        }, true, this.transferService);
 
         expect(result).toEqual([]);
         expect(this.transferService.getPartners).not.toHaveBeenCalled();
     });
 
-    it('should resolve the facilities the selected facility can send to', function() {
+    it('should resolve no partners without the right to send', function() {
+        var result = this.state.resolve.partners({
+            programId: 'program-id'
+        }, {
+            id: 'facility-id'
+        }, false, this.transferService);
+
+        expect(result).toEqual([]);
+        expect(this.transferService.getPartners).not.toHaveBeenCalled();
+    });
+
+    it('should resolve the facilities the home facility can send to', function() {
         var result;
         this.state.resolve.partners({
-            programId: 'program-id',
-            facilityId: 'facility-id'
-        }, this.transferService).then(function(response) {
+            programId: 'program-id'
+        }, {
+            id: 'facility-id'
+        }, true, this.transferService).then(function(response) {
             result = response;
         });
         this.$rootScope.$apply();
@@ -173,10 +229,9 @@ describe('openlmis.stockmanagement.transferSend state', function() {
                 .toEqual('transfer-send/transfer-send-creation.html');
         });
 
-        it('should resolve the selected program, facility and destination', function() {
+        it('should resolve the selected program and destination', function() {
             var stateParams = {
                 programId: 'program-2',
-                facilityId: 'facility-2',
                 destinationId: 'partner-2'
             };
 
@@ -186,14 +241,6 @@ describe('openlmis.stockmanagement.transferSend state', function() {
                 id: 'program-2'
             }], stateParams)).toEqual({
                 id: 'program-2'
-            });
-
-            expect(this.creationState.resolve.facility([{
-                id: 'facility-1'
-            }, {
-                id: 'facility-2'
-            }], stateParams)).toEqual({
-                id: 'facility-2'
             });
 
             expect(this.creationState.resolve.destination([{
@@ -259,20 +306,18 @@ describe('openlmis.stockmanagement.transferSend state', function() {
                 id: 'facility-id'
             }, undefined, this.moment, this.$state, {
                 programId: 'program-id',
-                facilityId: 'facility-id',
                 destinationId: 'removed-partner-id'
             });
 
             expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.transferSend', {
                 programId: 'program-id',
-                facilityId: 'facility-id',
                 destinationId: null
             });
 
             expect(this.existingStockOrderableGroupsFactory.getGroupsWithNotZeroSoh).not.toHaveBeenCalled();
         });
 
-        it('should go back to the selection when the program or facility is not available', function() {
+        it('should go back to the selection when the program is not available', function() {
             spyOn(this.existingStockOrderableGroupsFactory, 'getGroupsWithNotZeroSoh');
             spyOn(this.$state, 'go');
 
@@ -282,13 +327,11 @@ describe('openlmis.stockmanagement.transferSend state', function() {
                 id: 'partner-id'
             }, this.moment, this.$state, {
                 programId: 'unknown-program-id',
-                facilityId: 'facility-id',
                 destinationId: 'partner-id'
             });
 
             expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.transferSend', {
                 programId: 'unknown-program-id',
-                facilityId: 'facility-id',
                 destinationId: null
             });
 

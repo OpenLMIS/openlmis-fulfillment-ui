@@ -20,7 +20,7 @@
      * @module transfer-send
      *
      * @description
-     * Provides the stock reallocation page: the sending facility pushes stock to one of its transfer
+     * Provides the stock reallocation page: the user's home facility pushes stock to one of its transfer
      * partners, which then receives it through its proof of delivery.
      */
     angular.module('transfer-send', [
@@ -29,7 +29,8 @@
         'openlmis-auth',
         'openlmis-rights',
         'referencedata-program',
-        'referencedata-facilities-permissions',
+        'referencedata-facility',
+        'openlmis-permissions',
         'openlmis-date',
         'stock-orderable-group',
         'stock-adjustment-creation',
