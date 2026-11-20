@@ -16,13 +16,25 @@
 (function() {
     'use strict';
 
+    /**
+     * @module transfer-request
+     *
+     * @description
+     * Provides the transfer request page: the user's home facility requests stock from one of its
+     * transfer partners.
+     */
     angular.module('transfer-request', [
         'transfer',
+        'order',
         'stockmanagement',
+        'openlmis-auth',
         'openlmis-rights',
+        'openlmis-date',
+        'referencedata-program',
         'referencedata-facility',
         'stock-card-summary',
-        'openlmis-quantity-unit-toggle'
+        'openlmis-quantity-unit-toggle',
+        'openlmis-quantity-unit-input'
     ]);
 
 })();

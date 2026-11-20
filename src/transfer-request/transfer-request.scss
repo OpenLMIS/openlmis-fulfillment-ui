@@ -1,186 +1,30 @@
-.transfer-request-page {
-  $accent-color: #49baeb;
-  $light-grey: #bebebe;
+// the page gets no .requisition-info styles, as requisition-ui is not part of this module's build,
+// so the box carries its own copy of them
+.transfer-request-info {
+  display: flex;
+  align-items: stretch;
+  margin-bottom: 1em;
+  padding: 2px;
+  background-color: $background-color-alt;
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
 
-  // the requisition-less page gets the inner layout from requisition-ui's .requisition-info,
-  // which is not part of this module's build, so the box carries its own copy of it
-  .transfer-request-info {
+  ul {
     display: flex;
-    align-items: stretch;
-    width: calc(100% - 2em);
-    margin: 1em 0 0 1em;
-    padding: 2px;
-    position: relative;
-    background-color: $background-color-alt;
-    border: 1px solid $border-color;
-    border-radius: $border-radius;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 1em;
+    list-style: none;
 
-    ul {
-      display: flex;
-      flex-wrap: wrap;
-      margin-top: 0.5em;
-      padding: 1em;
-
-      li {
-        display: flex;
-        flex-direction: column;
-        @include padding-right(2em);
-        padding-bottom: 0.2em;
-      }
-
-      strong {
-        white-space: nowrap;
-      }
-    }
-  }
-
-  .transfer-request-form {
-    .section {
-      margin: 0.5em 0;
+    li {
       display: flex;
       flex-direction: column;
-      gap: 0.5em;
+      @include padding-right(2em);
+      padding-bottom: 0.2em;
     }
 
-    .select-search {
-      .input {
-        min-width: 400px;
-      }
-
-      .options {
-        min-width: 400px;
-      }
-    }
-  }
-
-  .transfer-request-table-container {
-    display: flex;
-
-    .transfer-request-table {
-      display: flex;
-      flex-direction: column;
-
-      .transfer-request-table-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-        margin-bottom: 1em;
-
-        .buttons-container {
-          @include flex-layout(row, $gap: 1rem);
-        }
-      }
-    }
-  }
-
-  .page-footer {
-    button {
-      margin-right: 1em;
-    }
-
-    justify-content: flex-end;
-  }
-
-  .select-search {
-    background: #fff;
-    display: inline-block;
-    max-height: 40vh;
-
-    .search {
-      .input-wrapper {
-        display: inline-block;
-        position: relative;
-
-        &:before {
-          font-family: "FONTAWESOME", sans-serif;
-          content: "\f0d7"; // fa-caret-down
-          position: absolute;
-          left: 1em;
-          color: $light-grey;
-          top: 50%;
-          transform: translateY(-50%);
-        }
-
-        .input {
-          box-shadow: inset 0 0 0.5em $light-grey;
-          border: 1px solid $light-grey;
-          background-color: inherit;
-          border-radius: 4px;
-          padding: 0.5em 0.5em 0.5em 2em;
-
-          &:focus {
-            outline: none;
-            border-color: $accent-color;
-            box-shadow: inset 0 0 0.5em $accent-color;
-          }
-        }
-
-        .clear-icon {
-          margin-left: -2em;
-          color: $light-grey;
-
-          &:hover {
-            color: #a94442;
-          }
-        }
-      }
-    }
-
-    &.is-disabled {
-      .input {
-        box-shadow: 0 0 0 $light-grey;
-        cursor: not-allowed;
-      }
-    }
-
-    .select {
-      position: absolute;
-      z-index: 100;
-      border: $light-grey 1px solid;
-      box-shadow: 0 0.25em 1em #e4e4e4;
-      background-color: #fff;
-      overflow-y: auto;
-      max-height: 40vh;
-
-      .options {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-
-        li {
-          cursor: pointer;
-          margin-left: 0;
-          margin-right: 0;
-          padding: 0;
-
-          &:hover {
-            background-color: $accent-color;
-            color: #fff;
-          }
-
-          &.not-found {
-            padding: 0.5em;
-          }
-
-          .option {
-            background: none;
-            border: none;
-            color: inherit;
-            cursor: pointer;
-            font: inherit;
-            outline: inherit;
-            padding: 0.5em;
-            text-align: left;
-            width: 100%;
-
-            &.is-selected {
-              background-color: $accent-color;
-              color: #fff;
-            }
-          }
-        }
-      }
+    strong {
+      white-space: nowrap;
     }
   }
 }

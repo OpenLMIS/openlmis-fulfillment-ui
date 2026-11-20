@@ -1,1 +1,25 @@
-<transfer-request-page></transfer-request-page>
+<h2>{{'transferRequest.create' | message}}</h2>
+<p class="is-empty" ng-if="!vm.facility">{{'transferRequest.noHomeFacility' | message}}</p>
+<form class="openlmis-form" ng-submit="vm.create()" ng-if="vm.facility">
+    <fieldset class="form-group">
+        <label for="program">{{'transferRequest.program' | message}}</label>
+        <select id="program"
+                ng-model="vm.program"
+                ng-change="vm.search()"
+                ng-options="program.name for program in vm.programs"
+                required></select>
+    </fieldset>
+    <fieldset class="form-group">
+        <label for="requestingFacility">{{'transferRequest.reqFacility' | message}}</label>
+        <input id="requestingFacility" type="text" ng-value="vm.facility.name" disabled/>
+    </fieldset>
+    <fieldset class="form-group" ng-if="vm.partners.length > 0">
+        <label for="supplyingFacility">{{'transferRequest.supFacility' | message}}</label>
+        <select id="supplyingFacility"
+                ng-model="vm.supplyingFacility"
+                ng-options="partner.name for partner in vm.partners"
+                required></select>
+    </fieldset>
+    <p class="is-empty" ng-if="vm.noPartners">{{'transferRequest.noPartners' | message}}</p>
+    <input type="submit" class="primary" ng-disabled="!vm.supplyingFacility" value="{{'transferRequest.create' | message}}"/>
+</form>
