@@ -1,0 +1,91 @@
+<header>
+    <h2>{{'transferOverview.title' | message}}</h2>
+    <button class="primary" ng-if="vm.facility && vm.rights.canRequest" ui-sref="openlmis.stockmanagement.transferRequest">
+        {{'transferOverview.requestStock' | message}}
+    </button>
+    <button ng-if="vm.facility && vm.rights.canFulfil" ui-sref="openlmis.stockmanagement.transferSend">
+        {{'transferOverview.reallocateStock' | message}}
+    </button>
+</header>
+<p class="is-empty" ng-if="!vm.facility">{{'transferOverview.noHomeFacility' | message}}</p>
+<p ng-if="vm.facility">{{'transferOverview.homeFacility' | message}}: <strong>{{vm.facility | facility}}</strong></p>
+<nav ng-if="vm.facility">
+    <ul>
+        <li role="presentation" ng-class="{active: vm.incoming}">
+            <a ui-sref="openlmis.stockmanagement.transfers(vm.getTabParams('incoming'))" ui-sref-opts="{reload: true}">
+                {{'transferOverview.incoming' | message}}
+                <span class="transfer-overview-count">{{vm.counts.incoming}}</span>
+            </a>
+        </li>
+        <li role="presentation" ng-class="{active: !vm.incoming}">
+            <a ui-sref="openlmis.stockmanagement.transfers(vm.getTabParams('outgoing'))" ui-sref-opts="{reload: true}">
+                {{'transferOverview.outgoing' | message}}
+                <span class="transfer-overview-count">{{vm.counts.outgoing}}</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+<section class="openlmis-table-container transfer-overview" ng-if="vm.facility">
+    <!-- the filter popup moves these fields when the page loads, so none of them may use ng-if -->
+    <form ng-submit="vm.search()">
+        <label for="program">{{'transferOverview.program' | message}}</label>
+        <select id="program"
+                ng-model="vm.program"
+                ng-options="program.name for program in vm.programs"></select>
+        <label for="type">{{'transferOverview.type' | message}}</label>
+        <select id="type"
+                ng-model="vm.type"
+                ng-options="type.value as type.name for type in vm.types"></select>
+        <label for="status">{{'transferOverview.status' | message}}</label>
+        <select id="status"
+                ng-model="vm.status"
+                ng-options="status.value as status.name for status in vm.statuses"
+                required></select>
+        <label for="partner">{{(vm.incoming ? 'transferOverview.supplyingFacility' : 'transferOverview.receivingFacility') | message}}</label>
+        <select id="partner"
+                ng-model="vm.partner"
+                ng-options="(partner | facility) for partner in vm.partners"></select>
+        <input type="submit" value="{{'transferOverview.search' | message}}"/>
+    </form>
+    <table>
+        <caption ng-if="!vm.orders.length">{{'transferOverview.noTransfers' | message}}</caption>
+        <thead>
+            <tr>
+                <th>{{'transferOverview.orderNumber' | message}}</th>
+                <th>{{'transferOverview.type' | message}}</th>
+                <th>{{(vm.incoming ? 'transferOverview.supplyingFacility' : 'transferOverview.receivingFacility') | message}}</th>
+                <th>{{'transferOverview.program' | message}}</th>
+                <th>{{'transferOverview.status' | message}}</th>
+                <th>{{'transferOverview.created' | message}}</th>
+                <th>{{'transferOverview.lastUpdated' | message}}</th>
+                <th class="col-sticky sticky-right">{{'transferOverview.actions' | message}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="order in vm.orders">
+                <td>{{order.orderCode}}</td>
+                <td>
+                    <span class="transfer-overview-type" ng-class="{'is-reallocation': order.type === 'TRANSFER_PUSH'}">
+                        {{'orderType.' + order.type | message}}
+                    </span>
+                </td>
+                <td>{{(vm.incoming ? order.supplyingFacility : order.requestingFacility) | facility}}</td>
+                <td>{{order.program.name}}</td>
+                <td>{{'orderStatus.' + order.status | message}}</td>
+                <td>{{order.createdDate | openlmisDate}}</td>
+                <td>{{order.lastUpdatedDate | openlmisDate}}</td>
+                <td>
+                    <span class="transfer-overview-waiting" ng-if="order.$action.kind === 'text'">
+                        {{order.$action.label | message}}
+                    </span>
+                    <button ng-if="order.$action && order.$action.kind !== 'text'"
+                            ng-class="{primary: order.$action.kind === 'primary'}"
+                            ng-click="vm.perform(order)">
+                        {{order.$action.label | message}}
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <openlmis-pagination/>
+</section>

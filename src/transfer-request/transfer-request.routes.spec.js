@@ -28,7 +28,6 @@ describe('openlmis.stockmanagement.transferRequest state', function() {
             this.$state = $injector.get('$state');
             this.$rootScope = $injector.get('$rootScope');
             this.ADMINISTRATION_RIGHTS = $injector.get('ADMINISTRATION_RIGHTS');
-            this.SHOW_TRANSFERS = $injector.get('SHOW_TRANSFERS');
             this.ORDER_TYPE = $injector.get('ORDER_TYPE');
             this.transferService = $injector.get('transferService');
             this.programService = $injector.get('programService');
@@ -73,8 +72,8 @@ describe('openlmis.stockmanagement.transferRequest state', function() {
         expect(this.tableState.accessRights).toEqual([this.ADMINISTRATION_RIGHTS.ORDER_CREATE]);
     });
 
-    it('should be shown in navigation only when transfers are enabled', function() {
-        expect(this.state.showInNavigation).toBe(this.SHOW_TRANSFERS);
+    it('should not be shown in navigation, as the Transfers page opens it', function() {
+        expect(this.state.showInNavigation).toBe(false);
     });
 
     it('should not be available offline', function() {
@@ -200,7 +199,7 @@ describe('openlmis.stockmanagement.transferRequest state', function() {
             expect(this.$state.go).not.toHaveBeenCalled();
         });
 
-        it('should return to the form when the request was already sent', function() {
+        it('should return to the Transfers page when the request was already sent', function() {
             var result = this.resolveOrder(this.$q.resolve({
                 type: 'TRANSFER_REQUEST',
                 status: 'ORDERED'
@@ -208,12 +207,12 @@ describe('openlmis.stockmanagement.transferRequest state', function() {
 
             expect(result.rejected).toBe(true);
             expect(this.notificationService.error).toHaveBeenCalledWith('transferRequest.notEditable');
-            expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.transferRequest', {
-                programId: 'program-id'
+            expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.transfers', {
+                tab: 'incoming'
             });
         });
 
-        it('should return to the form when the order is not a transfer request', function() {
+        it('should return to the Transfers page when the order is not a transfer request', function() {
             var result = this.resolveOrder(this.$q.resolve({
                 type: 'REQUISITION_LESS',
                 status: 'CREATING'
@@ -223,15 +222,15 @@ describe('openlmis.stockmanagement.transferRequest state', function() {
             expect(this.notificationService.error).toHaveBeenCalledWith('transferRequest.notEditable');
         });
 
-        it('should return to the form when the request cannot be read', function() {
+        it('should return to the Transfers page when the request cannot be read', function() {
             var result = this.resolveOrder(this.$q.reject({
                 status: 403
             }));
 
             expect(result.rejected).toBe(true);
             expect(this.notificationService.error).not.toHaveBeenCalled();
-            expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.transferRequest', {
-                programId: 'program-id'
+            expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.transfers', {
+                tab: 'incoming'
             });
         });
     });

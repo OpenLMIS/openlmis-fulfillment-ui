@@ -1,6 +1,7 @@
 6.3.0-SNAPSHOT (WIP)
 ==================
 New functionality:
+* [OLMIS-8457](https://openlmis.atlassian.net/browse/OLMIS-8457): Add the Transfers page under Stock management, behind `SHOW_TRANSFERS`, replacing the Request Transfer and Reallocate Stock menu entries. It lists the transfers of the user's home facility on Incoming and Outgoing tabs, with filters and the next action per row (edit, fulfil, receive, view).
 * [OLMIS-8457](https://openlmis.atlassian.net/browse/OLMIS-8457): Add the Request Transfer page under Stock management, where the user's home facility requests stock from one of its transfer partners. It is shown only when `showTransfers` is set to `"true"` in config.json (the `SHOW_TRANSFERS` flag, off by default).
 * [OLMIS-8457](https://openlmis.atlassian.net/browse/OLMIS-8457): With `SHOW_TRANSFERS` on, View Orders, Fulfill Orders and Manage PODs show an order type column and filter, and list only requisition and requisition-less orders unless another type is chosen.
 * [OLMIS-8457](https://openlmis.atlassian.net/browse/OLMIS-8457): Add the Reallocate Stock page under Stock management, behind the same `SHOW_TRANSFERS` flag. A user with SHIPMENTS_EDIT picks a program, a sending facility and one of its transfer partners, then the lots to send with the doses/packs toggle. The stock is sent in one step (order, shipped shipment, issue and proof of delivery), in whole packs.

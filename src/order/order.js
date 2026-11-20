@@ -35,6 +35,7 @@
         Order.prototype.isFulfilling = isFulfilling;
         Order.prototype.isOrdered = isOrdered;
         Order.prototype.isShipped = isShipped;
+        Order.prototype.isReceived = isReceived;
         Order.prototype.transferFailed = transferFailed;
 
         return Order;
@@ -64,6 +65,17 @@
 
         function isShipped() {
             return this.status === ORDER_STATUS.SHIPPED;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf order.Order
+         * @name isReceived
+         *
+         * @return {boolean} true if the order has RECEIVED status
+         */
+        function isReceived() {
+            return this.status === ORDER_STATUS.RECEIVED;
         }
 
         function transferFailed() {

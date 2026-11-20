@@ -28,7 +28,6 @@ describe('openlmis.stockmanagement.transferSend state', function() {
             this.$state = $injector.get('$state');
             this.$rootScope = $injector.get('$rootScope');
             this.FULFILLMENT_RIGHTS = $injector.get('FULFILLMENT_RIGHTS');
-            this.SHOW_TRANSFERS = $injector.get('SHOW_TRANSFERS');
             this.transferService = $injector.get('transferService');
             this.programService = $injector.get('programService');
             this.facilityFactory = $injector.get('facilityFactory');
@@ -57,8 +56,8 @@ describe('openlmis.stockmanagement.transferSend state', function() {
         expect(this.state.accessRights).toEqual([this.FULFILLMENT_RIGHTS.SHIPMENTS_EDIT]);
     });
 
-    it('should be shown in navigation only when transfers are enabled', function() {
-        expect(this.state.showInNavigation).toBe(this.SHOW_TRANSFERS);
+    it('should not be shown in navigation, as the Transfers page opens it', function() {
+        expect(this.state.showInNavigation).toBe(false);
     });
 
     it('should show the selection form', function() {

@@ -21,15 +21,16 @@
         .module('transfer-request')
         .config(routes);
 
-    routes.$inject = ['$stateProvider', 'ADMINISTRATION_RIGHTS', 'SHOW_TRANSFERS'];
+    routes.$inject = ['$stateProvider', 'ADMINISTRATION_RIGHTS'];
 
-    function routes($stateProvider, ADMINISTRATION_RIGHTS, SHOW_TRANSFERS) {
+    function routes($stateProvider, ADMINISTRATION_RIGHTS) {
         $stateProvider.state('openlmis.stockmanagement.transferRequest', {
             url: '/transferRequest?programId',
             label: 'transferRequest.title',
             isOffline: false,
             priority: 45,
-            showInNavigation: SHOW_TRANSFERS,
+            // opened from the Transfers page
+            showInNavigation: false,
             accessRights: [ADMINISTRATION_RIGHTS.ORDER_CREATE],
             views: {
                 '@openlmis': {
@@ -92,8 +93,8 @@
                             })
                             .catch(function() {
                                 // the server error handler already shows why the request could not be read
-                                $state.go('openlmis.stockmanagement.transferRequest', {
-                                    programId: $stateParams.programId
+                                $state.go('openlmis.stockmanagement.transfers', {
+                                    tab: 'incoming'
                                 });
                                 return $q.reject();
                             });

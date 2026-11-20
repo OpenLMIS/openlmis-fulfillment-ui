@@ -125,6 +125,22 @@ describe('shipmentViewService', function() {
             expect(shipmentRepositoryMock.getByOrderId).toHaveBeenCalledWith(order.id);
         });
 
+        it('should fetch shipment for order in the received status', function() {
+            shipmentRepositoryMock.getByOrderId.andReturn($q.resolve(shipment));
+
+            order = new Order(new OrderDataBuilder().buildReceived());
+
+            var result;
+            shipmentViewService.getShipmentForOrder(order)
+                .then(function(response) {
+                    result = response;
+                });
+            $rootScope.$apply();
+
+            expect(result).toEqual(shipment);
+            expect(shipmentRepositoryMock.getByOrderId).toHaveBeenCalledWith(order.id);
+        });
+
         it('should reject if order is undefined', function() {
             var rejected;
             shipmentViewService.getShipmentForOrder()
