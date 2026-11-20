@@ -47,6 +47,10 @@
             sendRequest: {
                 method: 'PUT',
                 url: fulfillmentUrlFactory('/api/transfers/requests/:id/send')
+            },
+            send: {
+                method: 'POST',
+                url: fulfillmentUrlFactory('/api/transfers/send')
             }
         });
 
@@ -55,6 +59,7 @@
         this.updateRequest = updateRequest;
         this.sendRequest = sendRequest;
         this.deleteRequest = deleteRequest;
+        this.send = send;
 
         /**
          * @ngdoc method
@@ -148,6 +153,23 @@
                     'Content-Type': 'application/json;charset=utf-8'
                 }
             });
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf transfer.transferService
+         * @name send
+         *
+         * @description
+         * Sends stock to a transfer partner in one step: the order, the shipped shipment, the issue
+         * and the proof of delivery are created together, or nothing is saved.
+         *
+         * @param  {Object}  transfer the program, the supplying and receiving facility ids and the
+         *                            line items, with quantities in packs
+         * @return {Promise}          resolves to the created order
+         */
+        function send(transfer) {
+            return resource.send({}, transfer).$promise;
         }
     }
 })();

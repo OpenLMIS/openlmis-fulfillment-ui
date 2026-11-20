@@ -199,4 +199,62 @@ describe('transferService', function() {
             expect(resolved).toBe(true);
         });
     });
+
+    describe('send', function() {
+
+        var transfer;
+
+        beforeEach(function() {
+            transfer = {
+                programId: 'program-id',
+                supplyingFacilityId: 'facility-id',
+                receivingFacilityId: 'partner-id',
+                lineItems: [{
+                    orderable: {
+                        id: 'orderable-id',
+                        versionNumber: 1
+                    },
+                    lotId: 'lot-id',
+                    quantity: 2
+                }]
+            };
+        });
+
+        it('should post the transfer to /api/transfers/send and return the created order', function() {
+            $httpBackend.expectPOST(fulfillmentUrlFactory('/api/transfers/send'), transfer)
+                .respond(201, {
+                    id: 'order-id',
+                    type: 'TRANSFER_PUSH'
+                });
+
+            var result;
+            transferService.send(transfer)
+                .then(function(response) {
+                    result = response;
+                });
+            $httpBackend.flush();
+            $rootScope.$apply();
+
+            expect(result.id).toEqual('order-id');
+            expect(result.type).toEqual('TRANSFER_PUSH');
+        });
+
+        it('should reject with the response on a validation error', function() {
+            $httpBackend.expectPOST(fulfillmentUrlFactory('/api/transfers/send'), transfer)
+                .respond(400, {
+                    message: 'Not a transfer partner'
+                });
+
+            var rejection;
+            transferService.send(transfer)
+                .catch(function(response) {
+                    rejection = response;
+                });
+            $httpBackend.flush();
+            $rootScope.$apply();
+
+            expect(rejection.status).toEqual(400);
+            expect(rejection.data.message).toEqual('Not a transfer partner');
+        });
+    });
 });
