@@ -6,7 +6,7 @@ const TransferRequestInfo = ({ order }) => {
     const { formatMessage } = useMemo(() => getService('messageService'), []);
 
     return (
-        <aside className="requisition-info">
+        <aside className="transfer-request-info">
             <ul>
                 <li>
                     <strong>{ formatMessage('transferRequest.info.status') }</strong>

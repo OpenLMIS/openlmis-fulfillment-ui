@@ -37,6 +37,7 @@ const TransferRequestTable = () => {
     const orderService = useMemo(() => getService('orderService'), []);
     const transferService = useMemo(() => getService('transferService'), []);
     const notificationService = useMemo(() => getService('notificationService'), []);
+    const loadingModalService = useMemo(() => getService('loadingModalService'), []);
     const { confirmDestroy } = useMemo(() => getService('confirmService'), []);
     const { formatMessage } = useMemo(() => getService('messageService'), []);
 
@@ -52,7 +53,12 @@ const TransferRequestTable = () => {
         () => {
             loadRequest(orderId, orderService, stockCardSummaryRepositoryImpl)
                 .then(setOrder)
-                .catch(() => history.push(FORM_PATH));
+                .catch((error) => {
+                    if (error?.notEditable) {
+                        notificationService.error('transferRequest.notEditable');
+                    }
+                    history.push(FORM_PATH);
+                });
         },
         [orderId]
     );
@@ -62,6 +68,7 @@ const TransferRequestTable = () => {
             return;
         }
 
+        loadingModalService.open();
         transferService.sendRequest(order)
             .then(() => {
                 notificationService.success('transferRequest.submitted');
@@ -69,7 +76,8 @@ const TransferRequestTable = () => {
             })
             .catch(() => {
                 setIsSummaryModalOpen(false);
-            });
+            })
+            .finally(() => loadingModalService.close());
     };
 
     const saveRequest = () => {
@@ -78,11 +86,13 @@ const TransferRequestTable = () => {
         }
 
         setShowValidationErrors(false);
+        loadingModalService.open();
         transferService.updateRequest(order)
             .then(() => {
                 toast.success(formatMessage('transferRequest.save.success'));
             })
-            .catch(ignoreShownError);
+            .catch(ignoreShownError)
+            .finally(() => loadingModalService.close());
     };
 
     const onDelete = () => {

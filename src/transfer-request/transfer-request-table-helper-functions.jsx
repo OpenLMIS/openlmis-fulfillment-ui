@@ -81,6 +81,11 @@ export const deleteRequest = (orderId, transferService, notificationService) => 
     })
     .catch(() => false);
 
+// Only a transfer request that has not been sent yet can be edited on this page.
+export const isEditableRequest = (order) => order.type === 'TRANSFER_REQUEST' && order.status === 'CREATING';
+
 export const loadRequest = (orderId, orderService, stockCardSummaryRepositoryImpl) => orderService
     .get(orderId)
-    .then(order => getOrderValue(order, stockCardSummaryRepositoryImpl));
+    .then(order => (isEditableRequest(order)
+        ? getOrderValue(order, stockCardSummaryRepositoryImpl)
+        : Promise.reject({ notEditable: true })));

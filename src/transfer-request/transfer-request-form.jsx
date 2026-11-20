@@ -20,28 +20,29 @@ import { SearchSelect } from './search-select';
 import {
     buildTransferRequest,
     goToRequestEdit,
-    loadCurrentSupplierOptions
+    ignoreShownError,
+    loadCurrentSupplierOptions,
+    toHomeFacilityProgramOptions
 } from './transfer-request-form-helper-functions';
-
-const toOptions = (items) => _.map(items, item => ({ name: item.name, value: item.id }));
 
 const TransferRequestForm = () => {
 
     const history = useHistory();
 
     const [programOptions, setProgramOptions] = useState([]);
-    const [requestingFacilityOptions, setRequestingFacilityOptions] = useState([]);
+    const [homeFacility, setHomeFacility] = useState(null);
+    const [noHomeFacility, setNoHomeFacility] = useState(false);
     const [supplyingFacilityOptions, setSupplyingFacilityOptions] = useState([]);
     const [selectedProgram, setSelectedProgram] = useState('');
-    const [selectedRequestingFacility, setSelectedRequestingFacility] = useState('');
     const [selectedSupplyingFacility, setSelectedSupplyingFacility] = useState('');
     const [noPartners, setNoPartners] = useState(false);
 
-    const ADMINISTRATION_RIGHTS = useMemo(() => getService('ADMINISTRATION_RIGHTS'), []);
     const programService = useMemo(() => getService('programService'), []);
     const { formatMessage } = useMemo(() => getService('messageService'), []);
-    const facilityService = useMemo(() => getService('facilityService'), []);
+    const facilityFactory = useMemo(() => getService('facilityFactory'), []);
     const transferService = useMemo(() => getService('transferService'), []);
+
+    const selectedRequestingFacility = homeFacility ? homeFacility.id : '';
 
     const userId = useMemo(
         () => {
@@ -57,22 +58,18 @@ const TransferRequestForm = () => {
 
     useEffect(
         () => {
-            programService.getUserPrograms(userId)
-                .then((programs) => {
-                    setProgramOptions(toOptions(programs));
-                });
+            facilityFactory.getUserHomeFacility()
+                .then(
+                    (facility) => {
+                        setHomeFacility(facility);
+                        return programService.getUserPrograms(userId)
+                            .then(programs => setProgramOptions(toHomeFacilityProgramOptions(programs, facility)));
+                    },
+                    () => setNoHomeFacility(true)
+                )
+                .catch(ignoreShownError);
         },
-        [programService]
-    );
-
-    useEffect(
-        () => {
-            facilityService.getUserFacilitiesForRight(userId, ADMINISTRATION_RIGHTS.ORDER_CREATE, true)
-                .then((facilities) => {
-                    setRequestingFacilityOptions(toOptions(facilities));
-                });
-        },
-        [facilityService]
+        [facilityFactory, programService]
     );
 
     useEffect(
@@ -112,15 +109,6 @@ const TransferRequestForm = () => {
 
     useEffect(
         () => {
-            if (requestingFacilityOptions?.length === 1) {
-                setSelectedRequestingFacility(requestingFacilityOptions[0].value);
-            }
-        },
-        [requestingFacilityOptions]
-    );
-
-    useEffect(
-        () => {
             if (supplyingFacilityOptions?.length === 1) {
                 setSelectedSupplyingFacility(supplyingFacilityOptions[0].value);
             }
@@ -145,6 +133,7 @@ const TransferRequestForm = () => {
                         value={selectedProgram}
                         onChange={value => setSelectedProgram(value)}
                         placeholder={formatMessage('transferRequest.program.placeholder')}
+                        disabled={noHomeFacility}
                     />
                 </div>
                 <div className={'section'}>
@@ -153,12 +142,15 @@ const TransferRequestForm = () => {
                         {formatMessage('transferRequest.reqFacility')}
                       </strong>
                     </div>
-                    <SearchSelect
-                        options={requestingFacilityOptions}
-                        value={selectedRequestingFacility}
-                        onChange={value => setSelectedRequestingFacility(value)}
-                        placeholder={formatMessage('transferRequest.reqFacility.placeholder')}
-                    />
+                    <div className="transfer-request-home-facility">
+                        {homeFacility ? homeFacility.name : ''}
+                    </div>
+                    {
+                        noHomeFacility &&
+                        <div className="alert is-info">
+                            {formatMessage('transferRequest.noHomeFacility')}
+                        </div>
+                    }
                 </div>
                 <div className={'section'}>
                     <div>

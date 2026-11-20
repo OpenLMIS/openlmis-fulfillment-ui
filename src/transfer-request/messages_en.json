@@ -12,7 +12,6 @@
   "transferRequest.program": "Program",
   "transferRequest.program.placeholder": "Select Program",
   "transferRequest.reqFacility": "Requesting Facility",
-  "transferRequest.reqFacility.placeholder": "Select Requesting Facility",
   "transferRequest.supFacility": "Supplying Facility",
   "transferRequest.supFacility.placeholder": "Select Supplying Facility",
   "transferRequest.table.productCode": "Product Code",
@@ -26,7 +25,9 @@
   "transferRequest.table.productAlreadyAdded": "This product was already added to the table",
   "transferRequest.info.status": "Status",
   "transferRequest.info.dateCreated": "Date Created",
+  "transferRequest.noHomeFacility": "You need a home facility to request a transfer.",
   "transferRequest.noPartners": "This facility has no transfer partners for the selected program.",
   "transferRequest.send": "Send Request",
-  "transferRequest.save.success": "Transfer request saved successfully"
+  "transferRequest.save.success": "Transfer request saved successfully",
+  "transferRequest.notEditable": "Only a transfer request that has not been sent yet can be edited."
 }

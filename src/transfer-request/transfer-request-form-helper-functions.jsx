@@ -6,6 +6,18 @@ export const buildTransferRequest = (programId, facilityId, supplyingFacilityId)
     orderLineItems: []
 });
 
+// The requesting facility is always the home facility, so only the programs it supports can be picked.
+export const toHomeFacilityProgramOptions = (programs, homeFacility) => {
+    const supportedIds = _.map(
+        _.filter(homeFacility?.supportedPrograms, program => program.supportActive),
+        program => program.id
+    );
+
+    return programs
+        .filter(program => supportedIds.includes(program.id))
+        .map(program => ({ name: program.name, value: program.id }));
+};
+
 export const toSupplierOptions = (partners) => ({
     options: partners.map(partner => ({ name: partner.name, value: partner.id })),
     empty: partners.length === 0

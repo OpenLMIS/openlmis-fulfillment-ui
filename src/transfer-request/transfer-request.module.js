@@ -20,6 +20,7 @@
         'transfer',
         'stockmanagement',
         'openlmis-rights',
+        'referencedata-facility',
         'stock-card-summary',
         'openlmis-quantity-unit-toggle'
     ]);

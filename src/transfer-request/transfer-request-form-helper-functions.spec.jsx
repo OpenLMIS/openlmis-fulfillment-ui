@@ -18,6 +18,7 @@ import {
     goToRequestEdit,
     loadCurrentSupplierOptions,
     loadSupplierOptions,
+    toHomeFacilityProgramOptions,
     toSupplierOptions
 } from './transfer-request-form-helper-functions';
 
@@ -41,6 +42,48 @@ describe('transfer request form helpers', function() {
                 },
                 orderLineItems: []
             });
+        });
+    });
+
+    describe('toHomeFacilityProgramOptions', function() {
+
+        var programs;
+
+        beforeEach(function() {
+            programs = [{
+                id: 'supported-id',
+                name: 'Supported'
+            }, {
+                id: 'inactive-id',
+                name: 'Inactive support'
+            }, {
+                id: 'unsupported-id',
+                name: 'Not supported'
+            }];
+        });
+
+        it('should offer only the user programs the home facility actively supports', function() {
+            var homeFacility = {
+                supportedPrograms: [{
+                    id: 'supported-id',
+                    supportActive: true
+                }, {
+                    id: 'inactive-id',
+                    supportActive: false
+                }, {
+                    id: 'other-id',
+                    supportActive: true
+                }]
+            };
+
+            expect(toHomeFacilityProgramOptions(programs, homeFacility)).toEqual([{
+                name: 'Supported',
+                value: 'supported-id'
+            }]);
+        });
+
+        it('should offer no programs when the home facility supports none', function() {
+            expect(toHomeFacilityProgramOptions(programs, {})).toEqual([]);
         });
     });
 

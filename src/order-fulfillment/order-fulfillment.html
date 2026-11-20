@@ -15,8 +15,8 @@
     <select id="orderStatus"
             ng-model="vm.orderStatus"
             ng-options="orderStatus for orderStatus in vm.orderStatuses"></select>
-    <label ng-if="vm.showTypes" for="type">{{'orderFulfillment.type' | message}}</label>
-    <select ng-if="vm.showTypes"
+    <label ng-show="vm.showTypes" for="type">{{'orderFulfillment.type' | message}}</label>
+    <select ng-show="vm.showTypes"
             id="type"
             ng-model="vm.type"
             ng-options="type as type.name for type in vm.orderTypes track by type.value"></select>

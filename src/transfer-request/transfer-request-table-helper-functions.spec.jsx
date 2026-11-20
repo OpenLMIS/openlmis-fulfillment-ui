@@ -117,6 +117,8 @@ describe('transfer request table helpers', function() {
         it('should resolve to the request', function() {
             var order = {
                 id: 'order-id',
+                type: 'TRANSFER_REQUEST',
+                status: 'CREATING',
                 orderLineItems: []
             };
             orderService.get.andReturn(Promise.resolve(order));
@@ -156,5 +158,42 @@ describe('transfer request table helpers', function() {
                 expect(rejection.status).toEqual(403);
             });
         });
+
+        it('should reject a request that was already sent', function() {
+            expectNotEditable({
+                id: 'order-id',
+                type: 'TRANSFER_REQUEST',
+                status: 'ORDERED',
+                orderLineItems: []
+            });
+        });
+
+        it('should reject an order that is not a transfer request', function() {
+            expectNotEditable({
+                id: 'order-id',
+                type: 'REQUISITION_LESS',
+                status: 'CREATING',
+                orderLineItems: []
+            });
+        });
+
+        function expectNotEditable(order) {
+            orderService.get.andReturn(Promise.resolve(order));
+
+            var rejection;
+            runs(function() {
+                loadRequest('order-id', orderService, stockCardSummaryRepositoryImpl)
+                    .catch(function(response) {
+                        rejection = response;
+                    });
+            });
+            waitsFor(function() {
+                return rejection !== undefined;
+            }, 'the load to fail', 1000);
+            runs(function() {
+                expect(rejection.notEditable).toBe(true);
+                expect(stockCardSummaryRepositoryImpl.query).not.toHaveBeenCalled();
+            });
+        }
     });
 });

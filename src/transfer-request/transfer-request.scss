@@ -2,13 +2,36 @@
   $accent-color: #49baeb;
   $light-grey: #bebebe;
 
-  .requisition-info {
+  // the requisition-less page gets the inner layout from requisition-ui's .requisition-info,
+  // which is not part of this module's build, so the box carries its own copy of it
+  .transfer-request-info {
+    display: flex;
+    align-items: stretch;
     width: calc(100% - 2em);
     margin: 1em 0 0 1em;
+    padding: 2px;
     position: relative;
     background-color: $background-color-alt;
     border: 1px solid $border-color;
     border-radius: $border-radius;
+
+    ul {
+      display: flex;
+      flex-wrap: wrap;
+      margin-top: 0.5em;
+      padding: 1em;
+
+      li {
+        display: flex;
+        flex-direction: column;
+        @include padding-right(2em);
+        padding-bottom: 0.2em;
+      }
+
+      strong {
+        white-space: nowrap;
+      }
+    }
   }
 
   .transfer-request-form {
