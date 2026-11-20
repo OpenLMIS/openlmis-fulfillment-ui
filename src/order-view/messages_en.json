@@ -20,6 +20,7 @@
     "orderView.startDate": "Start date",
     "orderView.status": "Status",
     "orderView.supplyingFacility": "Supplying facility",
+    "orderView.type": "Type",
     "orderView.viewOrders": "View Orders",
     "orderView.periodStart": "Processing period start",
     "orderView.periodEnd": "Processing period end"

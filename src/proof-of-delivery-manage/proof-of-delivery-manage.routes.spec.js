@@ -34,6 +34,10 @@ describe('openlmis.orders.podManage state', function() {
         expect($state.current.name).toEqual('openlmis.orders.podManage');
     });
 
+    it('should accept the order type in the url', function() {
+        expect(state.url).toContain('&type');
+    });
+
     it('should resolve programs', function() {
         goToUrl('/orders/manage?page=0&size=10');
 

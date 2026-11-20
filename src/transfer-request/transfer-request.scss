@@ -1,0 +1,30 @@
+// the page gets no .requisition-info styles, as requisition-ui is not part of this module's build,
+// so the box carries its own copy of them
+.transfer-request-info {
+  display: flex;
+  align-items: stretch;
+  margin-bottom: 1em;
+  padding: 2px;
+  background-color: $background-color-alt;
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
+
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 1em;
+    list-style: none;
+
+    li {
+      display: flex;
+      flex-direction: column;
+      @include padding-right(2em);
+      padding-bottom: 0.2em;
+    }
+
+    strong {
+      white-space: nowrap;
+    }
+  }
+}

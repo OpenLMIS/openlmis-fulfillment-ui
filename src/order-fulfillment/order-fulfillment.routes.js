@@ -31,7 +31,7 @@
             label: 'orderFulfillment.fulfillOrders',
             showInNavigation: true,
             templateUrl: 'order-fulfillment/order-fulfillment.html',
-            url: '/fulfillment?requestingFacilityId&programId&status&page&size',
+            url: '/fulfillment?requestingFacilityId&programId&status&type&page&size',
             params: {
                 sort: ['createdDate,desc']
             },
@@ -55,7 +55,7 @@
                 programs: function(programService) {
                     return programService.getAll();
                 },
-                orders: function(paginationService, orderRepository, $stateParams, ORDER_STATUS) {
+                orders: function(paginationService, orderRepository, $stateParams, ORDER_STATUS, orderTypeFactory) {
                     return paginationService.registerUrl($stateParams, function(stateParams) {
                         var availableStatuses = [ORDER_STATUS.FULFILLING, ORDER_STATUS.ORDERED],
                             copy = angular.copy(stateParams);
@@ -67,7 +67,7 @@
                         } else if (!stateParams.status || availableStatuses.indexOf(stateParams.status) < 0) {
                             copy.status = availableStatuses;
                         }
-                        return orderRepository.search(copy);
+                        return orderRepository.search(orderTypeFactory.applyDefault(copy));
                     });
                 }
             }

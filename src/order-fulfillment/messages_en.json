@@ -15,6 +15,7 @@
     "orderFulfillment.orderingFacility": "Ordering facility",
     "orderFulfillment.search": "Search",
     "orderFulfillment.status": "Status",
+    "orderFulfillment.type": "Type",
     "orderFulfillment.startFulfillment": "Start Fulfillment",
     "orderFulfillment.continueFulfillment": "Continue Fulfillment"
 }

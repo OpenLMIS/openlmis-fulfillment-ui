@@ -15,7 +15,7 @@
 
 describe('openlmis.orders.fulfillment state', function() {
 
-    var $q, $state, state, $rootScope, requestingFacilityFactory, minimalFacilities,
+    var $injector, $q, $state, state, $rootScope, requestingFacilityFactory, minimalFacilities,
         FULFILLMENT_RIGHTS, $stateParams, facilityFactory, facilities, orderRepository,
         ORDER_STATUS, programs, programService, MinimalFacilityDataBuilder, FacilityDataBuilder,
         ProgramDataBuilder, paginationService;
@@ -29,9 +29,12 @@ describe('openlmis.orders.fulfillment state', function() {
                 set: function() {},
                 get: function() {}
             });
+            // these specs assert today's requests, which are sent only while transfers are off
+            $provide.constant('SHOW_TRANSFERS', false);
         });
 
-        inject(function($injector) {
+        inject(function(_$injector_) {
+            $injector = _$injector_;
             $q = $injector.get('$q');
             $state = $injector.get('$state');
             $rootScope = $injector.get('$rootScope');
@@ -129,6 +132,27 @@ describe('openlmis.orders.fulfillment state', function() {
             size: '10',
             sort: ['createdDate,desc']
         });
+    });
+
+    it('should accept the order type in the url', function() {
+        expect($state.get('openlmis.orders.fulfillment').url).toContain('&type');
+    });
+
+    it('should apply the order type default after filtering the statuses', function() {
+        var orderTypeFactory = $injector.get('orderTypeFactory');
+        spyOn(orderTypeFactory, 'applyDefault').andCallFake(function(params) {
+            return angular.extend({}, params, {
+                typeApplied: true
+            });
+        });
+        $stateParams.status = [ORDER_STATUS.IN_ROUTE, ORDER_STATUS.ORDERED];
+        $stateParams.type = 'TRANSFER_REQUEST';
+
+        goToState();
+
+        expect(orderTypeFactory.applyDefault.mostRecentCall.args[0].status).toEqual([ORDER_STATUS.ORDERED]);
+        expect(orderTypeFactory.applyDefault.mostRecentCall.args[0].type).toEqual('TRANSFER_REQUEST');
+        expect(orderRepository.search.mostRecentCall.args[0].typeApplied).toBe(true);
     });
 
     it('should require FULFILLMENT_RIGHTS right to enter', function() {

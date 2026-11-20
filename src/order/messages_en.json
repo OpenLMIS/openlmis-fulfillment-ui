@@ -8,5 +8,10 @@
     "orderStatus.TRANSFER_FAILED": "Transfer Failed",
     "orderStatus.IN_ROUTE": "In Route",
     "orderStatus.READY_TO_PACK": "Ready to pack",
-    "orderStatus.CANCELLED": "Cancelled"
+    "orderStatus.CANCELLED": "Cancelled",
+
+    "orderType.REQUISITION": "Requisition",
+    "orderType.REQUISITION_LESS": "Requisition-less",
+    "orderType.TRANSFER_REQUEST": "Transfer request",
+    "orderType.TRANSFER_PUSH": "Stock reallocation"
 }

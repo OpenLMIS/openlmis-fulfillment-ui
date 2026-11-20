@@ -34,6 +34,7 @@
         'referencedata-period',
         'referencedata-program',
         'referencedata-orderable',
+        'transfer',
         'ui.router'
     ]);
 

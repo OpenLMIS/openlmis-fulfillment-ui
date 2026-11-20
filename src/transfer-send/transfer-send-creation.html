@@ -1,0 +1,62 @@
+<h2>{{'transferSend.creation.title' | message:{program: vm.program.name, facility: vm.facility.name, destination: vm.destination.name} }}</h2>
+<section class="openlmis-table-container">
+    <section class="is-primary">
+        <form class="form-inline" ng-submit="vm.addProduct()" name="productForm">
+            <div>
+                <label for="productSelect">{{'transferSend.product' | message}}</label>
+                <select id="productSelect" ng-model="vm.selectedOrderableGroup"
+                    ng-options="orderableGroup[0].orderable.fullProductName for orderableGroup in vm.orderableGroups"
+                    ng-change="vm.orderableSelectionChanged()"
+                    required>
+                </select>
+            </div>
+            <div ng-if="vm.selectedOrderableHasLots">
+                <label for="lotSelect">{{'transferSend.lotCode' | message}}</label>
+                <select id="lotSelect" ng-model="vm.selectedLot"
+                    ng-options="lot.lotCode for lot in vm.lots"
+                    required>
+                </select>
+            </div>
+            <button type="submit" class="add">{{'transferSend.add' | message}}</button>
+        </form>
+    </section>
+    <quantity-unit-toggle class="is-primary" quantity-unit="vm.quantityUnit"></quantity-unit-toggle>
+    <table>
+        <caption ng-if="!vm.lineItems.length">{{'transferSend.noProducts' | message}}</caption>
+        <thead>
+            <tr>
+                <th>{{'transferSend.productCode' | message}}</th>
+                <th>{{'transferSend.product' | message}}</th>
+                <th>{{'transferSend.packSize' | message}}</th>
+                <th>{{'transferSend.lotCode' | message}}</th>
+                <th>{{'transferSend.expiryDate' | message}}</th>
+                <th>{{'transferSend.stockOnHand' | message}}</th>
+                <th>{{'transferSend.quantity' | message}}</th>
+                <th>{{'transferSend.actions' | message}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="lineItem in vm.lineItems">
+                <td>{{lineItem.orderable.productCode}}</td>
+                <td>{{lineItem.orderable | productName}}</td>
+                <td align="right">{{lineItem.orderable.netContent}}</td>
+                <td>{{lineItem.lot ? lineItem.lot.lotCode : ('transferSend.noLot' | message)}}</td>
+                <td>{{lineItem.lot.expirationDate | openlmisDate}}</td>
+                <td align="right">{{vm.recalculateSOHQuantity(lineItem.stockOnHand, lineItem.orderable.netContent)}}</td>
+                <td class="digit-cell" openlmis-invalid="{{lineItem.$errors.quantityInvalid ? lineItem.$errors.quantityInvalid : ''}}">
+                    <openlmis-quantity-unit-input
+                            show-in-doses="vm.showInDoses()"
+                            item="lineItem"
+                            net-content="lineItem.orderable.netContent"
+                            on-change-quantity="vm.validateQuantity(lineItem)"/>
+                </td>
+                <td>
+                    <button type="button" class="danger" ng-click="vm.remove(lineItem)">{{'transferSend.remove' | message}}</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+<div class="openlmis-toolbar">
+    <button class="primary" ng-click="vm.submit()" ng-disabled="!vm.canSubmit()">{{'transferSend.send' | message}}</button>
+</div>

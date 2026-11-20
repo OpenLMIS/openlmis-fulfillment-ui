@@ -1,0 +1,79 @@
+<h2>{{'transferRequest.title' | message}}</h2>
+<aside class="transfer-request-info">
+    <ul>
+        <li>
+            <strong>{{'transferRequest.info.status' | message}}</strong>
+            {{vm.order.status}}
+        </li>
+        <li>
+            <strong>{{'transferRequest.info.dateCreated' | message}}</strong>
+            {{vm.order.createdDate | openlmisDate}}
+        </li>
+        <li>
+            <strong>{{'transferRequest.program' | message}}</strong>
+            {{vm.order.program.name}}
+        </li>
+        <li>
+            <strong>{{'transferRequest.reqFacility' | message}}</strong>
+            {{vm.order.requestingFacility.name}}
+        </li>
+        <li>
+            <strong>{{'transferRequest.supFacility' | message}}</strong>
+            {{vm.order.supplyingFacility.name}}
+        </li>
+    </ul>
+</aside>
+<section class="openlmis-table-container">
+    <section class="is-primary">
+        <form class="form-inline" ng-submit="vm.addProduct()" name="productForm">
+            <div>
+                <label for="productSelect">{{'transferRequest.table.product' | message}}</label>
+                <select id="productSelect" ng-model="vm.selectedStockCardSummary"
+                    ng-options="summary as summary.orderable.fullProductName for summary in vm.stockCardSummaries"
+                    required>
+                </select>
+            </div>
+            <button type="submit" class="add">{{'transferRequest.table.addProduct' | message}}</button>
+        </form>
+    </section>
+    <quantity-unit-toggle class="is-primary" quantity-unit="vm.quantityUnit"></quantity-unit-toggle>
+    <table>
+        <caption ng-if="!vm.lineItems.length">{{'transferRequest.table.noProducts' | message}}</caption>
+        <thead>
+            <tr>
+                <th>{{'transferRequest.table.productCode' | message}}</th>
+                <th>{{'transferRequest.table.product' | message}}</th>
+                <th>{{'transferRequest.table.packSize' | message}}</th>
+                <th>{{'transferRequest.table.soh' | message}}</th>
+                <th>{{'transferRequest.table.quantity' | message}}</th>
+                <th>{{'transferRequest.table.actions' | message}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="lineItem in vm.lineItems">
+                <td>{{lineItem.orderable.productCode}}</td>
+                <td>{{lineItem.orderable.fullProductName}}</td>
+                <td align="right">{{lineItem.orderable.netContent}}</td>
+                <td align="right">{{vm.recalculateSOHQuantity(lineItem.stockOnHand, lineItem.orderable.netContent)}}</td>
+                <td class="digit-cell" openlmis-invalid="{{lineItem.$errors.quantityInvalid ? lineItem.$errors.quantityInvalid : ''}}">
+                    <openlmis-quantity-unit-input
+                            show-in-doses="vm.showInDoses()"
+                            item="lineItem"
+                            net-content="lineItem.orderable.netContent"
+                            on-change-quantity="vm.validateQuantity(lineItem)"/>
+                </td>
+                <td>
+                    <button type="button" class="danger" ng-click="vm.remove(lineItem)">{{'transferRequest.table.remove' | message}}</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+<div class="openlmis-toolbar">
+    <div class="button-group primary">
+        <!-- both buttons float right, so they show in reverse order: Delete, then Send Request -->
+        <button class="primary" ng-click="vm.send()" ng-disabled="!vm.canSend()">{{'transferRequest.send' | message}}</button>
+        <button class="danger" ng-click="vm.delete()">{{'transferRequest.delete' | message}}</button>
+    </div>
+    <button ng-click="vm.save()">{{'transferRequest.saveDraft' | message}}</button>
+</div>
