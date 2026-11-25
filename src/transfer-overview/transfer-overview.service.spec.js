@@ -224,6 +224,13 @@ describe('transferOverviewService', function() {
                 status: 'RECEIVED'
             }).status).toEqual(['RECEIVED']);
         });
+
+        it('should show open transfers when drafts are chosen on the outgoing tab', function() {
+            expect(this.searchParams({
+                status: 'CREATING'
+            }, 'outgoing').status).toEqual(['ORDERED', 'FULFILLING', 'SHIPPED', 'TRANSFER_FAILED', 'IN_ROUTE',
+                'READY_TO_PACK']);
+        });
     });
 
     describe('count', function() {

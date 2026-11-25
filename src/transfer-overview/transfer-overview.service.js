@@ -202,7 +202,8 @@
             return params;
         }
 
-        // drafts are shown only to the requester; the supplier sees a request once it is sent
+        // drafts are shown only to the requester; the supplier sees a request once it is sent, so a draft
+        // filter on the outgoing tab falls back to the open transfers
         function getStatuses(status, incoming) {
             var statuses = Object.keys(ORDER_STATUS).map(function(key) {
                 return ORDER_STATUS[key];
@@ -211,7 +212,7 @@
             if (status === TRANSFER_OVERVIEW.STATUS_ALL) {
                 return incoming ? undefined : statuses;
             }
-            if (status && status !== TRANSFER_OVERVIEW.STATUS_OPEN) {
+            if (status && status !== TRANSFER_OVERVIEW.STATUS_OPEN && (incoming || status !== CREATING)) {
                 return [status];
             }
 

@@ -39,8 +39,7 @@
         <label for="status">{{'transferOverview.status' | message}}</label>
         <select id="status"
                 ng-model="vm.status"
-                ng-options="status.value as status.name for status in vm.statuses"
-                required></select>
+                ng-options="status.value as status.name for status in vm.statuses"></select>
         <label for="partner">{{(vm.incoming ? 'transferOverview.supplyingFacility' : 'transferOverview.receivingFacility') | message}}</label>
         <select id="partner"
                 ng-model="vm.partner"

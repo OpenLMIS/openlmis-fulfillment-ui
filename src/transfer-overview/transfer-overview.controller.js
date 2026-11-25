@@ -71,7 +71,9 @@
             vm.program = findById(programs, $stateParams.programId);
             vm.partner = findById(partners, $stateParams.partnerId);
             vm.type = $stateParams.type;
-            vm.status = $stateParams.status || TRANSFER_OVERVIEW.STATUS_OPEN;
+            vm.status = isStatusOf(vm.incoming, $stateParams.status)
+                ? $stateParams.status
+                : TRANSFER_OVERVIEW.STATUS_OPEN;
 
             vm.orders = orders.map(function(order) {
                 order.$action = getAction(order);
@@ -85,15 +87,17 @@
          * @name search
          *
          * @description
-         * Reloads the page with the selected filters, from the first page.
+         * Reloads the page with the selected filters, from the first page. A cleared status shows all.
          */
         function search() {
+            var status = vm.status || TRANSFER_OVERVIEW.STATUS_ALL;
+
             $state.go('openlmis.stockmanagement.transfers', angular.extend({}, $stateParams, {
                 tab: vm.tab,
                 programId: vm.program ? vm.program.id : undefined,
                 partnerId: vm.partner ? vm.partner.id : undefined,
                 type: vm.type || undefined,
-                status: vm.status === TRANSFER_OVERVIEW.STATUS_OPEN ? undefined : vm.status,
+                status: status === TRANSFER_OVERVIEW.STATUS_OPEN ? undefined : status,
                 page: 0
             }), {
                 reload: true
@@ -107,7 +111,7 @@
          *
          * @description
          * Gives the state params that open the given tab. The program, type and status filters are kept;
-         * the partner belongs to one tab, so it is cleared.
+         * the partner belongs to one tab, so it is cleared, and so is a status the tab does not offer.
          *
          * @param  {String} newTab incoming or outgoing
          * @return {Object}        the state params
@@ -117,7 +121,9 @@
                 tab: newTab,
                 programId: $stateParams.programId,
                 type: $stateParams.type,
-                status: $stateParams.status,
+                status: isStatusOf(newTab === TRANSFER_OVERVIEW.INCOMING, $stateParams.status)
+                    ? $stateParams.status
+                    : undefined,
                 partnerId: undefined,
                 page: 0,
                 size: $stateParams.size
@@ -246,11 +252,20 @@
             };
         }
 
-        function getStatusOptions() {
-            var statuses = TRANSFER_OVERVIEW.STATUSES.filter(function(status) {
-                // the supplier never sees drafts
-                return vm.incoming || status !== 'CREATING';
+        // the supplier never sees drafts
+        function getStatuses(incoming) {
+            return TRANSFER_OVERVIEW.STATUSES.filter(function(status) {
+                return incoming || status !== TRANSFER_OVERVIEW.STATUS_CREATING;
             });
+        }
+
+        function isStatusOf(incoming, status) {
+            return status === TRANSFER_OVERVIEW.STATUS_OPEN || status === TRANSFER_OVERVIEW.STATUS_ALL ||
+                getStatuses(incoming).indexOf(status) > -1;
+        }
+
+        function getStatusOptions() {
+            var statuses = getStatuses(vm.incoming);
 
             return [
                 {

@@ -123,6 +123,17 @@ describe('TransferOverviewController', function() {
             expect(this.vm.status).toEqual('OPEN');
         });
 
+        it('should show open transfers when the draft status is set on the outgoing tab', function() {
+            this.init({
+                tab: 'outgoing',
+                stateParams: {
+                    status: 'CREATING'
+                }
+            });
+
+            expect(this.vm.status).toEqual('OPEN');
+        });
+
         it('should offer the draft status only on the incoming tab', function() {
             this.init();
 
@@ -281,6 +292,15 @@ describe('TransferOverviewController', function() {
             });
         });
 
+        it('should show all statuses when the status is cleared', function() {
+            this.init();
+            this.vm.status = undefined;
+
+            this.vm.search();
+
+            expect(this.$state.go.calls[0].args[1].status).toEqual('ALL');
+        });
+
         it('should leave the open status out of the url', function() {
             this.init();
 
@@ -313,6 +333,17 @@ describe('TransferOverviewController', function() {
                 page: 0,
                 size: 10
             });
+        });
+
+        it('should clear the draft status when opening the outgoing tab', function() {
+            this.init({
+                stateParams: {
+                    status: 'CREATING'
+                }
+            });
+
+            expect(this.vm.getTabParams('outgoing').status).toBeUndefined();
+            expect(this.vm.getTabParams('incoming').status).toEqual('CREATING');
         });
     });
 

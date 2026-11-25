@@ -32,6 +32,7 @@
             OUTGOING: 'outgoing',
             STATUS_OPEN: 'OPEN',
             STATUS_ALL: 'ALL',
+            STATUS_CREATING: 'CREATING',
             STATUSES: ['CREATING', 'ORDERED', 'FULFILLING', 'SHIPPED', 'RECEIVED', 'CANCELLED']
         });
 
