@@ -124,6 +124,22 @@ describe('Order', function() {
 
     });
 
+    describe('isReceived', function() {
+
+        it('should return true if order is in received status', function() {
+            order = new Order(new BasicOrderResponseDataBuilder().buildReceived());
+
+            expect(order.isReceived()).toBe(true);
+        });
+
+        it('should return false if order is in shipped status', function() {
+            order = new Order(new BasicOrderResponseDataBuilder().buildShipped());
+
+            expect(order.isReceived()).toBe(false);
+        });
+
+    });
+
     describe('transferFailed', function() {
 
         it('should return true if order is in transfer failed status', function() {

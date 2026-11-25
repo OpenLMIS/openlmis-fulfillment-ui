@@ -172,7 +172,7 @@
          * @name save
          *
          * @description
-         * Validates every line item and saves the request as a draft.
+         * Validates every line item, saves the request as a draft and returns to the Transfers page.
          */
         function save() {
             if (!validate()) {
@@ -183,6 +183,7 @@
             transferService.updateRequest(buildOrder())
                 .then(function() {
                     notificationService.success('transferRequest.save.success');
+                    goToTransfers();
                 })
                 // the server error handler already shows the backend message
                 .catch(angular.noop)
@@ -196,7 +197,7 @@
          *
          * @description
          * Validates every line item, asks for confirmation and sends the request to the supplying facility.
-         * Once sent, the page starts over with the same program. On an error the line items stay for correction.
+         * Once sent, the Transfers page opens. On an error the line items stay for correction.
          */
         function send() {
             if (!validate() || !canSend()) {
@@ -213,7 +214,7 @@
                     return transferService.sendRequest(buildOrder())
                         .then(function() {
                             notificationService.success('transferRequest.submitted');
-                            goToForm();
+                            goToTransfers();
                         })
                         .catch(angular.noop)
                         .finally(loadingModalService.close);
@@ -226,7 +227,7 @@
          * @name delete
          *
          * @description
-         * Asks for confirmation and deletes the request.
+         * Asks for confirmation, deletes the request and returns to the Transfers page.
          */
         function deleteRequest() {
             confirmService.confirmDestroy('transferRequest.delete.prompt', 'transferRequest.delete')
@@ -235,7 +236,7 @@
                     return transferService.deleteRequest(vm.order.id)
                         .then(function() {
                             notificationService.success('transferRequest.delete.success');
-                            goToForm();
+                            goToTransfers();
                         })
                         .catch(angular.noop)
                         .finally(loadingModalService.close);
@@ -282,9 +283,9 @@
             });
         }
 
-        function goToForm() {
-            $state.go('openlmis.stockmanagement.transferRequest', {
-                programId: vm.order.program.id
+        function goToTransfers() {
+            $state.go('openlmis.stockmanagement.transfers', {
+                tab: 'incoming'
             }, {
                 reload: true
             });

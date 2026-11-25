@@ -412,7 +412,7 @@ describe('TransferSendCreationController', function() {
             expect(this.loadingModalService.open).toHaveBeenCalled();
         });
 
-        it('should notify and start a new reallocation once sent', function() {
+        it('should notify and return to the Transfers page once sent', function() {
             this.vm.submit();
             this.sendDeferred.resolve({
                 id: 'order-id'
@@ -420,9 +420,8 @@ describe('TransferSendCreationController', function() {
             this.$rootScope.$apply();
 
             expect(this.notificationService.success).toHaveBeenCalledWith('transferSend.submitted');
-            expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.transferSend', {
-                programId: 'program-id',
-                destinationId: null
+            expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.transfers', {
+                tab: 'outgoing'
             }, {
                 reload: true
             });

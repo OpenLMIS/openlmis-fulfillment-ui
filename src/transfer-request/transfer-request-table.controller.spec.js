@@ -196,6 +196,12 @@ describe('TransferRequestTableController', function() {
             }]);
 
             expect(this.notificationService.success).toHaveBeenCalledWith('transferRequest.save.success');
+            expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.transfers', {
+                tab: 'incoming'
+            }, {
+                reload: true
+            });
+
             expect(this.loadingModalService.close).toHaveBeenCalled();
         });
 
@@ -212,7 +218,7 @@ describe('TransferRequestTableController', function() {
 
     describe('send', function() {
 
-        it('should send the request after confirmation and return to the form', function() {
+        it('should send the request after confirmation and return to the Transfers page', function() {
             spyOn(this.transferService, 'sendRequest').andReturn(this.$q.resolve());
 
             this.vm.send();
@@ -221,8 +227,8 @@ describe('TransferRequestTableController', function() {
             expect(this.confirmService.confirm).toHaveBeenCalled();
             expect(this.transferService.sendRequest.calls[0].args[0].orderLineItems[0].orderedQuantity).toEqual(25);
             expect(this.notificationService.success).toHaveBeenCalledWith('transferRequest.submitted');
-            expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.transferRequest', {
-                programId: 'program-id'
+            expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.transfers', {
+                tab: 'incoming'
             }, {
                 reload: true
             });
@@ -264,7 +270,7 @@ describe('TransferRequestTableController', function() {
 
     describe('delete', function() {
 
-        it('should delete the request after confirmation and return to the form', function() {
+        it('should delete the request after confirmation and return to the Transfers page', function() {
             spyOn(this.transferService, 'deleteRequest').andReturn(this.$q.resolve());
 
             this.vm.delete();
@@ -272,8 +278,8 @@ describe('TransferRequestTableController', function() {
 
             expect(this.transferService.deleteRequest).toHaveBeenCalledWith('order-id');
             expect(this.notificationService.success).toHaveBeenCalledWith('transferRequest.delete.success');
-            expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.transferRequest', {
-                programId: 'program-id'
+            expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.transfers', {
+                tab: 'incoming'
             }, {
                 reload: true
             });

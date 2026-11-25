@@ -81,7 +81,8 @@
                 return shipmentRepository.getDraftByOrderId(order.id);
             }
 
-            if (order.isShipped()) {
+            // a received order keeps its confirmed shipment, which is shown read-only
+            if (order.isShipped() || order.isReceived()) {
                 return shipmentRepository.getByOrderId(order.id);
             }
         }

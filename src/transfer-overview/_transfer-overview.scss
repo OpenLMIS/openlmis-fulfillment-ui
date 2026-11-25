@@ -1,0 +1,40 @@
+.transfer-overview-count {
+    display: inline-block;
+    min-width: 1.6em;
+    margin-left: 0.4em;
+    padding: 0 0.4em;
+    border-radius: 0.8em;
+    background-color: #ddd;
+    font-size: 0.85em;
+    line-height: 1.6em;
+    text-align: center;
+}
+
+.transfer-overview {
+    tbody td {
+        // one line per cell, so long names make the table scroll instead of making a row taller
+        white-space: nowrap;
+        // the height of a row with an action button (38px button, 8px cell padding above and below and the
+        // 1px row border), so rows with a text or no action are as tall
+        height: 55px;
+    }
+
+    .transfer-overview-type {
+        display: inline-block;
+        padding: 0.1em 0.5em;
+        border-radius: 0.2em;
+        background-color: #e3eef7;
+        color: #154f75;
+        font-size: 0.85em;
+        font-weight: bold;
+
+        &.is-reallocation {
+            background-color: #fcecd9;
+            color: #7a4100;
+        }
+    }
+
+    .transfer-overview-waiting {
+        font-style: italic;
+    }
+}

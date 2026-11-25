@@ -1,6 +1,7 @@
 {
     "order.orders": "Orders",
 
+    "orderStatus.CREATING": "Creating",
     "orderStatus.ORDERED": "Ordered",
     "orderStatus.FULFILLING": "Fulfilling",
     "orderStatus.SHIPPED": "Shipped",

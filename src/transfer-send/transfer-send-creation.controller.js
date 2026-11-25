@@ -191,8 +191,8 @@
          * @name submit
          *
          * @description
-         * Validates every line item, asks for confirmation and sends the stock. Once sent, the page starts
-         * over with the same program. On an error the line items stay for correction.
+         * Validates every line item, asks for confirmation and sends the stock. Once sent, the Transfers
+         * page opens on its outgoing tab. On an error the line items stay for correction.
          */
         function submit() {
             vm.lineItems.forEach(validateQuantity);
@@ -211,9 +211,8 @@
                     return transferService.send(buildTransfer())
                         .then(function() {
                             notificationService.success('transferSend.submitted');
-                            $state.go('openlmis.stockmanagement.transferSend', {
-                                programId: vm.program.id,
-                                destinationId: null
+                            $state.go('openlmis.stockmanagement.transfers', {
+                                tab: 'outgoing'
                             }, {
                                 reload: true
                             });

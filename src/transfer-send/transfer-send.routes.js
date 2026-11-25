@@ -20,15 +20,16 @@
         .module('transfer-send')
         .config(routes);
 
-    routes.$inject = ['$stateProvider', 'FULFILLMENT_RIGHTS', 'SHOW_TRANSFERS'];
+    routes.$inject = ['$stateProvider', 'FULFILLMENT_RIGHTS'];
 
-    function routes($stateProvider, FULFILLMENT_RIGHTS, SHOW_TRANSFERS) {
+    function routes($stateProvider, FULFILLMENT_RIGHTS) {
         $stateProvider.state('openlmis.stockmanagement.transferSend', {
             url: '/transferSend?programId&destinationId',
             label: 'transferSend.title',
             isOffline: false,
             priority: 46,
-            showInNavigation: SHOW_TRANSFERS,
+            // opened from the Transfers page
+            showInNavigation: false,
             accessRights: [FULFILLMENT_RIGHTS.SHIPMENTS_EDIT],
             views: {
                 '@openlmis': {
